@@ -783,7 +783,6 @@ function binding(obj, property) {
 	
 	// If property is array, watch for common array functions
 	if(Array.isArray(obj[property])) {
-		console.log('array', property, obj[property], typeof obj[property]);
 		const array_methods = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse']
 		array_methods.forEach(function(method) {
 		// 	props[method] = _this.setter
@@ -792,10 +791,8 @@ function binding(obj, property) {
 					// obj[property].push()
 					// Duplicate array so as not to trigger setter function over and over
 					let _array = qt.clone(this)
-					console.log('method called! ---------', method, args);
 					// Run array method on array
 					eval("_array." + method + "(...args)")
-					console.log(_array, _array.length);
 					
 					// remove data values from "this" and replace with values from _array
 					for(let x = this.length - 1; x >= 0; x--) { delete this[x] }
@@ -830,236 +827,275 @@ function updateDOM(sub = 0) {
 	
 	console.log('updateDOM', qt.run_time);
 	
-	
-		
 	// // Check if qt has actually changed before updating DOM
 	// if(JSON.stringify(qt) == JSON.stringify(latest_qt)) return
 	// latest_qt = qt.clone(qt)
 	
+	
+	
+	resetForLoops()
+	updateForLoops()
+
+	
 	$element = $('.tests_ui, .toggle_tests_panel')
 	$element = $element.add($element.find('*'))
 	
 	
-
-	
-	
-	// Go through each :for loop and create new elements, THEN start to modify :ifs, :text, :etc.
-	$element.each(function() {
-		let $this = $(this)
-		if($this.attr(':for') === null || $this.attr(':for') === undefined) return
+	setTimeout(function() {
 		
-		// console.log($this);
-		
-		// Give unique ID to model
-		let model_id = Math.floor(Math.random() * 999999999);
-		if($this.attr(':for_model')) model_id = $this.attr(':for_model')
-		else {
-			$this.attr(':for_model', model_id)	
-			$this.hide()
-		}
-		
-		// Remove clones
-		$('[for_copy="'+model_id+'"]').remove()
-		
-		
-		
-		
-		let for_str = $(this).attr(':for')
-		let item_name = for_str.substr(0, for_str.indexOf(' in '))
-		let index_name = ''
-		item_name = item_name.replace(/[\(\)]/g, '')
-		
-		if(item_name.includes(',')) {
-			item_name = item_name.split(',')
-			index_name = item_name[1].trim()
-			item_name = item_name[0].trim()
-		}
-		
-		let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
-		
-		// console.log(item_name, arr);
-		
-		for(let x = 0; x < arr.length; x++) {
-			$copy = $this.clone().show()
-			$copy.attr('for_copy', $this.attr(':for_model'))
-			$copy.attr('item_name', item_name)
-			$copy.attr(item_name, arr[x])
-			if(index_name) {
-				$copy.attr('index_name', index_name)
-				$copy.attr(index_name, x)
+		$element.each(function() {
+			$this = $(this)
+			
+			if($this.closest('[\\:for_model]').length) return
+			
+			
+			// // If element was created in a :for loop, attach data from model
+			if($this.closest('[for_copy]')) {
+				let $parents = $this.add($this.parents())
+				for(var y = 0; y < $parents.length; y++) {
+					let $parent = $parents.eq(y)
+					if($parent.attr('index_name')) console.log("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+					if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
+					// if($parent.attr('item_name')) console.log(JSON.parse(JSON.stringify($parent.data($parent.attr('item_name')))));
+					if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+				}
 			}
-			$copy.removeAttr(':for')
-			$copy.removeAttr(':for_model')
-			if(index_name) $copy.attr(index_name, x)
-			if(index_name) $copy.attr(index_name, x)
-			$copy.insertBefore($this)
-			
-			// setTimeout(function() {
-				// console.log('x', x);
-				// updateDOM($copy, 1)
-			// }, 100);
-		}
-		
-		// delete attrs[':for']
-		
-		
-		
-	})
-	
-	
 
-	
-	$element = $('.tests_ui, .toggle_tests_panel')
-	$element = $element.add($element.find('*'))
-	
-	
-	
-	
-	$element.each(function() {
-		$this = $(this)
-		
-		
-		
-		// If element was created in a :for loop, attach data from model
-		if($this.attr('item_name')) this[$this.attr('item_name')] = $this.attr($this.attr('item_name'))
-		if($this.attr('index_name')) this[$this.attr('index_name')] = $this.attr($this.attr('index_name'))
-		// 
-		// if($this.attr('index_name')) console.log(this);
-		// if($this.attr('index_name')) console.log(this['index']);
-		
-		
-		eval("let " + $this.attr('item_name') + " = " + $this.attr($this.attr('item_name')) + ";")	
-		eval("let " + $this.attr('index_name') + " = " + $this.attr($this.attr('index_name')) + ";")		
-		
-				
-		// if(!$this.is(':visible')) return
-		
-		const attrs = $this[0].getAttributeNames().reduce(function(obj, key) { obj[key] = $this.attr(key); return obj; }, {});
-				
-				
-		// Show/hide based on :if attribute
-		let if_val = 1
-		
-		
-		if(attrs[':else'] !== undefined || attrs[':elseif']) {
+
+			// if(!$this.is(':visible')) return
+			
+			const attrs = $this[0].getAttributeNames().reduce(function(obj, key) { obj[key] = $this.attr(key); return obj; }, {});
+					
+					
+			// Show/hide based on :if attribute
+			let if_val = 1
 			
 			
-			let $curr_el = $this.prev()
-			let x = 0
-			
-			// Look backwards until reaching a previous sibling that doesn't have if/elseif attr
-			// If any of them resolve to true, hide this and stop checking
-			while($curr_el.attr(':if') || $curr_el.attr(':elseif')) {
-				try {
-					if_val = eval($curr_el.attr(':if') || $curr_el.attr(':elseif'))
-					if(if_val) {
+			if(attrs[':else'] !== undefined || attrs[':elseif']) {
+				
+				
+				let $curr_el = $this.prev()
+				let x = 0
+				
+				// Look backwards until reaching a previous sibling that doesn't have if/elseif attr
+				// If any of them resolve to true, hide this and stop checking
+				while($curr_el.attr(':if') || $curr_el.attr(':elseif')) {
+					try {
+						if_val = eval($curr_el.attr(':if') || $curr_el.attr(':elseif'))
+						if(if_val) {
+							$this.hide()
+							return
+						}
+					}
+					catch(error) {
+						console.log('else parse error:', $this);
+					}
+					$curr_el = $curr_el.prev()
+				}
+				
+				// Otherwise, make element visible (if else or elseif == true)
+				if(attrs[':elseif']) {
+					try {
+						if_val = eval($this.attr(':elseif'))
+					}
+					catch(error) {
+						console.log('elseif parse error:', $this);
+					}
+					
+					if(!if_val) {
 						$this.hide()
 						return
 					}
 				}
-				catch(error) {
-					console.log('else parse error:', $this);
-				}
-				$curr_el = $curr_el.prev()
+				$this.show()
+				delete attrs[':elseif']
+				delete attrs[':else']
 			}
 			
-			// Otherwise, make element visible (if else or elseif == true)
-			if(attrs[':elseif']) {
+			
+			else if(attrs[':if']) {
+				
 				try {
-					if_val = eval($this.attr(':elseif'))
+					if_val = eval($this.attr(':if'))
 				}
 				catch(error) {
-					console.log('elseif parse error:', $this);
+					console.log('if parse error:', $this.attr(':if'));
 				}
 				
-				if(!if_val) {
+				if(if_val) $this.show()
+				else {
 					$this.hide()
 					return
 				}
-			}
-			$this.show()
-			delete attrs[':elseif']
-			delete attrs[':else']
-		}
-		
-		
-		else if(attrs[':if']) {
-			
-			try {
-				if_val = eval($this.attr(':if'))
-			}
-			catch(error) {
-				console.log('if parse error:', $this.attr(':if'));
+				delete attrs[':if']
 			}
 			
-			if(if_val) $this.show()
-			else {
-				$this.hide()
-				return
-			}
-			delete attrs[':if']
-		}
-		
-		
-
-		
-		
-		
-		
+			
+	
+			
+			
+			
+			
+					
+			for(attr in attrs) {
+				if(attr.substr(0,1) != ':' || attr == ':for') continue
 				
-		for(attr in attrs) {
-			if(attr.substr(0,1) != ':' || attr == ':for') continue
-			
-			
-			if(attr == ':text') {
-				let text_val = eval($this.attr(':text'))
-				if(text_val === false) text_val = 'false'
-				$this.html(text_val)
-			}
-			
-			
-			else if(attr == ':class') {
-				let class_obj = {}
-				let class_str = $this.attr(attr)
-				class_str = class_str.replace(/[{}]/g, '')
-				class_str = class_str.split(',')
 				
-				for(let x = 0; x < class_str.length; x++) {
-					let prop_array = class_str[x].split(":")
-					try {
-						class_obj[prop_array[0].trim()] = eval(prop_array[1])
+				if(attr == ':text') {
+					let text_val = eval($this.attr(':text'))
+					if(text_val === false) text_val = 'false'
+					$this.html(text_val)
+				}
+				
+				
+				else if(attr == ':class') {
+					let class_obj = {}
+					let class_str = $this.attr(attr)
+					class_str = class_str.replace(/[{}]/g, '')
+					class_str = class_str.split(',')
+					
+					for(let x = 0; x < class_str.length; x++) {
+						let prop_array = class_str[x].split(":")
+						try {
+							class_obj[prop_array[0].trim()] = eval(prop_array[1])
+						}
+						catch(error) {
+							// console.log(attr, 'parse error:', $this);
+						}
+						
 					}
-					catch(error) {
-						// console.log(attr, 'parse error:', $this);
+					
+					for(let prop in class_obj) {
+						if(class_obj[prop]) $this.addClass(prop)
+						if(!class_obj[prop]) $this.removeClass(prop)
 					}
 					
 				}
 				
-				for(let prop in class_obj) {
-					if(class_obj[prop]) $this.addClass(prop)
-					if(!class_obj[prop]) $this.removeClass(prop)
+				else if(attr == ':style') {
+					
 				}
 				
+				else {
+					let attr_val = eval($this.attr(attr))
+					if(attr_val === false) attr_val = 'false'
+					$this.attr(attr.substr(1), attr_val)				
+				}
 			}
 			
-			else if(attr == ':style') {
-				
-			}
 			
-			else {
-				let attr_val = eval($this.attr(attr))
-				if(attr_val === false) attr_val = 'false'
-				$this.attr(attr.substr(1), attr_val)				
-			}
-		}
-		
-		
-		
-		
-	})
+			
+			
+		})
 	
+	}, 0)	
 	
 }
+
+
+// Remove all for elements that 
+function resetForLoops() {
+	
+	$('[for_copy]').remove()
+	$('[\\:forr]').each(function() {
+		console.log('rfl');
+		$(this).attr(':for', $(this).attr(':forr'))
+		$(this).removeAttr(':forr')
+	})
+}
+
+
+
+function updateForLoops() {
+	
+	// Handle first one, then move on to next by running funciton again
+	// Keep looping until there are not more :for elements
+	
+	// console.log('ufl');
+	
+	$for_model = $('[\\:for]')
+	if($for_model.length < 1) return
+	
+	$this = $for_model.eq(0)
+	let model_id = Math.floor(Math.random() * 999999999);
+	$this.attr(':for_model', model_id)
+	$this.attr(':forr', $this.attr(':for'))
+	$this.removeAttr(':for')
+	$this.hide()
+	
+	// Don't process for loops inside of :for models
+	if($this.parent().closest('[\\:for_model]').length) return 
+
+
+	if($this.closest('[for_copy]')) {
+		let $parents = $this.add($this.parents())
+		for(var y = 0; y < $parents.length; y++) {
+			let $parent = $parents.eq(y)
+			// console.log($parent);
+			if($parent.attr('item_name')) console.log("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))))
+			if($parent.attr('index_name')) console.log("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+			if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
+			// if($parent.attr('item_name')) console.log(JSON.parse(JSON.stringify($parent.data($parent.attr('item_name')))));
+			if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+		}
+	}
+
+	let for_str = $this.attr(':forr')
+	let item_name = for_str.substr(0, for_str.indexOf(' in '))
+	let index_name = ''
+	item_name = item_name.replace(/[\(\)]/g, '')
+	
+	if(item_name.includes(',')) {
+		item_name = item_name.split(',')
+		index_name = item_name[1].trim()
+		item_name = item_name[0].trim()
+	}
+	
+	console.log($this);
+	
+	let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
+	
+	// console.log(item_name, arr);
+	
+	for(let x = 0; x < arr.length; x++) {
+		$copy = $this.clone().show()
+		$copy.attr('for_copy', $this.attr(':for_model'))
+		if(item_name) {
+			$copy.attr('item_name', item_name)
+			$copy.data(item_name, arr[x])
+		}
+		if(index_name) {
+			$copy.attr('index_name', index_name)
+			$copy.attr(index_name, x)
+		}
+		$copy.removeAttr(':for')
+		$copy.removeAttr(':for_model')
+		if(index_name) $copy.attr(index_name, x)
+		if(index_name) $copy.attr(index_name, x)
+		$copy.insertBefore($this)
+		
+		// setTimeout(function() {
+			// console.log('x', x);
+			// updateDOM($copy, 1)
+		// }, 100);
+	}
+
+	updateForLoops()
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // obj.a = 456;
 // 

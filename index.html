@@ -27,18 +27,24 @@
 			<div class="garbage" :else>else</div>
 			 -->
 			 
-			<div class="array_test" :for="(df, index) in qt.df">
+			<!-- <div class="array_test" :for="(df, index) in qt.df">
 				asfadf
-				<span :text="index"></span>
-			</div>
+				<span class="array_test_span" :text="index"></span>
+				<span class="array_test_span" :text="df + qt.run_time"></span>
+			</div> -->
 			 
 			 
 			<hr>
 			 
-			<div :for="group in qt.groups" class="fortest">
- 				<span>span</span>
- 				<b :text="qt.run_time"></b>
- 				<!-- <div class="forchild" :text="group_index">div</div> -->
+			<div :for="(group, group_index) in qt.groups" class="fortest">
+				-- Group
+ 				<span :text="group_index"></span>
+ 				<b :text="qt.run_time / 1000"></b>
+ 				<span class="forspan" :text="group.label"></span>
+				<div class="forchild" :for="(test, test_index) in group.tests">
+					Child
+					<span :text="test.label"></span>
+				</div>
 			</div>
  
 			 
