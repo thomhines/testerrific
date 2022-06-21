@@ -14,12 +14,13 @@
 
 <body>
 	
-	<div class="for_copies">
-		
-	</div>
-	
 
-	<div>
+
+	<div id="testerrific"></div>
+
+
+
+	<div style="display: none;">
 		<div class="tests_ui visible" :class="{ visible: qt.visible, unruly: !qt.visible }">
 			<!-- 
 			<div class="garbage" :if="qt.running">if</div>
@@ -166,12 +167,6 @@
 		<button class="toggle_tests_panel" onclick="qt.toggle_tests_panel()" :class="{ visible: qt.visible }">Tests</button>
 	
 	</div>
-
-
-
-	<footer>
-		&copy; 2015 Your Name Here.
-	</footer>
 
 
 	

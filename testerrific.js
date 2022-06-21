@@ -744,321 +744,337 @@ qt = {
 
 
 
-// With help from https://www.atmosera.com/blog/data-binding-pure-javascript/
-function binding(obj, property) {
-	let _this = this
-	_this.has_init = false
-	_this.value = obj[property]
-		
-	if(typeof obj[property] == 'object' && obj[property] !== null && Object.keys(obj[property]).length) {
-		let keys = Object.keys(obj[property])
-		for(let x = 0; x < keys.length; x++) {
-			new binding(obj[property], keys[x])
-		}
-		// return
-	}
-	
-	_this.getter = function(){
-		return _this.value;
-	}
-	_this.setter = function(val){
-		_this.value = val
-		if(_this.has_init) {
-			updateDOM() // Don't update the DOM when first initializing properties
-		}
-		_this.has_init = true
-	}
-	
-	
-	let props = {
-		get: this.getter,
-		set: this.setter
-	}
-	
-	Object.defineProperty(obj, property, props);	
-	
-	// If property is array, watch for common array functions
-	if(Array.isArray(obj[property])) {
-		const array_methods = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse']
-		array_methods.forEach(function(method) {
-		// 	props[method] = _this.setter
-			Object.defineProperty(obj[property], method, {
-				value: function(...args) {
-					// obj[property].push()
-					// Duplicate array so as not to trigger setter function over and over
-					let _array = qt.clone(this)
-					// Run array method on array
-					eval("_array." + method + "(...args)")
-					
-					// remove data values from "this" and replace with values from _array
-					for(let x = this.length - 1; x >= 0; x--) { delete this[x] }
-					this.length = _array.length					
-					obj[property] = Object.assign(this, _array)
-				}
-			});		
-		})
-	}
-	
-	obj[property] = this.value;
-	
-}
-
-
-function bind_qt() {
-	for (let key in qt) {
-		if(typeof qt[key] == 'function') continue;	
-		new binding(qt, key)
-	}	
-	
-	updateDOM()
-}
-
-
-
-
-var latest_qt = {}
-function updateDOM(sub = 0) {
-	
-	
-	// // Check if qt has actually changed before updating DOM
-	// if(JSON.stringify(qt) == JSON.stringify(latest_qt)) return
-	// latest_qt = qt.clone(qt)
-	
-	
-	
-	resetForLoops()
-	updateForLoops()
-
-	
-	$element = $('.tests_ui, .toggle_tests_panel')
-	$element = $element.add($element.find('*'))
-	
-	
-	setTimeout(function() {
-		
-		$element.each(function() {
-			$this = $(this)
-			
-			if($this.closest('[\\:for_model]').length) return
-			
-			
-			// // If element was created in a :for loop, attach data from model
-			if($this.closest('[for_copy]')) {
-				let $parents = $this.add($this.parents())
-				for(var y = 0; y < $parents.length; y++) {
-					let $parent = $parents.eq(y)
-					if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-					if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
-				}
-			}
-
-
-			// if(!$this.is(':visible')) return
-			
-			const attrs = $this[0].getAttributeNames().reduce(function(obj, key) { obj[key] = $this.attr(key); return obj; }, {});
-					
-					
-			// Show/hide based on :if attribute
-			let if_val = 1
-			
-			
-			if(attrs[':else'] !== undefined || attrs[':elseif']) {
-				
-				
-				let $curr_el = $this.prev()
-				let x = 0
-				
-				// Look backwards until reaching a previous sibling that doesn't have if/elseif attr
-				// If any of them resolve to true, hide this and stop checking
-				while($curr_el.attr(':if') || $curr_el.attr(':elseif')) {
-					try {
-						if_val = eval($curr_el.attr(':if') || $curr_el.attr(':elseif'))
-						if(if_val) {
-							$this.hide()
-							return
-						}
-					}
-					catch(error) {
-						console.log('else parse error:', $this);
-					}
-					$curr_el = $curr_el.prev()
-				}
-				
-				// Otherwise, make element visible (if else or elseif == true)
-				if(attrs[':elseif']) {
-					try {
-						if_val = eval($this.attr(':elseif'))
-					}
-					catch(error) {
-						console.log('elseif parse error:', $this);
-					}
-					
-					if(!if_val) {
-						$this.hide()
-						return
-					}
-				}
-				$this.show()
-				delete attrs[':elseif']
-				delete attrs[':else']
-			}
-			
-			
-			else if(attrs[':if']) {
-				
-				try {
-					if_val = eval($this.attr(':if'))
-				}
-				catch(error) {
-					console.log('if parse error:', $this.attr(':if'));
-				}
-				
-				if(if_val) $this.show()
-				else {
-					$this.hide()
-					return
-				}
-				delete attrs[':if']
-			}
-			
-			
-	
-			
-			
-			
-			
-					
-			for(attr in attrs) {
-				if(attr.substr(0,1) != ':' || attr == ':for') continue
-				
-				
-				if(attr == ':text') {
-					let text_val = eval($this.attr(':text'))
-					if(text_val === false) text_val = 'false'
-					$this.html(text_val)
-				}
-				
-				
-				else if(attr == ':class') {
-					let class_obj = {}
-					let class_str = $this.attr(attr)
-					class_str = class_str.replace(/[{}]/g, '')
-					class_str = class_str.split(',')
-					
-					for(let x = 0; x < class_str.length; x++) {
-						let prop_array = class_str[x].split(":")
-						try {
-							class_obj[prop_array[0].trim()] = eval(prop_array[1])
-						}
-						catch(error) {
-							console.log(attr, 'parse error:', $this, prop_array[0].trim(), prop_array[1]);
-						}
-						
-					}
-					
-					for(let prop in class_obj) {
-						if(class_obj[prop]) $this.addClass(prop)
-						if(!class_obj[prop]) $this.removeClass(prop)
-					}
-					
-				}
-				
-				else if(attr == ':style') {
-					
-				}
-				
-				else {
-					let attr_val = eval($this.attr(attr))
-					if(attr_val === false) attr_val = 'false'
-					$this.attr(attr.substr(1), attr_val)				
-				}
-			}
-			
-			
-			
-			
-		})
-	
-	}, 0)	
-	
-}
-
-
-// Remove all for elements that 
-function resetForLoops() {
-	
-	$('[for_copy]').remove()
-	$('[\\:forr]').each(function() {
-		$(this).attr(':for', $(this).attr(':forr'))
-		$(this).removeAttr(':forr')
-	})
-}
+// // With help from https://www.atmosera.com/blog/data-binding-pure-javascript/
+// function binding(obj, property, path = "") {
+// 	let _this = this
+// 	_this.has_init = false
+// 	_this.value = obj[property]
+// 	_this.path = path + "." + property
+// 	console.log(_this.path);
+// 		
+// 	if(typeof obj[property] == 'object' && obj[property] !== null && Object.keys(obj[property]).length) {
+// 		let keys = Object.keys(obj[property])
+// 		for(let x = 0; x < keys.length; x++) {
+// 			new binding(obj[property], keys[x], _this.path)
+// 		}
+// 		// return
+// 	}
+// 	
+// 	_this.getter = function(){
+// 		return _this.value;
+// 	}
+// 	_this.setter = function(val){
+// 		_this.value = val
+// 		if(_this.has_init) {
+// 			console.log('set!', _this.path, val);
+// 			update_proxy(_this.path)
+// 			// updateDOM() // Don't update the DOM when first initializing properties
+// 		}
+// 		_this.has_init = true
+// 	}
+// 	
+// 	
+// 	let props = {
+// 		get: this.getter,
+// 		set: this.setter
+// 	}
+// 	
+// 	Object.defineProperty(obj, property, props);	
+// 	
+// 	// If property is array, watch for common array functions
+// 	if(Array.isArray(obj[property])) {
+// 		const array_methods = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse']
+// 		array_methods.forEach(function(method) {
+// 		// 	props[method] = _this.setter
+// 			Object.defineProperty(obj[property], method, {
+// 				value: function(...args) {
+// 					// obj[property].push()
+// 					// Duplicate array so as not to trigger setter function over and over
+// 					let _array = qt.clone(this)
+// 					// Run array method on array
+// 					eval("_array." + method + "(...args)")
+// 					
+// 					// remove data values from "this" and replace with values from _array
+// 					for(let x = this.length - 1; x >= 0; x--) { delete this[x] }
+// 					this.length = _array.length					
+// 					obj[property] = Object.assign(this, _array)
+// 				}
+// 			});		
+// 		})
+// 	}
+// 	
+// 	obj[property] = this.value;
+// 	
+// }
+// 
+// 
+// update_proxy = function(path, val) {
+// 	console.log('update proxy', path);
+// 	// path = "['groups'][0]['tests'][0]['label']"
+// 	let obj = qt.clone(qt)
+// 	for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
+// 		obj = obj[path[i]];
+// 	};
+// 	
+// 	console.log(qt[path]);
+// }
+// 
+// 
+// function bind_qt() {
+// 	for (let key in qt) {
+// 		if(typeof qt[key] == 'function') continue;	
+// 		new binding(qt, key)
+// 	}	
+// 	
+// 	// updateDOM()
+// }
 
 
 
-function updateForLoops() {
-	
-	// Handle first one, then move on to next by running funciton again
-	// Keep looping until there are not more :for elements
-	
-	$for_model = $('[\\:for]')
-	if($for_model.length < 1) return
-	
-	$this = $for_model.eq(0)
-	let model_id = Math.floor(Math.random() * 999999999);
-	$this.attr(':for_model', model_id)
-	$this.attr(':forr', $this.attr(':for'))
-	$this.removeAttr(':for')
-	$this.hide()
-	
-	// Don't process for loops inside of :for models
-	if($this.parent().closest('[\\:for_model]').length) return 
 
-
-	if($this.closest('[for_copy]')) {
-		let $parents = $this.add($this.parents())
-		for(var y = 0; y < $parents.length; y++) {
-			let $parent = $parents.eq(y)
-			if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-			if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
-		}
-	}
-
-	let for_str = $this.attr(':forr')
-	let item_name = for_str.substr(0, for_str.indexOf(' in '))
-	let index_name = ''
-	item_name = item_name.replace(/[\(\)]/g, '')
-	
-	if(item_name.includes(',')) {
-		item_name = item_name.split(',')
-		index_name = item_name[1].trim()
-		item_name = item_name[0].trim()
-	}
-	
-	let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
-	
-	for(let x = 0; x < arr.length; x++) {
-		$copy = $this.clone().show()
-		$copy.attr('for_copy', $this.attr(':for_model'))
-		if(item_name) {
-			$copy.attr('item_name', item_name)
-			$copy.data(item_name, arr[x])
-		}
-		if(index_name) {
-			$copy.attr('index_name', index_name)
-			$copy.attr(index_name, x)
-		}
-		$copy.removeAttr(':for')
-		$copy.removeAttr(':for_model')
-		if(index_name) $copy.attr(index_name, x)
-		if(index_name) $copy.attr(index_name, x)
-		$copy.insertBefore($this)
-		
-	}
-
-	updateForLoops()
-
-}
+// var latest_qt = {}
+// function updateDOM(sub = 0) {
+// 	
+// 	
+// 	// // Check if qt has actually changed before updating DOM
+// 	// if(JSON.stringify(qt) == JSON.stringify(latest_qt)) return
+// 	// latest_qt = qt.clone(qt)
+// 	
+// 	
+// 	
+// 	resetForLoops()
+// 	updateForLoops()
+// 
+// 	
+// 	$element = $('.tests_ui, .toggle_tests_panel')
+// 	$element = $element.add($element.find('*'))
+// 	
+// 	
+// 	setTimeout(function() {
+// 		
+// 		$element.each(function() {
+// 			$this = $(this)
+// 			
+// 			if($this.closest('[\\:for_model]').length) return
+// 			
+// 			
+// 			// // If element was created in a :for loop, attach data from model
+// 			if($this.closest('[for_copy]')) {
+// 				let $parents = $this.add($this.parents())
+// 				for(var y = 0; y < $parents.length; y++) {
+// 					let $parent = $parents.eq(y)
+// 					if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
+// 					if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+// 				}
+// 			}
+// 
+// 
+// 			// if(!$this.is(':visible')) return
+// 			
+// 			const attrs = $this[0].getAttributeNames().reduce(function(obj, key) { obj[key] = $this.attr(key); return obj; }, {});
+// 					
+// 					
+// 			// Show/hide based on :if attribute
+// 			let if_val = 1
+// 			
+// 			
+// 			if(attrs[':else'] !== undefined || attrs[':elseif']) {
+// 				
+// 				
+// 				let $curr_el = $this.prev()
+// 				let x = 0
+// 				
+// 				// Look backwards until reaching a previous sibling that doesn't have if/elseif attr
+// 				// If any of them resolve to true, hide this and stop checking
+// 				while($curr_el.attr(':if') || $curr_el.attr(':elseif')) {
+// 					try {
+// 						if_val = eval($curr_el.attr(':if') || $curr_el.attr(':elseif'))
+// 						if(if_val) {
+// 							$this.hide()
+// 							return
+// 						}
+// 					}
+// 					catch(error) {
+// 						console.log('else parse error:', $this);
+// 					}
+// 					$curr_el = $curr_el.prev()
+// 				}
+// 				
+// 				// Otherwise, make element visible (if else or elseif == true)
+// 				if(attrs[':elseif']) {
+// 					try {
+// 						if_val = eval($this.attr(':elseif'))
+// 					}
+// 					catch(error) {
+// 						console.log('elseif parse error:', $this);
+// 					}
+// 					
+// 					if(!if_val) {
+// 						$this.hide()
+// 						return
+// 					}
+// 				}
+// 				$this.show()
+// 				delete attrs[':elseif']
+// 				delete attrs[':else']
+// 			}
+// 			
+// 			
+// 			else if(attrs[':if']) {
+// 				
+// 				try {
+// 					if_val = eval($this.attr(':if'))
+// 				}
+// 				catch(error) {
+// 					console.log('if parse error:', $this.attr(':if'));
+// 				}
+// 				
+// 				if(if_val) $this.show()
+// 				else {
+// 					$this.hide()
+// 					return
+// 				}
+// 				delete attrs[':if']
+// 			}
+// 			
+// 			
+// 	
+// 			
+// 			
+// 			
+// 			
+// 					
+// 			for(attr in attrs) {
+// 				if(attr.substr(0,1) != ':' || attr == ':for') continue
+// 				
+// 				
+// 				if(attr == ':text') {
+// 					let text_val = eval($this.attr(':text'))
+// 					if(text_val === false) text_val = 'false'
+// 					$this.html(text_val)
+// 				}
+// 				
+// 				
+// 				else if(attr == ':class') {
+// 					let class_obj = {}
+// 					let class_str = $this.attr(attr)
+// 					class_str = class_str.replace(/[{}]/g, '')
+// 					class_str = class_str.split(',')
+// 					
+// 					for(let x = 0; x < class_str.length; x++) {
+// 						let prop_array = class_str[x].split(":")
+// 						try {
+// 							class_obj[prop_array[0].trim()] = eval(prop_array[1])
+// 						}
+// 						catch(error) {
+// 							console.log(attr, 'parse error:', $this, prop_array[0].trim(), prop_array[1]);
+// 						}
+// 						
+// 					}
+// 					
+// 					for(let prop in class_obj) {
+// 						if(class_obj[prop]) $this.addClass(prop)
+// 						if(!class_obj[prop]) $this.removeClass(prop)
+// 					}
+// 					
+// 				}
+// 				
+// 				else if(attr == ':style') {
+// 					
+// 				}
+// 				
+// 				else {
+// 					let attr_val = eval($this.attr(attr))
+// 					if(attr_val === false) attr_val = 'false'
+// 					$this.attr(attr.substr(1), attr_val)				
+// 				}
+// 			}
+// 			
+// 			
+// 			
+// 			
+// 		})
+// 	
+// 	}, 0)	
+// 	
+// }
+// 
+// 
+// // Remove all for elements that 
+// function resetForLoops() {
+// 	
+// 	$('[for_copy]').remove()
+// 	$('[\\:forr]').each(function() {
+// 		$(this).attr(':for', $(this).attr(':forr'))
+// 		$(this).removeAttr(':forr')
+// 	})
+// }
+// 
+// 
+// 
+// function updateForLoops() {
+// 	
+// 	// Handle first one, then move on to next by running funciton again
+// 	// Keep looping until there are not more :for elements
+// 	
+// 	$for_model = $('[\\:for]')
+// 	if($for_model.length < 1) return
+// 	
+// 	$this = $for_model.eq(0)
+// 	let model_id = Math.floor(Math.random() * 999999999);
+// 	$this.attr(':for_model', model_id)
+// 	$this.attr(':forr', $this.attr(':for'))
+// 	$this.removeAttr(':for')
+// 	$this.hide()
+// 	
+// 	// Don't process for loops inside of :for models
+// 	if($this.parent().closest('[\\:for_model]').length) return 
+// 
+// 
+// 	if($this.closest('[for_copy]')) {
+// 		let $parents = $this.add($this.parents())
+// 		for(var y = 0; y < $parents.length; y++) {
+// 			let $parent = $parents.eq(y)
+// 			if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
+// 			if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
+// 		}
+// 	}
+// 
+// 	let for_str = $this.attr(':forr')
+// 	let item_name = for_str.substr(0, for_str.indexOf(' in '))
+// 	let index_name = ''
+// 	item_name = item_name.replace(/[\(\)]/g, '')
+// 	
+// 	if(item_name.includes(',')) {
+// 		item_name = item_name.split(',')
+// 		index_name = item_name[1].trim()
+// 		item_name = item_name[0].trim()
+// 	}
+// 	
+// 	let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
+// 	
+// 	for(let x = 0; x < arr.length; x++) {
+// 		$copy = $this.clone().show()
+// 		$copy.attr('for_copy', $this.attr(':for_model'))
+// 		if(item_name) {
+// 			$copy.attr('item_name', item_name)
+// 			$copy.data(item_name, arr[x])
+// 		}
+// 		if(index_name) {
+// 			$copy.attr('index_name', index_name)
+// 			$copy.attr(index_name, x)
+// 		}
+// 		$copy.removeAttr(':for')
+// 		$copy.removeAttr(':for_model')
+// 		if(index_name) $copy.attr(index_name, x)
+// 		if(index_name) $copy.attr(index_name, x)
+// 		$copy.insertBefore($this)
+// 		
+// 	}
+// 
+// 	updateForLoops()
+// 
+// }
 
 
 
@@ -1111,23 +1127,242 @@ function updateForLoops() {
 
 
 
+
+
+
+
+
+
+qt.test_group("Group A")
+qt.test("a == 1")
+qt.test("a == 2")
+qt.test("a == 3")
+
+qt.test_group("Group B")
+qt.test("a == 1")
+qt.test("a == 2")
+qt.test("a == 3")
+
+
+
+// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
+
+var debounceRender = function (instance) {
+
+	// If there's a pending render, cancel it
+	if (instance.debounce) {
+		window.cancelAnimationFrame(instance.debounce);
+	}
+
+	// Setup the new render to run at the next animation frame
+	instance.debounce = window.requestAnimationFrame(function () {
+		instance.render();
+	});
+
+};
+
+var handler = function (instance) {
+	return {
+		get: function (obj, prop) {
+			if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(obj[prop])) > -1) {
+				return new Proxy(obj[prop], handler(instance));
+			}
+			return obj[prop];
+		},
+		set: function (obj, prop, value) {
+			obj[prop] = value;
+			debounceRender(instance);
+			return true;
+		},
+		deleteProperty: function (obj, prop) {
+			delete obj[prop];
+			debounceRender(instance);
+			return true;
+
+		}
+	};
+};
+
+var Rue = function (options) {
+
+	// Variables
+	var _this = this;
+	_this.elem = document.querySelector(options.selector);
+	var _data = new Proxy(options.data, handler(this));
+	_this.template = options.template;
+	_this.debounce = null;
+  
+
+	// Define setter and getter for data
+  Object.defineProperty(this, 'data', {
+	  get: function () {
+		  return _data;
+	  },
+	  set: function (data) {
+		  _data = new Proxy(data, handler(_this));
+		  debounce(_this);
+		  return true;
+	  }
+  });
+
+};
+
+Rue.prototype.render = function () {
+	
+	// let temp = this.template(this.data);
+	
+	
+	let temp = document.createElement('div');
+	temp.innerHTML = this.template(this.data);
+	
+	// Remove elements if their if qualifier returns false
+	$(temp).find('[\\:if]').each(function() {
+		if(!seval($(this).attr(':if'))) $(this).remove()
+		else $(this).removeAttr(':if')
+	})
+	
+	this.elem.innerHTML = temp.innerHTML
+};
+
+print_if = function(tests) {
+	let str = ''
+	for(let key in tests) {
+		try {
+			if(seval(tests[key])) str += key + " "
+		}
+		catch(error) {
+			console.log('print_if error', str, check);
+		}
+	}
+
+	return str.trim()
+}
+
+
+// seval() - (safe eval())
+// For running code through eval without triggering errors on invalid code
+seval = function(str) {
+	try {
+		return eval(str)
+	}
+	catch(error) {
+		console.log('eval error', str);
+	}
+}
+
+
+
+var app = new Rue({
+	selector: '#testerrific',
+	data: qt,
+	template: function (qt) {
+		return `
+		
+			
+			<div class="tests_ui ${print_if({ visible: qt.visible })}">
+				
+				<div class="tests_message">
+					<span></span>
+					<div class="pass_fail_buttonss" :if="qt.is_manual_test">
+						<button class="pass" onclick="qt.pass_test()">Pass</button>
+						<button class="fail" onclick="qt.fail_test()">Fail</button>
+					</div>
+					<button :if="qt.running && qt.paused" onclick="qt.resume_tests()">▶ &nbsp;Resume</button>
+					<button class="close" onclick="qt.alert('')"><i class="icon-close"><span>cancel</span></i></button>
+				</div>
+				
+				
+				<div class="panel_inner_container">
+					
+					<h2>Tests</h2>
+					
+					<div class="run_all_tests_container">
+						<div :if="!qt.running">
+							<button onclick="qt.start_tests()"> ▶ &nbsp;Run selected tests</button>
+						</div>
+						<div :if="qt.running && !qt.paused">
+							<button onclick="qt.pause_tests()"><span style="font-size: .7em; border-left: 4px solid #000; border-right: 4px solid #000; line-height: 1.3em;">&nbsp;</span> &nbsp;Pause</button>
+						</div>
+						<div :if="qt.running && qt.paused">
+							<button onclick="qt.resume_tests()">▶ &nbsp;Resume</button>
+						</div>
+						<div :if="qt.running">
+							<button onclick="qt.skip_test()"><span style="font-size: 1.5em; line-height: .3em;">»</span> &nbsp;Skip</button>
+						</div>
+					</div>
+				
+					<br>
+					
+					<transition name="fade">
+						<div class="tests_summary" :if="qt.running || (qt.totals('run') && qt.totals('run') != qt.totals('skipped'))">
+							<h3>Summary:</h3>
+							<div class="tests_summary_table">
+								<div :if="qt.totals('run')"><b class="run" :text="qt.totals('run')">${qt.totals('run')}</b></div><div :if="qt.totals('run')"> tests run</div>
+								<div :if="qt.totals('passed')"><b class="passed" :text="qt.totals('passed')">${qt.totals('passed')}</b></div><div :if="qt.totals('passed')"> passed</div>
+								<div :if="qt.totals('failed')"><b class="failed" :text="qt.totals('failed')">${qt.totals('failed')}</b></div><div :if="qt.totals('failed')"> failed</div>
+								<div :if="qt.totals('skipped')"><b class="skipped" :text="qt.totals('skipped')">${qt.totals('skipped')}</b></div><div :if="qt.totals('skipped')"> skipped</div>
+								<div :if="qt.totals('error')"><b class="error" :text="qt.totals('error')">${qt.totals('error')}</b></div><div :if="qt.totals('error')"> errors</div>
+							</div>
+					
+							<br>
+					
+							<div :if="qt.run_time">Total time: <b>${qt.ms_to_s(qt.run_time)}</b> sec</div>
+							<div :if="!qt.run_time && qt.paused">Paused...</div>
+							<div :if="!qt.run_time && !qt.paused">Running...</div>
+						</div>
+					</transition>
+					
+					
+					<div class="tests_table">
+						<div class="table_controls">
+							<a onclick="enable_groups">enable all</a>
+							<a onclick="disable_groups">disable all</a>
+							<div>|</div>
+							<a onclick="expand_groups">expand all</a>
+							<a onclick="collapse_groups">collapse all</a>
+						</div>
+					</div>
+					
+				</div>
+				
+			</div>
+			
+			
+			<button class="toggle_tests_panel ${print_if({ visible: qt.visible })}" onclick="qt.toggle_tests_panel()">Tests</button>
+		
+			<h1 class="${print_if({'test': 'qt.running'})}">running: ${qt.running}</h1>
+			<p>${print_if({'test': 'qt.running'})}</p>
+			<p>${ qt.asdf.a }</p>
+			<ul>
+				${qt.groups.map(function (group) {
+					return `<li>
+					
+					${group.label}
+					${group.tests.map(function (test) {
+						return `<br>${qt.run_time} <span>${test.test} - ${test.results}</span>`
+					})}
+					</li>`;
+				}).join('')}
+			</ul>
+			
+	`;
+	}
+});
+
+// Render the initial UI
+app.render();
+qt = app.data
+
+
+
+
+
+
+
+
+
 // Add tests UI to DOM and turn on Vue
 jQuery(function($) {
-	$('body').append('<div class="tests_app"><div is="tests_ui"></div></div>')
-
-	qt.test_group("Group A")
-	qt.test("a == 1")
-	qt.test("a == 2")
-	qt.test("a == 3")
-	
-	qt.test_group("Group B")
-	qt.test("a == 1")
-	qt.test("a == 2")
-	qt.test("a == 3")
-	
-	
-	bind_qt()	
-	
 	
 })
 
