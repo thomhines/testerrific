@@ -758,16 +758,12 @@ function binding(obj, property) {
 		// return
 	}
 	
-
-	
 	_this.getter = function(){
 		return _this.value;
 	}
 	_this.setter = function(val){
-		// console.log('setter', val);
 		_this.value = val
 		if(_this.has_init) {
-			console.log('setter', val);
 			updateDOM() // Don't update the DOM when first initializing properties
 		}
 		_this.has_init = true
@@ -803,8 +799,6 @@ function binding(obj, property) {
 		})
 	}
 	
-	// if(Array.isArray(obj[property])) console.log(props);
-	
 	obj[property] = this.value;
 	
 }
@@ -825,7 +819,6 @@ function bind_qt() {
 var latest_qt = {}
 function updateDOM(sub = 0) {
 	
-	console.log('updateDOM', qt.run_time);
 	
 	// // Check if qt has actually changed before updating DOM
 	// if(JSON.stringify(qt) == JSON.stringify(latest_qt)) return
@@ -854,9 +847,7 @@ function updateDOM(sub = 0) {
 				let $parents = $this.add($this.parents())
 				for(var y = 0; y < $parents.length; y++) {
 					let $parent = $parents.eq(y)
-					if($parent.attr('index_name')) console.log("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
 					if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-					// if($parent.attr('item_name')) console.log(JSON.parse(JSON.stringify($parent.data($parent.attr('item_name')))));
 					if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
 				}
 			}
@@ -960,7 +951,7 @@ function updateDOM(sub = 0) {
 							class_obj[prop_array[0].trim()] = eval(prop_array[1])
 						}
 						catch(error) {
-							// console.log(attr, 'parse error:', $this);
+							console.log(attr, 'parse error:', $this, prop_array[0].trim(), prop_array[1]);
 						}
 						
 					}
@@ -998,7 +989,6 @@ function resetForLoops() {
 	
 	$('[for_copy]').remove()
 	$('[\\:forr]').each(function() {
-		console.log('rfl');
 		$(this).attr(':for', $(this).attr(':forr'))
 		$(this).removeAttr(':forr')
 	})
@@ -1010,8 +1000,6 @@ function updateForLoops() {
 	
 	// Handle first one, then move on to next by running funciton again
 	// Keep looping until there are not more :for elements
-	
-	// console.log('ufl');
 	
 	$for_model = $('[\\:for]')
 	if($for_model.length < 1) return
@@ -1031,11 +1019,7 @@ function updateForLoops() {
 		let $parents = $this.add($this.parents())
 		for(var y = 0; y < $parents.length; y++) {
 			let $parent = $parents.eq(y)
-			// console.log($parent);
-			if($parent.attr('item_name')) console.log("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))))
-			if($parent.attr('index_name')) console.log("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
 			if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-			// if($parent.attr('item_name')) console.log(JSON.parse(JSON.stringify($parent.data($parent.attr('item_name')))));
 			if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
 		}
 	}
@@ -1051,11 +1035,7 @@ function updateForLoops() {
 		item_name = item_name[0].trim()
 	}
 	
-	console.log($this);
-	
 	let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
-	
-	// console.log(item_name, arr);
 	
 	for(let x = 0; x < arr.length; x++) {
 		$copy = $this.clone().show()
@@ -1074,10 +1054,6 @@ function updateForLoops() {
 		if(index_name) $copy.attr(index_name, x)
 		$copy.insertBefore($this)
 		
-		// setTimeout(function() {
-			// console.log('x', x);
-			// updateDOM($copy, 1)
-		// }, 100);
 	}
 
 	updateForLoops()
