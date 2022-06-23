@@ -1159,28 +1159,19 @@ qt = {
 
 
 matchDOMNode = function($el1, $el2) {
-	let dom_map = []
-	
-	console.log('mapdomnode');
-	
+	// let dom_map = []
+		
 	let $children1 = $el1.children()
 	let $children2 = $el2.children()
 	
-	// console.log($el2.html());
-	
-	console.log($el1.html());
-	console.log($el2.html());
-	console.log($children2);
 	
 	// If $el2 is empty, just replace it with all of $el1
 	if($children2.length < 1) {
-		console.log('empty');
 		$el2.replaceWith($el1.clone())
 		return
 	}
 	
 	for(let x = 0; x < $children1.length; x++) {
-		
 		
 		// If elements have different numbers of children, replace $h2
 		if($children1.eq(x).children().length != $children2.eq(x).children().length) {
@@ -1188,25 +1179,35 @@ matchDOMNode = function($el1, $el2) {
 			continue;
 		}
 		
-		// If elements don't match, replace $el2
+		// If elements don't match, replace child from $el2 
 		let a = $children1.eq(x).clone()
 		a.find('*').remove()
+		// Remove attributes to be checked separately
+		for(let aa = 0; aa < a[0].attributes.length; aa++) { a.removeAttr(a[0].attributes[aa].name) }
+		a.removeAttr('class style')
 		a = a.prop('outerHTML')
 		a = a.replace(/[\s]+/g, ' ')
 		
 		let b = $children2.eq(x).clone()
 		b.find('*').remove()
+		for(let ba = 0; ba < b[0].attributes.length; ba++) { b.removeAttr(b[0].attributes[ba].name) }
 		b = b.prop('outerHTML')
 		if(b) b = b.replace(/[\s]+/g, ' ')
-		
-		
-		console.log(a, b, a == b);
-		// console.log($children1.eq(x).children().length);
+
 		
 		if(a != b) {
 			$children2.eq(x).replaceWith($children1.eq(x).clone())
 			continue;
 		}		
+		
+		// If dynamic attributes don't match, just replace those attributes
+		// $.each($children1.eq(x).attributes, function(index, attribute) {
+		for(let ela = 0; ela < $children1.eq(x)[0].attributes.length; ela++) {
+			let attribute = $children1.eq(x)[0].attributes[ela]
+			if($children1.eq(x).attr(attribute.name) != $children2.eq(x).attr(attribute.name)) {
+				$children2.eq(x).attr(attribute.name, $children1.eq(x).attr(attribute.name))
+			}
+		}
 		
 		// If elements have children, run function recursively on children
 		if($children1.eq(x).children().length > 0) {
@@ -1237,8 +1238,8 @@ qt.test_group("Group A")
 qt.test("a == 1")
 qt.test("a == 2")
 qt.test("a == 2")
-qt.test("a == 2")
-qt.test("a == 2")
+qt.test("a == 3", { skip: 1 })
+qt.test("a == 3", { max_time: 300000 })
 qt.test("a == 2")
 qt.test("a == 2")
 qt.test("a == 2")
@@ -1524,8 +1525,8 @@ var app = new Rue({
 											<input type="checkbox" :checked="${!test.skip }" onchange="qt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
 											<p><b :if="test.fn">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == qt.current_group && ${test_index} == qt.current_test"></div>
-											<div class="result_container">
-												<div :if="${test.result != undefined}" class="result ${test.result}">${test.result}</div>
+											<div :if="${test.result != undefined}" class="result_container">
+												<div class="result ${test.result}">${test.result}</div>
 												<div class="time" :if="${test.time !== null}">${ test.time }ms</div>
 											</div>
 											<button onclick="qt.run_test(${group_index}, ${test_index}).then(qt.finish_tests)" :disabled="${qt.running == 1}">Run</button>

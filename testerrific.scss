@@ -53,10 +53,9 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 		padding: .4em .8em;
 		background: rgba(0,0,0,.2);
 		font-family: $fonts;
-		border: none;
+		border: 1px solid rgba(0,0,0,.2);
 		border-radius: 3px;
 		transition: background .2s ease-in-out;
-		box-shadow: 0 .3em .3em -.2em rgba(0,0,0,.7);
 	
 		&:hover,
 		&:focus,
@@ -184,11 +183,11 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 	}
 
 	.running_indicator {
-		width: 15px;
-		height: 15px;
+		width: 10px;
+		height: 10px;
 		margin: 0 5px 0 0;
-		border: 2px solid rgba(0,0,0,.3);
-		border-top: 2px solid #666;
+		border: 2.5px solid rgba(0,0,0,.15);
+		border-top: 2.5px solid rgba(0,0,0,.6);
 		border-radius: 50%;
 		animation: rotate 1s linear infinite;
 	}
