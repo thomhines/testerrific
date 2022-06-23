@@ -8,33 +8,79 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<meta name="theme-color" content="#333">
 	<link rel="shortcut icon" href="favicon.ico" />
-	<link rel="Stylesheet" href="style.css" type="text/css" media="all" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+	
 	<link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
+	
+	<style>
+		body {
+			font-family: 'Lato', sans-serif;
+		}
+	
+	</style>
+	
+	
+	<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+	<script src="testerrific.js"></script>
+	
 </head>
 
 <body>
 	
-
-
-	<div id="testerrific"></div>
-
-
-	<div class="a">
-		<p class="c" style="color: blue;">asdfasf</p>
-		<p class="d">afdasfasf</p>
-	</div>
+	<h1>Testerrific</h1>
 	
 	
-	<div class="b">
-		<p style="color: red">asdfasf</p>
-		<p class="e">afdasfasf</p>
-	</div>
-
+	<h3>Test Groups</h3>
 	
-	<!-- THIS IS INCLUDED AT THE BOTTOM TO ALLOW CONTENT TO LOAD BEFORE SCRIPTS -->
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-	<!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-	<script src="testerrific.js"></script>
+	<p>asdfasfasf</p>
+	
+	<p>
+	options:		object that can contain the following values:<br>
+		label:		string, label of test<br>
+		skip: 		boolean, whether to skip this test or not<br>
+		only: 		boolean, whether to run only this test or not<br>
+		collapse:	boolean, whether tests are shown or not<br>
+		beforeEach:	function that gets run before each test in group<br>
+		afterEach:	function that gets run after each test in group<br>
+	</p>
+	
+	<code>
+		qt.test_group("Group A")
+	</code>
+	
+	<script>
+		qt.test_group("Group A")
+	</script>
+	
+	
+	
+	
+	
+	
+	<script>
+	
+		a = 2	
+		qt.test_group("Group A")
+		qt.test("a == 5")
+		qt.test("a == 2")
+		qt.test("a == 2")
+		qt.test("a == 3", { skip: 1 })
+		qt.test("a == 2")
+		qt.test("a == 2")
+		qt.test("a == 2")
+		qt.test("a == 3")
+		
+		qt.test_group("Group B")
+		qt.test("a == 1")
+		qt.test("a == 2")
+		qt.test("a == 3")
+		
+		
+
+	</script>
+
 
 </body>
 </html>

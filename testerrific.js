@@ -27,6 +27,7 @@ qt = {
 		max_time: 1000, // How much time to wait for a test to be true before declaring it false
 		run_if: '', // a boolean check that gets checked to determine if a test should be run. Helpful if you want to run specific tests only in certain scenarios.
 		message: '', // A message that can be presented to the user when the test is run.
+		fn: null,
 		before: () => {}, // A function that will be run before the test is executed. If a promise is returned, the test will wait until the promise is resolved
 		after: () => {}, // A function that will be run after the test is executed. If a promise is returned, the test will wait until the promise is resolved
 	},
@@ -452,7 +453,7 @@ qt = {
 								else result = test_function_result
 
 						}
-						else result = eval(_test.test)
+						else result = qtb.seval(_test.test)
 					} catch(error) {
 						result = false
 					}
@@ -524,21 +525,19 @@ qt = {
 		if(qt.current_test >= _group.tests.length) {
 			qt.current_group = qt.current_group + 1
 			qt.current_test = 0
-			// Vue.set(qt, 'current_group', qt.current_group + 1)
-			// Vue.set(qt, 'current_test', 0)
 			qt.run_next_test()
 			return
 		}
 
 
 		// If group is finished or skipped or run_if returns false, move to next group
-		// if(_group.skip || (_group.run_if && eval(_group.run_if) == false)) {
+		// if(_group.skip || (_group.run_if && qtb.seval(_group.run_if) == false)) {
 		// 	_group.result = 'skipped'
 		// 	// if(!test.only) test.result = 'skipped'
 
 		// 	// Vue.set(qt, 'current_group', qt.current_group + 1)
 		// 	// Vue.set(qt, 'current_test', 0)
-		// 	// if(_group.skip || (_group.run_if && eval(_group.run_if) == false)) {
+		// 	// if(_group.skip || (_group.run_if && qtb.seval(_group.run_if) == false)) {
 		// 	// 	_group.tests.forEach(function(test) {
 		// 	// 		if(!test.only) test.result = 'skipped'
 		// 	// 	})
@@ -549,7 +548,7 @@ qt = {
 
 
 		// Skip steps that are set to 'skip' or 'run_if' returns false
-		if(_test.skip || (_test.run_if && eval(_test.run_if) == false)) {
+		if(_test.skip || (_test.run_if && qtb.seval(_test.run_if) == false)) {
 			_test.result = 'skipped'
 			// Vue.set(qt, 'current_test', qt.current_test + 1)
 			qt.current_test = qt.current_test + 1
@@ -562,7 +561,6 @@ qt = {
 		else {
 
 			qt.run_test(qt.current_group, qt.current_test).then(function() {
-				// Vue.set(qt, 'current_test', qt.current_test + 1)
 				qt.current_test = qt.current_test + 1
 				qt.run_next_test()
 			})
@@ -592,18 +590,6 @@ qt = {
 
 		clearTimeout(qt.alert_timeout)
 
-		// // Clear and hide message if there is already a message
-		// if($('.tests_message span').html()) {
-		// 	$('.tests_message').fadeOut(200).promise().then(() => { $('.tests_message span').html('') })
-		// 	setTimeout(function() { qt.alert(message, time_limit)}, 300)
-		// 	return
-		// }
-
-		// $('.tests_message').fadeOut().promise().then(() => {
-		// 	console.log('fadein');
-		// 	if(message) $('.tests_message span').html(message).parent().fadeIn(200)
-		// })
-		
 		if(message) $('.tests_message span').html(message).parent().addClass('visible')
 		else $('.tests_message span').html('').parent().removeClass('visible')
 
@@ -726,495 +712,172 @@ qt = {
 		return 0
 	},
 	
-	// // Get count of all tests in the system
-	// tests_count() {
-	// 	let total_tests = 0
-	// 	qt.groups.forEach(function(group) {
-	// 		let group_test = 0
-	// 		group.tests.forEach(function(test) {
-	// 			if(test.test) total_tests++
-	// 			if(test.test) group_test++
-	// 		})
-	// 	})
-	// 	return total_tests
-	// },
-	
 	
 	// Convert milliseconds to seconds
 	ms_to_s(ms) {
 		return (ms / 1000).toFixed(1)
 	},
 
+}
 
-	asdf: {
-		a: 1,
-		b: 2,
-		c: {
-			d: 1,
-			e: 2,
-			f: 3
+
+
+
+
+// Internal functions for rendering results
+var qtb = {
+
+	// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
+	init: function (options) {
+	
+		// Variables
+		var _this = this;
+		_this.elem = document.querySelector(options.selector);
+		var _data = new Proxy(options.data, qtb.handler(this));
+		_this.template = options.template;
+		_this.debounce = null;
+	  
+		// Define setter and getter for data
+		Object.defineProperty(this, 'data', {
+			get: function () {
+				return _data;
+			},
+			set: function (data) {
+				_data = new Proxy(data, qtb.handler(_this));
+				debounce(_this);
+				return true;
+			}
+		});
+	
+	},
+
+	
+	
+	debounceRender: function (instance) {
+	
+		// If there's a pending render, cancel it
+		if (instance.debounce) {
+			window.cancelAnimationFrame(instance.debounce);
 		}
+	
+		// Setup the new render to run at the next animation frame
+		instance.debounce = window.requestAnimationFrame(function () {
+			instance.render();
+		});
+	
+	},
+	
+	handler: function (instance) {
+		return {
+			get: function (obj, prop) {
+				if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(obj[prop])) > -1) {
+					return new Proxy(obj[prop], qtb.handler(instance));
+				}
+				return obj[prop];
+			},
+			set: function (obj, prop, value) {
+				obj[prop] = value;
+				qtb.debounceRender(instance);
+				return true;
+			},
+			deleteProperty: function (obj, prop) {
+				delete obj[prop];
+				qtb.debounceRender(instance);
+				return true;
+	
+			}
+		};
 	},
 	
 	
-	df: [5,3,1,6,35,7]
-}
-
-
-
-
-
-
-
-// // With help from https://www.atmosera.com/blog/data-binding-pure-javascript/
-// function binding(obj, property, path = "") {
-// 	let _this = this
-// 	_this.has_init = false
-// 	_this.value = obj[property]
-// 	_this.path = path + "." + property
-// 	console.log(_this.path);
-// 		
-// 	if(typeof obj[property] == 'object' && obj[property] !== null && Object.keys(obj[property]).length) {
-// 		let keys = Object.keys(obj[property])
-// 		for(let x = 0; x < keys.length; x++) {
-// 			new binding(obj[property], keys[x], _this.path)
-// 		}
-// 		// return
-// 	}
-// 	
-// 	_this.getter = function(){
-// 		return _this.value;
-// 	}
-// 	_this.setter = function(val){
-// 		_this.value = val
-// 		if(_this.has_init) {
-// 			console.log('set!', _this.path, val);
-// 			update_proxy(_this.path)
-// 			// updateDOM() // Don't update the DOM when first initializing properties
-// 		}
-// 		_this.has_init = true
-// 	}
-// 	
-// 	
-// 	let props = {
-// 		get: this.getter,
-// 		set: this.setter
-// 	}
-// 	
-// 	Object.defineProperty(obj, property, props);	
-// 	
-// 	// If property is array, watch for common array functions
-// 	if(Array.isArray(obj[property])) {
-// 		const array_methods = ['push', 'pop', 'unshift', 'shift', 'splice', 'sort', 'reverse']
-// 		array_methods.forEach(function(method) {
-// 		// 	props[method] = _this.setter
-// 			Object.defineProperty(obj[property], method, {
-// 				value: function(...args) {
-// 					// obj[property].push()
-// 					// Duplicate array so as not to trigger setter function over and over
-// 					let _array = qt.clone(this)
-// 					// Run array method on array
-// 					eval("_array." + method + "(...args)")
-// 					
-// 					// remove data values from "this" and replace with values from _array
-// 					for(let x = this.length - 1; x >= 0; x--) { delete this[x] }
-// 					this.length = _array.length					
-// 					obj[property] = Object.assign(this, _array)
-// 				}
-// 			});		
-// 		})
-// 	}
-// 	
-// 	obj[property] = this.value;
-// 	
-// }
-// 
-// 
-// update_proxy = function(path, val) {
-// 	console.log('update proxy', path);
-// 	// path = "['groups'][0]['tests'][0]['label']"
-// 	let obj = qt.clone(qt)
-// 	for (var i=0, path=path.split('.'), len=path.length; i<len; i++){
-// 		obj = obj[path[i]];
-// 	};
-// 	
-// 	console.log(qt[path]);
-// }
-// 
-// 
-// function bind_qt() {
-// 	for (let key in qt) {
-// 		if(typeof qt[key] == 'function') continue;	
-// 		new binding(qt, key)
-// 	}	
-// 	
-// 	// updateDOM()
-// }
-
-
-
-
-// var latest_qt = {}
-// function updateDOM(sub = 0) {
-// 	
-// 	
-// 	// // Check if qt has actually changed before updating DOM
-// 	// if(JSON.stringify(qt) == JSON.stringify(latest_qt)) return
-// 	// latest_qt = qt.clone(qt)
-// 	
-// 	
-// 	
-// 	resetForLoops()
-// 	updateForLoops()
-// 
-// 	
-// 	$element = $('.tests_ui, .toggle_tests_panel')
-// 	$element = $element.add($element.find('*'))
-// 	
-// 	
-// 	setTimeout(function() {
-// 		
-// 		$element.each(function() {
-// 			$this = $(this)
-// 			
-// 			if($this.closest('[\\:for_model]').length) return
-// 			
-// 			
-// 			// // If element was created in a :for loop, attach data from model
-// 			if($this.closest('[for_copy]')) {
-// 				let $parents = $this.add($this.parents())
-// 				for(var y = 0; y < $parents.length; y++) {
-// 					let $parent = $parents.eq(y)
-// 					if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-// 					if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
-// 				}
-// 			}
-// 
-// 
-// 			// if(!$this.is(':visible')) return
-// 			
-// 			const attrs = $this[0].getAttributeNames().reduce(function(obj, key) { obj[key] = $this.attr(key); return obj; }, {});
-// 					
-// 					
-// 			// Show/hide based on :if attribute
-// 			let if_val = 1
-// 			
-// 			
-// 			if(attrs[':else'] !== undefined || attrs[':elseif']) {
-// 				
-// 				
-// 				let $curr_el = $this.prev()
-// 				let x = 0
-// 				
-// 				// Look backwards until reaching a previous sibling that doesn't have if/elseif attr
-// 				// If any of them resolve to true, hide this and stop checking
-// 				while($curr_el.attr(':if') || $curr_el.attr(':elseif')) {
-// 					try {
-// 						if_val = eval($curr_el.attr(':if') || $curr_el.attr(':elseif'))
-// 						if(if_val) {
-// 							$this.hide()
-// 							return
-// 						}
-// 					}
-// 					catch(error) {
-// 						console.log('else parse error:', $this);
-// 					}
-// 					$curr_el = $curr_el.prev()
-// 				}
-// 				
-// 				// Otherwise, make element visible (if else or elseif == true)
-// 				if(attrs[':elseif']) {
-// 					try {
-// 						if_val = eval($this.attr(':elseif'))
-// 					}
-// 					catch(error) {
-// 						console.log('elseif parse error:', $this);
-// 					}
-// 					
-// 					if(!if_val) {
-// 						$this.hide()
-// 						return
-// 					}
-// 				}
-// 				$this.show()
-// 				delete attrs[':elseif']
-// 				delete attrs[':else']
-// 			}
-// 			
-// 			
-// 			else if(attrs[':if']) {
-// 				
-// 				try {
-// 					if_val = eval($this.attr(':if'))
-// 				}
-// 				catch(error) {
-// 					console.log('if parse error:', $this.attr(':if'));
-// 				}
-// 				
-// 				if(if_val) $this.show()
-// 				else {
-// 					$this.hide()
-// 					return
-// 				}
-// 				delete attrs[':if']
-// 			}
-// 			
-// 			
-// 	
-// 			
-// 			
-// 			
-// 			
-// 					
-// 			for(attr in attrs) {
-// 				if(attr.substr(0,1) != ':' || attr == ':for') continue
-// 				
-// 				
-// 				if(attr == ':text') {
-// 					let text_val = eval($this.attr(':text'))
-// 					if(text_val === false) text_val = 'false'
-// 					$this.html(text_val)
-// 				}
-// 				
-// 				
-// 				else if(attr == ':class') {
-// 					let class_obj = {}
-// 					let class_str = $this.attr(attr)
-// 					class_str = class_str.replace(/[{}]/g, '')
-// 					class_str = class_str.split(',')
-// 					
-// 					for(let x = 0; x < class_str.length; x++) {
-// 						let prop_array = class_str[x].split(":")
-// 						try {
-// 							class_obj[prop_array[0].trim()] = eval(prop_array[1])
-// 						}
-// 						catch(error) {
-// 							console.log(attr, 'parse error:', $this, prop_array[0].trim(), prop_array[1]);
-// 						}
-// 						
-// 					}
-// 					
-// 					for(let prop in class_obj) {
-// 						if(class_obj[prop]) $this.addClass(prop)
-// 						if(!class_obj[prop]) $this.removeClass(prop)
-// 					}
-// 					
-// 				}
-// 				
-// 				else if(attr == ':style') {
-// 					
-// 				}
-// 				
-// 				else {
-// 					let attr_val = eval($this.attr(attr))
-// 					if(attr_val === false) attr_val = 'false'
-// 					$this.attr(attr.substr(1), attr_val)				
-// 				}
-// 			}
-// 			
-// 			
-// 			
-// 			
-// 		})
-// 	
-// 	}, 0)	
-// 	
-// }
-// 
-// 
-// // Remove all for elements that 
-// function resetForLoops() {
-// 	
-// 	$('[for_copy]').remove()
-// 	$('[\\:forr]').each(function() {
-// 		$(this).attr(':for', $(this).attr(':forr'))
-// 		$(this).removeAttr(':forr')
-// 	})
-// }
-// 
-// 
-// 
-// function updateForLoops() {
-// 	
-// 	// Handle first one, then move on to next by running funciton again
-// 	// Keep looping until there are not more :for elements
-// 	
-// 	$for_model = $('[\\:for]')
-// 	if($for_model.length < 1) return
-// 	
-// 	$this = $for_model.eq(0)
-// 	let model_id = Math.floor(Math.random() * 999999999);
-// 	$this.attr(':for_model', model_id)
-// 	$this.attr(':forr', $this.attr(':for'))
-// 	$this.removeAttr(':for')
-// 	$this.hide()
-// 	
-// 	// Don't process for loops inside of :for models
-// 	if($this.parent().closest('[\\:for_model]').length) return 
-// 
-// 
-// 	if($this.closest('[for_copy]')) {
-// 		let $parents = $this.add($this.parents())
-// 		for(var y = 0; y < $parents.length; y++) {
-// 			let $parent = $parents.eq(y)
-// 			if($parent.attr('item_name')) eval("var " + $parent.attr('item_name') + " = " + JSON.stringify($parent.data($parent.attr('item_name'))) + ";")
-// 			if($parent.attr('index_name')) eval("var " + $parent.attr('index_name') + " = " + $parent.attr($parent.attr('index_name')) + ";")
-// 		}
-// 	}
-// 
-// 	let for_str = $this.attr(':forr')
-// 	let item_name = for_str.substr(0, for_str.indexOf(' in '))
-// 	let index_name = ''
-// 	item_name = item_name.replace(/[\(\)]/g, '')
-// 	
-// 	if(item_name.includes(',')) {
-// 		item_name = item_name.split(',')
-// 		index_name = item_name[1].trim()
-// 		item_name = item_name[0].trim()
-// 	}
-// 	
-// 	let arr = eval(for_str.substr(for_str.indexOf(' in ') + 4))
-// 	
-// 	for(let x = 0; x < arr.length; x++) {
-// 		$copy = $this.clone().show()
-// 		$copy.attr('for_copy', $this.attr(':for_model'))
-// 		if(item_name) {
-// 			$copy.attr('item_name', item_name)
-// 			$copy.data(item_name, arr[x])
-// 		}
-// 		if(index_name) {
-// 			$copy.attr('index_name', index_name)
-// 			$copy.attr(index_name, x)
-// 		}
-// 		$copy.removeAttr(':for')
-// 		$copy.removeAttr(':for_model')
-// 		if(index_name) $copy.attr(index_name, x)
-// 		if(index_name) $copy.attr(index_name, x)
-// 		$copy.insertBefore($this)
-// 		
-// 	}
-// 
-// 	updateForLoops()
-// 
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// obj.a = 456;
-// 
-// setTimeout(function() {
-// obj.a = 123
-// }, 3000)
-
-
-
-
-// let obj = { foo: "bar" };
-// let objProxy = new Proxy(obj, {
-// 	set: function(target, key, value) {
-// 		console.log(`${key} set from ${obj.foo} to ${value}`);
-// 		target[key] = value; return true; 
-// 	}, 
-// });
-
-
-
-// const obj = {  
-// 	fooValue: "bar",  
-// 	get foo() {    
-// 		return this.fooValue;  
-// 	},  
-// 	set foo(val) {
-// 		this.fooValue = val;
-// 		this.fooListener(val);  
-// 	},  
-// 	fooListener: function (val) {},  
-// 	registerNewListener: function (externalListenerFunction) {
-// 		this.fooListener = externalListenerFunction;  
-// 	},
-// };
-// 
-// obj.registerNewListener((val) => console.log(`New Value: ${val}`));
-
-
-
-
-
-
-
-
-
-
-
-
-matchDOMNode = function($el1, $el2) {
-	// let dom_map = []
+	
+	matchDOMNode: function($el1, $el2) {
+		// let dom_map = []
+			
+		let $children1 = $el1.children()
+		let $children2 = $el2.children()
 		
-	let $children1 = $el1.children()
-	let $children2 = $el2.children()
-	
-	
-	// If $el2 is empty, just replace it with all of $el1
-	if($children2.length < 1) {
-		$el2.replaceWith($el1.clone())
-		return
-	}
-	
-	for(let x = 0; x < $children1.length; x++) {
 		
-		// If elements have different numbers of children, replace $h2
-		if($children1.eq(x).children().length != $children2.eq(x).children().length) {
-			$children2.eq(x).replaceWith($children1.eq(x).clone())
-			continue;
+		// If $el2 is empty, just replace it with all of $el1
+		if($children2.length < 1) {
+			$el2.replaceWith($el1.clone())
+			return
 		}
 		
-		// If elements don't match, replace child from $el2 
-		let a = $children1.eq(x).clone()
-		a.find('*').remove()
-		// Remove attributes to be checked separately
-		for(let aa = 0; aa < a[0].attributes.length; aa++) { a.removeAttr(a[0].attributes[aa].name) }
-		a.removeAttr('class style')
-		a = a.prop('outerHTML')
-		a = a.replace(/[\s]+/g, ' ')
+		for(let x = 0; x < $children1.length; x++) {
+			
+			// If elements have different numbers of children, replace $h2
+			if($children1.eq(x).children().length != $children2.eq(x).children().length) {
+				$children2.eq(x).replaceWith($children1.eq(x).clone())
+				continue;
+			}
+			
+			// If elements don't match, replace child from $el2 
+			let a = $children1.eq(x).clone()
+			a.find('*').remove()
+			// Remove attributes to be checked separately
+			for(let aa = 0; aa < a[0].attributes.length; aa++) { a.removeAttr(a[0].attributes[aa].name) }
+			a.removeAttr('class style')
+			a = a.prop('outerHTML')
+			a = a.replace(/[\s]+/g, ' ')
+			
+			let b = $children2.eq(x).clone()
+			b.find('*').remove()
+			for(let ba = 0; ba < b[0].attributes.length; ba++) { b.removeAttr(b[0].attributes[ba].name) }
+			b = b.prop('outerHTML')
+			if(b) b = b.replace(/[\s]+/g, ' ')
+	
+			
+			if(a != b) {
+				$children2.eq(x).replaceWith($children1.eq(x).clone())
+				continue;
+			}		
+			
+			// If dynamic attributes don't match, just replace those attributes
+			// $.each($children1.eq(x).attributes, function(index, attribute) {
+			for(let ela = 0; ela < $children1.eq(x)[0].attributes.length; ela++) {
+				let attribute = $children1.eq(x)[0].attributes[ela]
+				if($children1.eq(x).attr(attribute.name) != $children2.eq(x).attr(attribute.name)) {
+					$children2.eq(x).attr(attribute.name, $children1.eq(x).attr(attribute.name))
+				}
+			}
+			
+			// If elements have children, run function recursively on children
+			if($children1.eq(x).children().length > 0) {
+				qtb.matchDOMNode($children1.eq(x), $children2.eq(x))
+			}
+			
+		}
 		
-		let b = $children2.eq(x).clone()
-		b.find('*').remove()
-		for(let ba = 0; ba < b[0].attributes.length; ba++) { b.removeAttr(b[0].attributes[ba].name) }
-		b = b.prop('outerHTML')
-		if(b) b = b.replace(/[\s]+/g, ' ')
+	},
 
-		
-		if(a != b) {
-			$children2.eq(x).replaceWith($children1.eq(x).clone())
-			continue;
-		}		
-		
-		// If dynamic attributes don't match, just replace those attributes
-		// $.each($children1.eq(x).attributes, function(index, attribute) {
-		for(let ela = 0; ela < $children1.eq(x)[0].attributes.length; ela++) {
-			let attribute = $children1.eq(x)[0].attributes[ela]
-			if($children1.eq(x).attr(attribute.name) != $children2.eq(x).attr(attribute.name)) {
-				$children2.eq(x).attr(attribute.name, $children1.eq(x).attr(attribute.name))
+	
+	print_if(tests) {
+		let str = ''
+		for(let key in tests) {
+			try {
+				if(qtb.seval(tests[key])) str += key + " "
+			}
+			catch(error) {
+				console.log('print_if error', str, check);
 			}
 		}
-		
-		// If elements have children, run function recursively on children
-		if($children1.eq(x).children().length > 0) {
-			matchDOMNode($children1.eq(x), $children2.eq(x))
+	
+		return str.trim()
+	},
+	
+	
+	// seval() - (safe eval()) For running code through eval without triggering errors on invalid code
+	seval(str) {
+		try {
+			return eval(str)
 		}
-		
-	}
+		catch(error) {
+			console.log('eval error', str);
+		}
+	},
+
+	
 	
 }
 
@@ -1225,111 +888,15 @@ matchDOMNode = function($el1, $el2) {
 
 
 
-
-
-
-
-
-a = 2
-
-
-
-qt.test_group("Group A")
-qt.test("a == 1")
-qt.test("a == 2")
-qt.test("a == 2")
-qt.test("a == 3", { skip: 1 })
-qt.test("a == 3", { max_time: 300000 })
-qt.test("a == 2")
-qt.test("a == 2")
-qt.test("a == 2")
-qt.test("a == 3")
-
-qt.test_group("Group B")
-qt.test("a == 1")
-qt.test("a == 2")
-qt.test("a == 3")
-
-
-
-// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
-
-var debounceRender = function (instance) {
-
-	// If there's a pending render, cancel it
-	if (instance.debounce) {
-		window.cancelAnimationFrame(instance.debounce);
-	}
-
-	// Setup the new render to run at the next animation frame
-	instance.debounce = window.requestAnimationFrame(function () {
-		instance.render();
-	});
-
-};
-
-var handler = function (instance) {
-	return {
-		get: function (obj, prop) {
-			if (['[object Object]', '[object Array]'].indexOf(Object.prototype.toString.call(obj[prop])) > -1) {
-				return new Proxy(obj[prop], handler(instance));
-			}
-			return obj[prop];
-		},
-		set: function (obj, prop, value) {
-			obj[prop] = value;
-			debounceRender(instance);
-			return true;
-		},
-		deleteProperty: function (obj, prop) {
-			delete obj[prop];
-			debounceRender(instance);
-			return true;
-
-		}
-	};
-};
-
-var Rue = function (options) {
-
-	// Variables
-	var _this = this;
-	_this.elem = document.querySelector(options.selector);
-	var _data = new Proxy(options.data, handler(this));
-	_this.template = options.template;
-	_this.debounce = null;
-  
-
-	// Define setter and getter for data
-  Object.defineProperty(this, 'data', {
-	  get: function () {
-		  return _data;
-	  },
-	  set: function (data) {
-		  _data = new Proxy(data, handler(_this));
-		  debounce(_this);
-		  return true;
-	  }
-  });
-
-};
-
-
-
-
-
-Rue.prototype.render = function () {
-	
-	// let temp = this.template(this.data);
-	
-	
+qtb.init.prototype.render = function () {
+		
 	let temp = document.createElement('div');
 	temp.innerHTML = this.template(this.data);
 	$(temp).attr('id', 'testerrific')
 	
-	// Remove elements if their if qualifier returns false
+	// Remove elements if their ":if" qualifier returns false
 	$(temp).find('[\\:if]').each(function() {
-		if(!seval($(this).attr(':if'))) $(this).remove()
+		if(!qtb.seval($(this).attr(':if'))) $(this).remove()
 		$(this).removeAttr(':if')
 	})
 	
@@ -1337,104 +904,31 @@ Rue.prototype.render = function () {
 	let bool_attrs = ['checked', 'disabled']
 	bool_attrs.forEach(function(attr) {
 		$(temp).find('[\\:' + attr + ']').each(function() {
-			if(seval($(this).attr(':' + attr))) $(this).attr(attr, 1)
+			if(qtb.seval($(this).attr(':' + attr))) $(this).attr(attr, 1)
 			$(this).removeAttr(':' + attr)
 		})
 	})
 	
-	
-	// console.log($(temp).html());
-	// console.log($(this.elem).html());
-	
-	matchDOMNode($(temp), $('#testerrific'))
-	
-	
-	
-	// let $all_a = $(this.elem.innerHTML).find('*')
-	// let $all_b = $(temp.innerHTML).find('*')
-	// 
-	// 
-	// for(let x = 0; x < $all_a.length; x++) {
-	// 	
-	// 	let a = $all_a.eq(x).clone()
-	// 	a.find('*').remove()
-	// 	a = a.prop('outerHTML')
-	// 	a = a.replace(/[\s]+/g, ' ') + ''
-	// 	console.log(a);
-	// 	
-	// 	let b = $all_b.eq(x).clone()
-	// 	b.find('*').remove()
-	// 	b = b.prop('outerHTML')
-	// 	b = b.replace(/[\s]+/g, ' ') + ''
-	// 	
-	// 	console.log(b);
-	// 	console.log(a == b);
-	// 	
-	// 	// if(a != b) $all_b[x].outerHTML = $all_a[x].outerHTML
-	// 	
-	// };
-	// 
-	
-	
-	
-	// If elements don't match, replace entire DOM node 
-	// this.elem.innerHTML = temp.innerHTML
-	
-	
-	
-	
+	qtb.matchDOMNode($(temp), $('#testerrific'))
 };
 
 
 
 
 
-// Array.prototype.each = function(template) {
-// 	
-// 	console.log(this);
-// 	let result = this.map(template)
-// 	
-// }
 
 
-
-print_if = function(tests) {
-	let str = ''
-	for(let key in tests) {
-		try {
-			if(seval(tests[key])) str += key + " "
-		}
-		catch(error) {
-			console.log('print_if error', str, check);
-		}
-	}
-
-	return str.trim()
-}
-
-
-// seval() - (safe eval())
-// For running code through eval without triggering errors on invalid code
-seval = function(str) {
-	try {
-		return eval(str)
-	}
-	catch(error) {
-		// console.log('eval error', str);
-	}
-}
-
-
-
-var app = new Rue({
+var testerrific_ui = new qtb.init({
 	selector: '#testerrific',
 	data: qt,
+
+
 	template: function (qt) {
 		return `
 		
 			<div class="tests_container">
 			
-			<div class="tests_ui ${print_if({ visible: qt.visible })}">
+			<div class="tests_ui ${qtb.print_if({ visible: qt.visible })}">
 				
 				<div class="tests_message">
 					<span></span>
@@ -1500,7 +994,7 @@ var app = new Rue({
 						${qt.groups.map(function(group, group_index) {
 							return `
 							
-							<div class="group ${ print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == qt.current_group })}" group_index="${group_index}">
+							<div class="group ${ qtb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == qt.current_group })}" group_index="${group_index}">
 								<div class="group_title">
 									<input type="checkbox" :checked="${!group.skip}" onchange="qt.toggle_skip_group(${group_index})">
 									<p onclick="qt.toggle_view_group(${group_index})">${ group.label }</p>
@@ -1519,11 +1013,11 @@ var app = new Rue({
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div :if="${!group.collapse}" class="test ${ print_if({ fn: test.fn, running: group_index == qt.current_group && test_index == qt.current_test, skipped: test.skip })}" test_index="${test_index}" key="${test_index}">
+									<div :if="${!group.collapse}" class="test ${ qtb.print_if({ fn: test.fn, running: group_index == qt.current_group && test_index == qt.current_test, skipped: test.skip })}" test_index="${test_index}" key="${test_index}">
 									
 										<div v-if="test.label">
 											<input type="checkbox" :checked="${!test.skip }" onchange="qt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
-											<p><b :if="test.fn">Run:</b> ${ test.label }</p>
+											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == qt.current_group && ${test_index} == qt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
 												<div class="result ${test.result}">${test.result}</div>
@@ -1542,19 +1036,14 @@ var app = new Rue({
 							`
 						}).join(' ')}
 
-						
-						
-						
 					</div>
 					
 					<b>${qt.totals() + ' Total Tests'}</b>
-					
 				</div>
-				
 			</div>
 			
 			
-			<button class="toggle_tests_panel ${print_if({ visible: qt.visible })}" onclick="qt.toggle_tests_panel()">Tests</button>
+			<button class="toggle_tests_panel ${qtb.print_if({ visible: qt.visible })}" onclick="qt.toggle_tests_panel()">Tests</button>
 			
 			</div>
 			
@@ -1562,43 +1051,16 @@ var app = new Rue({
 	}
 });
 
-// Render the initial UI
-app.render();
-qt = app.data
 
 
 
 
-
-matchDOM = function() {
-	let $all_a = $('.a *')
-	let $all_b = $('.b *')
-	
-	for(let x = 0; x < $all_a.length; x++) {
-		
-		let a = $all_a.eq(x).clone()
-		a.find('*').remove()
-		a = a.prop('outerHTML')
-		a = a.replace(/[\s]+/g, ' ')
-		
-		let b = $all_b.eq(x).clone()
-		b.find('*').remove()
-		b = b.prop('outerHTML')
-		b = b.replace(/[\s]+/g, ' ')
-		
-		if(a != b) $all_b[x].outerHTML = $all_a[x].outerHTML
-		
-	};
-}
+// Add UI to DOM and trigger rendering once the page has loaded
+document.addEventListener('DOMContentLoaded', function () {
+	$('body').append('<div id="testerrific"></div>')
+	testerrific_ui.render();
+	qt = testerrific_ui.data
+}, false);
 
 
-
-
-
-// Add tests UI to DOM and turn on Vue
-jQuery(function($) {
-	
-	
-	// matchDOM()
-})
 
