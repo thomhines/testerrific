@@ -19,6 +19,26 @@
 			font-family: 'Lato', sans-serif;
 		}
 	
+		.container {
+			margin: 10vh 0 10vh calc(50vw - 350px - 250px);
+			
+			max-width: 700px;
+			
+		}
+		
+		code {
+			display: block;
+			padding: 0 1.5em;
+			background: #ddd;
+			white-space: pre-wrap;
+		}
+		
+		hr {
+			margin: 5em 0;
+			border: none;
+			border-top: 3px solid #aaa;
+		}
+	
 	</style>
 	
 	
@@ -29,58 +49,203 @@
 
 <body>
 	
-	<h1>Testerrific</h1>
 	
-	
-	<h3>Test Groups</h3>
-	
-	<p>asdfasfasf</p>
-	
-	<p>
-	options:		object that can contain the following values:<br>
-		label:		string, label of test<br>
-		skip: 		boolean, whether to skip this test or not<br>
-		only: 		boolean, whether to run only this test or not<br>
-		collapse:	boolean, whether tests are shown or not<br>
-		beforeEach:	function that gets run before each test in group<br>
-		afterEach:	function that gets run after each test in group<br>
-	</p>
-	
-	<code>
-		qt.test_group("Group A")
-	</code>
-	
-	<script>
-		qt.test_group("Group A")
-	</script>
-	
-	
-	
-	
-	
-	
-	<script>
-	
-		a = 2	
-		qt.test_group("Group A")
-		qt.test("a == 5")
-		qt.test("a == 2")
-		qt.test("a == 2")
-		qt.test("a == 3", { skip: 1 })
-		qt.test("a == 2")
-		qt.test("a == 2")
-		qt.test("a == 2")
-		qt.test("a == 3")
-		
-		qt.test_group("Group B")
-		qt.test("a == 1")
-		qt.test("a == 2")
-		qt.test("a == 3")
+	<div class="container">
+			
+		<h1>Testerrific</h1>
 		
 		
+		
+		
+		<h2>Creating Tests</h2>
+		
+		<h3>Test Groups</h3>
+		
+		<p>asdfasfasf</p>
+		
+		<p>
+		options:		object that can contain the following values:<br>
+			label:		string, label of test<br>
+			skip: 		boolean, whether to skip this test or not<br>
+			only: 		boolean, whether to run only this test or not<br>
+			collapse:	boolean, whether tests are shown or not<br>
+			beforeEach:	function that gets run before each test in group<br>
+			afterEach:	function that gets run after each test in group<br>
+		</p>
+		
+		<code>
+qt.test_group("Group 1");
+		</code>
+		
+		<script>
+			qt.test_group("Group 1");
+		</script>
+		
+		
+		<hr>
+		
+		
+		
+		
+		<p>asdfasfasf</p>
+		
+		<p>
+		label:		string that describes test
+		check: 		string that evals to true/false. Eg. "x == 3"
+					OR 	a function that returns true/false. Eg. () => { return x == 3 }. Currently only works with non-async functions
+		options:		(object) that can contain the following optional values:
+			skip: 		(boolean) whether to skip this test or not
+			only: 		(boolean) whether to run only this test or not
+			wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible
+			max_time:	Amount of time to wait for a truthy response. If blank, test will only test what value currently is
+			run_if:		(string that evals to truthy/false) Conditional that determines if test should be run
+			message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention
+			group:		(string or integer) The title or the group index of the group the test should be added to
+			position:	(integer) Position within a group the test should be inserted (starting from 0)
+			before:		(function/promise) gets run before test
+			after:		(function/promise) that gets run after test
+		</p>
+		
+		
+		
+		<h3>Test as boolean string</h3>
+				
+		<code>
+var a = 3;
+qt.test("Is a positive?", "a > 0");
+		</code>
+		
+		<script>
+			var a = 3;
+			qt.test("Is a positive?", "a > 0");
+		</script>	
+		
+		
+		<h3>Labels</h3>
+		
+		<code>
+qt.test("a > 0");
+		</code>
+		
+		<script>
+			qt.test("a > 0");
+		</script>
+		
+		
+		<h3>Test as function</h3>
+		
+		
+		<code>
+qt.test("Is today Thursday?", () => {
+	const d = new Date();
+	return d.getDay() == 4
+});
+		</code>
+		
+		<script>
+			qt.test("Is today Thursday?", () => {
+				const d = new Date();
+				return d.getDay() == 4
+			});
+		</script>
+		
+		
+		
+		
+		<h3>skip</h3>
+		<h3>only</h3>
+		<h3>wait_for_element</h3>
+		<h3>max_time</h3>
+		<h3>run_if</h3>
+		<h3>group</h3>
+		<h3>position</h3>
+		<h3>before</h3>
+		<h3>after</h3>
+	
+	
+		<hr>
+		
+		
+		
+		<h3>Run</h3>
+		
+		<p>asdfasfasf</p>
 
-	</script>
+		
+		<code>
+<b>qt.run("change a to -3", () => { a = -3 });</b>
+qt.test("Is a still positive?", "a > 0");
+		</code>
+		
+		<script>
+			qt.run("change a to -3", () => { a = -3 });
+			qt.test("Is a still positive?", "a > 0");
+		</script>
+		
+		
+		
+		
+		<h3>qt.wait()</h3>
+		
+		
+		<h3>qt.pause()</h3>
+		
+		
+		<hr>
+		
+		
+		<h2>Events</h2>
+		
+		<h3>qt.start_tests()</h3>
+		<h3>qt.pause_tests()</h3>
+		
+		<h3>qt.resume_tests()</h3>
+		
+		<h3>qt.run_test(group_index, test_index)</h3>
+		
+		<h3>qt.pass_test(group = qt.current_group, test = qt.current_test)</h3>
+		<h3>qt.fail_test(group = qt.current_group, test = qt.current_test)</h3>
+		<h3>qt.skip_test(group = qt.current_group, test = qt.current_test)</h3>
+		
+		
+		<h3>qt.run_next_test()</h3>
+		
+		<h3>qt.finish_tests()</h3>
+		
+		<h3>qt.alert(message, time_limit = 999999)</h3>
+		
+		<h3>qt.toggle_tests_panel()</h3>
+		
+		<h3>qt.toggle_tests_panel()</h3>
+		<h3>qt.enable_groups()</h3>
+		<h3>qt.disable_groups()</h3>
+		<h3>qt.collapse_groups()</h3>
+		<h3>qt.expand_groups()</h3>
+		
+		
+		
+		<h3>qt.toggle_view_group(group_index) </h3>
+		<h3>qt.toggle_skip_group(group_index)</h3>
+		<h3>qt.toggle_skip_test(group_index, test_index)</h3>
+		<h3>qt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
+	
+	
+		<hr>
+	
+		<h2>Other Settings</h2>
+		
+		<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>qt</b> object</p>
+		
+		
+		
+		
+		<code>
+			&lt;button onclick="<b>qt.visible = !qt.visible</b>"&gt;Toggle panel&lt;/button&gt;
+		</code>
+		
+		<button onclick="qt.visible = !qt.visible">Toggle panel</button>
 
+	</div>
 
 </body>
 </html>

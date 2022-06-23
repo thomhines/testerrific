@@ -78,8 +78,8 @@ qt = {
 	// Duplicate existing group
 	// Returns integer of new_group's qt.groups array index (to make it easier to modify right away)
 	duplicate_group: function(group_name, new_group_name, options = {}) {
-		let orig_group = qt.find(qt.groups, { label: group_name })
-		let new_group = qt.clone(orig_group)
+		let orig_group = qtb.find(qt.groups, { label: group_name })
+		let new_group = qtb.clone(orig_group)
 		// new_group = _.defaults(options, new_group)
 		new_group = Object.assign(new_group, options)
 		new_group.label = new_group_name
@@ -98,7 +98,7 @@ qt = {
 	//		skip: 		(boolean) whether to skip this test or not
 	//		only: 		(boolean) whether to run only this test or not
 	// 		wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible
-	// 		max_time:	Amount of time to wait for a truthy response. If blank, test will only test what value currently is
+	// 		max_time:	(integer) Amount of time to wait (in ms) for a truthy response. If blank, test will only test what value currently is when test is initiated
 	//		run_if:		(string that evals to truthy/false) Conditional that determines if test should be run
 	//		message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention
 	//		group:		(string or integer) The title or the group index of the group the test should be added to
@@ -115,9 +115,9 @@ qt = {
 			label = null
 		}
 
-		// let test_obj = qt.clone(qt.test_defaults)
+		// let test_obj = qtb.clone(qt.test_defaults)
 		// test_obj.test = check
-		let test_obj = Object.assign(qt.clone(qt.test_defaults), options, {test: check})
+		let test_obj = Object.assign(qtb.clone(qt.test_defaults), options, {test: check})
 		
 		
 		// test_obj = _.defaults({test: check}, options, qt.test_defaults)
@@ -136,7 +136,7 @@ qt = {
 		else if(test_obj.group) {
 			// let group_index = _.findIndex(qt.groups, { label: test_obj.group })
 			// current_group = qt.groups[group_index]
-			current_group = qt.find(qt.groups, { label: test_obj.group })
+			current_group = qtb.find(qt.groups, { label: test_obj.group })
 		}
 		
 		if(test_obj.position) current_group.tests.splice(test_obj.position, 0, test_obj)
@@ -160,7 +160,7 @@ qt = {
 		}
 
 
-		let test_obj = Object.assign(qt.clone(qt.test_defaults), options, {fn: fn})
+		let test_obj = Object.assign(qtb.clone(qt.test_defaults), options, {fn: fn})
 
 		// test_obj = _.defaults({ fn: fn}, options, qt.test_defaults)
 
@@ -175,7 +175,7 @@ qt = {
 		else if(test_obj.group) {
 			// let group_index = _.findIndex(qt.groups, { label: test_obj.group })
 			// current_group = qt.groups[group_index]
-			current_group = qt.find(qt.groups, { label: test_obj.group })
+			current_group = qtb.find(qt.groups, { label: test_obj.group })
 		}
 
 		if(test_obj.position) current_group.tests.splice(test_obj.position, 0, test_obj)
@@ -217,7 +217,7 @@ qt = {
 
 		// test_obj = _.defaults({label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1}, options, qt.test_defaults)
 		
-		let test_obj = Object.assign(qt.clone(qt.test_defaults), options, {label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1})
+		let test_obj = Object.assign(qtb.clone(qt.test_defaults), options, {label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1})
 
 		qt.test(label, test_obj)
 	},
@@ -599,34 +599,7 @@ qt = {
 
 	},
 	
-	// Return element in array that matches property/values in criteria
-	find(array, criteria) {
-		var index = -1
-		for(var x = 0; x < array.length; x++) {
-			if(index >= 0) break
-			let match = 1
-			for(prop in criteria) {
-				if(array[x][prop] != criteria[prop]) match = 0
-			}
-			if(match) index = x
-		}
-		return array[index]
-	},
-	
-	// Create deep clone of object
-	clone(obj) {
-		
-		let newobj = JSON.parse(JSON.stringify(obj))
-		
-		// Copy over functions as well, which don't get cloned with the JSON method
-		for(let prop in obj) {
-			if(prop in newobj == false) {
-				if(typeof obj[prop] == 'function') newobj[prop] = obj[prop].bind({});
-			}
-		}
-		
-		return newobj
-	},
+
 	
 	toggle_tests_panel() {
 		qt.visible = !qt.visible
@@ -712,11 +685,6 @@ qt = {
 		return 0
 	},
 	
-	
-	// Convert milliseconds to seconds
-	ms_to_s(ms) {
-		return (ms / 1000).toFixed(1)
-	},
 
 }
 
@@ -851,6 +819,35 @@ var qtb = {
 		
 	},
 
+	// Return element in array that matches property/values in criteria
+	find(array, criteria) {
+		var index = -1
+		for(var x = 0; x < array.length; x++) {
+			if(index >= 0) break
+			let match = 1
+			for(prop in criteria) {
+				if(array[x][prop] != criteria[prop]) match = 0
+			}
+			if(match) index = x
+		}
+		return array[index]
+	},
+	
+	
+	// Create deep clone of object
+	clone(obj) {
+		
+		let newobj = JSON.parse(JSON.stringify(obj))
+		
+		// Copy over functions as well, which don't get cloned with the JSON method
+		for(let prop in obj) {
+			if(prop in newobj == false) {
+				if(typeof obj[prop] == 'function') newobj[prop] = obj[prop].bind({});
+			}
+		}
+		
+		return newobj
+	},
 	
 	print_if(tests) {
 		let str = ''
@@ -878,6 +875,11 @@ var qtb = {
 	},
 
 	
+	
+	// Convert milliseconds to seconds
+	ms_to_s(ms) {
+		return (ms / 1000).toFixed(1)
+	},
 	
 }
 
@@ -976,7 +978,7 @@ var testerrific_ui = new qtb.init({
 				
 						<br>
 				
-						<div :if="qt.run_time">Total time: <b>${qt.ms_to_s(qt.run_time)}</b> sec</div>
+						<div :if="qt.run_time">Total time: <b>${qtb.ms_to_s(qt.run_time)}</b> sec</div>
 						<div :if="!qt.run_time && qt.paused">Paused...</div>
 						<div :if="!qt.run_time && !qt.paused">Running...</div>
 					</div>
