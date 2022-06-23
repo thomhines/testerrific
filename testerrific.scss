@@ -1,4 +1,7 @@
 
+$fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
+
+
 
 .tests_app {
 	position: relative;
@@ -16,7 +19,7 @@
 	border-left: 4px solid #555;
 	box-shadow: 0 0 10px rgba(0,0,0,.5);
 	transition: right .3s ease-in-out;
-	font-family: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
+	font-family: $fonts;
 	font-size: 13px;
 	user-select: none;
 
@@ -35,6 +38,33 @@
 		margin: .2em 0;
 		line-height: 1em;
 	}
+	
+	a {
+		color: #139;
+		text-decoration: underline;
+		
+		&:hover,&:focus,&:active {
+			color: #933;
+		}
+	}
+	
+	button {
+		font-size: .9em;
+		padding: .4em .8em;
+		background: rgba(0,0,0,.2);
+		font-family: $fonts;
+		border: none;
+		border-radius: 3px;
+		transition: background .2s ease-in-out;
+		box-shadow: 0 .3em .3em -.2em rgba(0,0,0,.7);
+	
+		&:hover,
+		&:focus,
+		&:active {
+			background: #999;
+		}
+	}
+
 
 	&.visible {
 		right: 0;
@@ -69,6 +99,10 @@
 		display: flex;
 		justify-content: flex-end;
 		grid-gap: 10px;
+		
+		button {
+			font-size: 1rem;
+		}
 	}
 
 
@@ -114,17 +148,6 @@
 			flex: 1;
 		}
 
-		button {
-			font-size: .9em;
-			padding: .4em .7em;
-			background: rgba(0,0,0,.1);
-
-			&:hover,
-			&:focus,
-			&:active {
-				background: #999;
-			}
-		}
 
 		input[type="checkbox"] {
 			width: 13px;
@@ -311,12 +334,7 @@
 		grid-gap: 0 .4em;
 	}
 
-	button {
-		display: inline-block;
-		margin: 0;
-		padding: .5em .8em;
-		box-shadow: none;
-	}
+
 }
 
 

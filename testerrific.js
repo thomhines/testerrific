@@ -79,7 +79,8 @@ qt = {
 	duplicate_group: function(group_name, new_group_name, options = {}) {
 		let orig_group = qt.find(qt.groups, { label: group_name })
 		let new_group = qt.clone(orig_group)
-		new_group = _.defaults(options, new_group)
+		// new_group = _.defaults(options, new_group)
+		new_group = Object.assign(new_group, options)
 		new_group.label = new_group_name
 		qt.groups.push(new_group)
 
@@ -157,7 +158,10 @@ qt = {
 			label = null
 		}
 
-		test_obj = _.defaults({ fn: fn}, options, qt.test_defaults)
+
+		let test_obj = Object.assign(qt.clone(qt.test_defaults), options, {fn: fn})
+
+		// test_obj = _.defaults({ fn: fn}, options, qt.test_defaults)
 
 		if(!test_obj.label && label) test_obj.label = label
 
@@ -210,7 +214,9 @@ qt = {
 			message = label
 		}
 
-		test_obj = _.defaults({label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1}, options, qt.test_defaults)
+		// test_obj = _.defaults({label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1}, options, qt.test_defaults)
+		
+		let test_obj = Object.assign(qt.clone(qt.test_defaults), options, {label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1})
 
 		qt.test(label, test_obj)
 	},
@@ -516,8 +522,10 @@ qt = {
 
 		// If group is finished
 		if(qt.current_test >= _group.tests.length) {
-			Vue.set(qt, 'current_group', qt.current_group + 1)
-			Vue.set(qt, 'current_test', 0)
+			qt.current_group = qt.current_group + 1
+			qt.current_test = 0
+			// Vue.set(qt, 'current_group', qt.current_group + 1)
+			// Vue.set(qt, 'current_test', 0)
 			qt.run_next_test()
 			return
 		}
@@ -543,7 +551,8 @@ qt = {
 		// Skip steps that are set to 'skip' or 'run_if' returns false
 		if(_test.skip || (_test.run_if && eval(_test.run_if) == false)) {
 			_test.result = 'skipped'
-			Vue.set(qt, 'current_test', qt.current_test + 1)
+			// Vue.set(qt, 'current_test', qt.current_test + 1)
+			qt.current_test = qt.current_test + 1
 			qt.run_next_test()
 			return
 		}
@@ -553,7 +562,8 @@ qt = {
 		else {
 
 			qt.run_test(qt.current_group, qt.current_test).then(function() {
-				Vue.set(qt, 'current_test', qt.current_test + 1)
+				// Vue.set(qt, 'current_test', qt.current_test + 1)
+				qt.current_test = qt.current_test + 1
 				qt.run_next_test()
 			})
 
@@ -619,7 +629,17 @@ qt = {
 	
 	// Create deep clone of object
 	clone(obj) {
-		return JSON.parse(JSON.stringify(obj))
+		
+		let newobj = JSON.parse(JSON.stringify(obj))
+		
+		// Copy over functions as well, which don't get cloned with the JSON method
+		for(let prop in obj) {
+			if(prop in newobj == false) {
+				if(typeof obj[prop] == 'function') newobj[prop] = obj[prop].bind({});
+			}
+		}
+		
+		return newobj
 	},
 	
 	toggle_tests_panel() {
@@ -663,19 +683,21 @@ qt = {
 		qt.groups[index].collapse = !qt.groups[index].collapse
 	},
 	
-	toggle_skip_group(e) {
-		let group_index = $(e.target).closest('.group').attr('group_index')
-		let val = $(e.target).prop('checked')
+	toggle_skip_group(group_index) {
+		// let group_index = $(e.target).closest('.group').attr('group_index')
+		let val = $('.group[group_index="' + group_index + '"]').find('.group_title input[type="checkbox"]').prop('checked')
 		qt.groups[group_index].skip = !val
 		qt.groups[group_index].tests.forEach(function(test) {
 			test.skip = !val
 		})
 	},
 	
-	toggle_skip_test(e) {
-		let group_index = $(e.target).closest('.group').attr('group_index')
-		let test_index = $(e.target).closest('.test').attr('test_index')
-		let val = $(e.target).prop('checked')
+	toggle_skip_test(group_index, test_index) {
+		// let group_index = $(e.target).closest('.group').attr('group_index')
+		// let test_index = $(e.target).closest('.test').attr('test_index')
+		let val = $('.group[group_index="' + group_index + '"] .test[test_index="' + test_index + '"]').find('input[type="checkbox"]').prop('checked')
+		console.log('val', val);
+		if(val) qt.groups[group_index].skip = 0
 		qt.groups[group_index].tests[test_index].skip = !val
 	},
 	
@@ -1133,8 +1155,92 @@ qt = {
 
 
 
+
+
+
+matchDOMNode = function($el1, $el2) {
+	let dom_map = []
+	
+	console.log('mapdomnode');
+	
+	let $children1 = $el1.children()
+	let $children2 = $el2.children()
+	
+	// console.log($el2.html());
+	
+	console.log($el1.html());
+	console.log($el2.html());
+	console.log($children2);
+	
+	// If $el2 is empty, just replace it with all of $el1
+	if($children2.length < 1) {
+		console.log('empty');
+		$el2.replaceWith($el1.clone())
+		return
+	}
+	
+	for(let x = 0; x < $children1.length; x++) {
+		
+		
+		// If elements have different numbers of children, replace $h2
+		if($children1.eq(x).children().length != $children2.eq(x).children().length) {
+			$children2.eq(x).replaceWith($children1.eq(x).clone())
+			continue;
+		}
+		
+		// If elements don't match, replace $el2
+		let a = $children1.eq(x).clone()
+		a.find('*').remove()
+		a = a.prop('outerHTML')
+		a = a.replace(/[\s]+/g, ' ')
+		
+		let b = $children2.eq(x).clone()
+		b.find('*').remove()
+		b = b.prop('outerHTML')
+		if(b) b = b.replace(/[\s]+/g, ' ')
+		
+		
+		console.log(a, b, a == b);
+		// console.log($children1.eq(x).children().length);
+		
+		if(a != b) {
+			$children2.eq(x).replaceWith($children1.eq(x).clone())
+			continue;
+		}		
+		
+		// If elements have children, run function recursively on children
+		if($children1.eq(x).children().length > 0) {
+			matchDOMNode($children1.eq(x), $children2.eq(x))
+		}
+		
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+a = 2
+
+
+
 qt.test_group("Group A")
 qt.test("a == 1")
+qt.test("a == 2")
+qt.test("a == 2")
+qt.test("a == 2")
+qt.test("a == 2")
+qt.test("a == 2")
+qt.test("a == 2")
 qt.test("a == 2")
 qt.test("a == 3")
 
@@ -1207,6 +1313,10 @@ var Rue = function (options) {
 
 };
 
+
+
+
+
 Rue.prototype.render = function () {
 	
 	// let temp = this.template(this.data);
@@ -1214,15 +1324,78 @@ Rue.prototype.render = function () {
 	
 	let temp = document.createElement('div');
 	temp.innerHTML = this.template(this.data);
+	$(temp).attr('id', 'testerrific')
 	
 	// Remove elements if their if qualifier returns false
 	$(temp).find('[\\:if]').each(function() {
 		if(!seval($(this).attr(':if'))) $(this).remove()
-		else $(this).removeAttr(':if')
+		$(this).removeAttr(':if')
 	})
 	
-	this.elem.innerHTML = temp.innerHTML
+	// Check for true/false attributes that can be enabled/disabled by a dynamic value
+	let bool_attrs = ['checked', 'disabled']
+	bool_attrs.forEach(function(attr) {
+		$(temp).find('[\\:' + attr + ']').each(function() {
+			if(seval($(this).attr(':' + attr))) $(this).attr(attr, 1)
+			$(this).removeAttr(':' + attr)
+		})
+	})
+	
+	
+	// console.log($(temp).html());
+	// console.log($(this.elem).html());
+	
+	matchDOMNode($(temp), $('#testerrific'))
+	
+	
+	
+	// let $all_a = $(this.elem.innerHTML).find('*')
+	// let $all_b = $(temp.innerHTML).find('*')
+	// 
+	// 
+	// for(let x = 0; x < $all_a.length; x++) {
+	// 	
+	// 	let a = $all_a.eq(x).clone()
+	// 	a.find('*').remove()
+	// 	a = a.prop('outerHTML')
+	// 	a = a.replace(/[\s]+/g, ' ') + ''
+	// 	console.log(a);
+	// 	
+	// 	let b = $all_b.eq(x).clone()
+	// 	b.find('*').remove()
+	// 	b = b.prop('outerHTML')
+	// 	b = b.replace(/[\s]+/g, ' ') + ''
+	// 	
+	// 	console.log(b);
+	// 	console.log(a == b);
+	// 	
+	// 	// if(a != b) $all_b[x].outerHTML = $all_a[x].outerHTML
+	// 	
+	// };
+	// 
+	
+	
+	
+	// If elements don't match, replace entire DOM node 
+	// this.elem.innerHTML = temp.innerHTML
+	
+	
+	
+	
 };
+
+
+
+
+
+// Array.prototype.each = function(template) {
+// 	
+// 	console.log(this);
+// 	let result = this.map(template)
+// 	
+// }
+
+
 
 print_if = function(tests) {
 	let str = ''
@@ -1246,7 +1419,7 @@ seval = function(str) {
 		return eval(str)
 	}
 	catch(error) {
-		console.log('eval error', str);
+		// console.log('eval error', str);
 	}
 }
 
@@ -1258,6 +1431,7 @@ var app = new Rue({
 	template: function (qt) {
 		return `
 		
+			<div class="tests_container">
 			
 			<div class="tests_ui ${print_if({ visible: qt.visible })}">
 				
@@ -1293,35 +1467,86 @@ var app = new Rue({
 				
 					<br>
 					
-					<transition name="fade">
-						<div class="tests_summary" :if="qt.running || (qt.totals('run') && qt.totals('run') != qt.totals('skipped'))">
-							<h3>Summary:</h3>
-							<div class="tests_summary_table">
-								<div :if="qt.totals('run')"><b class="run" :text="qt.totals('run')">${qt.totals('run')}</b></div><div :if="qt.totals('run')"> tests run</div>
-								<div :if="qt.totals('passed')"><b class="passed" :text="qt.totals('passed')">${qt.totals('passed')}</b></div><div :if="qt.totals('passed')"> passed</div>
-								<div :if="qt.totals('failed')"><b class="failed" :text="qt.totals('failed')">${qt.totals('failed')}</b></div><div :if="qt.totals('failed')"> failed</div>
-								<div :if="qt.totals('skipped')"><b class="skipped" :text="qt.totals('skipped')">${qt.totals('skipped')}</b></div><div :if="qt.totals('skipped')"> skipped</div>
-								<div :if="qt.totals('error')"><b class="error" :text="qt.totals('error')">${qt.totals('error')}</b></div><div :if="qt.totals('error')"> errors</div>
-							</div>
 					
-							<br>
 					
-							<div :if="qt.run_time">Total time: <b>${qt.ms_to_s(qt.run_time)}</b> sec</div>
-							<div :if="!qt.run_time && qt.paused">Paused...</div>
-							<div :if="!qt.run_time && !qt.paused">Running...</div>
+					<div class="tests_summary" :if="qt.running || (qt.totals('run') && qt.totals('run') != qt.totals('skipped'))">
+						<h3>Summary:</h3>
+						<div class="tests_summary_table">
+							<div :if="qt.totals('run')"><b class="run" :text="qt.totals('run')">${qt.totals('run')}</b></div><div :if="qt.totals('run')"> tests run</div>
+							<div :if="qt.totals('passed')"><b class="passed" :text="qt.totals('passed')">${qt.totals('passed')}</b></div><div :if="qt.totals('passed')"> passed</div>
+							<div :if="qt.totals('failed')"><b class="failed" :text="qt.totals('failed')">${qt.totals('failed')}</b></div><div :if="qt.totals('failed')"> failed</div>
+							<div :if="qt.totals('skipped')"><b class="skipped" :text="qt.totals('skipped')">${qt.totals('skipped')}</b></div><div :if="qt.totals('skipped')"> skipped</div>
+							<div :if="qt.totals('error')"><b class="error" :text="qt.totals('error')">${qt.totals('error')}</b></div><div :if="qt.totals('error')"> errors</div>
 						</div>
-					</transition>
+				
+						<br>
+				
+						<div :if="qt.run_time">Total time: <b>${qt.ms_to_s(qt.run_time)}</b> sec</div>
+						<div :if="!qt.run_time && qt.paused">Paused...</div>
+						<div :if="!qt.run_time && !qt.paused">Running...</div>
+					</div>
 					
 					
 					<div class="tests_table">
 						<div class="table_controls">
-							<a onclick="enable_groups">enable all</a>
-							<a onclick="disable_groups">disable all</a>
+							<a onclick="qt.enable_groups()">enable all</a>
+							<a onclick="qt.disable_groups()">disable all</a>
 							<div>|</div>
-							<a onclick="expand_groups">expand all</a>
-							<a onclick="collapse_groups">collapse all</a>
+							<a onclick="qt.expand_groups()">expand all</a>
+							<a onclick="qt.collapse_groups()">collapse all</a>
 						</div>
+						
+						${qt.groups.map(function(group, group_index) {
+							return `
+							
+							<div class="group ${ print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == qt.current_group })}" group_index="${group_index}">
+								<div class="group_title">
+									<input type="checkbox" :checked="${!group.skip}" onchange="qt.toggle_skip_group(${group_index})">
+									<p onclick="qt.toggle_view_group(${group_index})">${ group.label }</p>
+									<span class="collapse_group" onclick="qt.toggle_view_group(${group_index})"></span>
+									<div class="group_test_summary" :if="${group_index} != qt.current_group && qt.totals('run', ${group_index})">
+										<b class="passed">${ qt.totals('passed', group_index) }</b>
+										<b class="failed">${ qt.totals('failed', group_index) }</b>
+										<b class="skipped" :if="qt.totals('skipped', ${group_index})">${ qt.totals('skipped', group_index) }</b>
+										<b class="error" :if="qt.totals('error', ${group_index})">${ qt.totals('error', group_index) }</b>
+									</div>
+									<div class="running_indicator" :if="${group_index} == qt.current_group"></div>
+									<button onclick="qt.start_tests(${group_index})" :disabled="${qt.running == 1}">Run</button>
+								</div>
+								
+								
+								${group.tests.map(function(test, test_index) {
+									return `
+									
+									<div :if="${!group.collapse}" class="test ${ print_if({ fn: test.fn, running: group_index == qt.current_group && test_index == qt.current_test, skipped: test.skip })}" test_index="${test_index}" key="${test_index}">
+									
+										<div v-if="test.label">
+											<input type="checkbox" :checked="${!test.skip }" onchange="qt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
+											<p><b :if="test.fn">Run:</b> ${ test.label }</p>
+											<div class="running_indicator" :if="${group_index} == qt.current_group && ${test_index} == qt.current_test"></div>
+											<div class="result_container">
+												<div :if="${test.result != undefined}" class="result ${test.result}">${test.result}</div>
+												<div class="time" :if="${test.time !== null}">${ test.time }ms</div>
+											</div>
+											<button onclick="qt.run_test(${group_index}, ${test_index}).then(qt.finish_tests)" :disabled="${qt.running == 1}">Run</button>
+										</div>
+									
+									</div>
+								`
+								}).join(' ')}
+								
+								
+								
+							</div>
+							`
+						}).join(' ')}
+
+						
+						
+						
 					</div>
+					
+					<b>${qt.totals() + ' Total Tests'}</b>
 					
 				</div>
 				
@@ -1329,21 +1554,8 @@ var app = new Rue({
 			
 			
 			<button class="toggle_tests_panel ${print_if({ visible: qt.visible })}" onclick="qt.toggle_tests_panel()">Tests</button>
-		
-			<h1 class="${print_if({'test': 'qt.running'})}">running: ${qt.running}</h1>
-			<p>${print_if({'test': 'qt.running'})}</p>
-			<p>${ qt.asdf.a }</p>
-			<ul>
-				${qt.groups.map(function (group) {
-					return `<li>
-					
-					${group.label}
-					${group.tests.map(function (test) {
-						return `<br>${qt.run_time} <span>${test.test} - ${test.results}</span>`
-					})}
-					</li>`;
-				}).join('')}
-			</ul>
+			
+			</div>
 			
 	`;
 	}
@@ -1357,6 +1569,27 @@ qt = app.data
 
 
 
+matchDOM = function() {
+	let $all_a = $('.a *')
+	let $all_b = $('.b *')
+	
+	for(let x = 0; x < $all_a.length; x++) {
+		
+		let a = $all_a.eq(x).clone()
+		a.find('*').remove()
+		a = a.prop('outerHTML')
+		a = a.replace(/[\s]+/g, ' ')
+		
+		let b = $all_b.eq(x).clone()
+		b.find('*').remove()
+		b = b.prop('outerHTML')
+		b = b.replace(/[\s]+/g, ' ')
+		
+		if(a != b) $all_b[x].outerHTML = $all_a[x].outerHTML
+		
+	};
+}
+
 
 
 
@@ -1364,5 +1597,7 @@ qt = app.data
 // Add tests UI to DOM and turn on Vue
 jQuery(function($) {
 	
+	
+	// matchDOM()
 })
 
