@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>Site Title</title>
+	<title>Testerrific</title>
 	<link href="https://plus.google.com/GooglePlusId" rel="publisher"/>
 	<meta charset="utf-8" />
 	<meta name="description" content="" />
@@ -74,11 +74,11 @@
 		</p>
 		
 		<code>
-qt.test_group("Group 1");
+tt.group("Group 1");
 		</code>
 		
 		<script>
-			qt.test_group("Group 1");
+			tt.group("Group 1");
 		</script>
 		
 		
@@ -112,23 +112,24 @@ qt.test_group("Group 1");
 				
 		<code>
 var a = 3;
-qt.test("Is a positive?", "a > 0");
+tt.test("Is a positive?", "a > 0");
 		</code>
 		
 		<script>
 			var a = 3;
-			qt.test("Is a positive?", "a > 0");
+			var bb = 5;
+			tt.test("Is a positive?", "a > 0");
 		</script>	
 		
 		
 		<h3>Labels</h3>
 		
 		<code>
-qt.test("a > 0");
+tt.test("a > 0");
 		</code>
 		
 		<script>
-			qt.test("a > 0");
+			tt.test("a > 0");
 		</script>
 		
 		
@@ -136,14 +137,14 @@ qt.test("a > 0");
 		
 		
 		<code>
-qt.test("Is today Thursday?", () => {
+tt.test("Is today Thursday?", () => {
 	const d = new Date();
 	return d.getDay() == 4
 });
 		</code>
 		
 		<script>
-			qt.test("Is today Thursday?", () => {
+			tt.test("Is today Thursday?", () => {
 				const d = new Date();
 				return d.getDay() == 4
 			});
@@ -153,14 +154,65 @@ qt.test("Is today Thursday?", () => {
 		
 		
 		<h3>skip</h3>
+		<code>
+tt.test('Skip example', 'a == 3', { skip: 1 })
+		</code>
+		
+		<script>
+			tt.test('Skip example', 'a == 3', { skip: 1 })
+		</script>
+		
+		
 		<h3>only</h3>
+
 		<h3>wait_for_element</h3>
+		
+		
 		<h3>max_time</h3>
+		<code>
+tt.test('Max Time example', 'a != 3', { max_time: 3000 })
+		</code>
+		
+		<script>
+			tt.test('Max Time example', 'a != 3', { max_time: 30000 })
+		</script>
+		
+		
+		
 		<h3>run_if</h3>
-		<h3>group</h3>
-		<h3>position</h3>
-		<h3>before</h3>
-		<h3>after</h3>
+		<code>
+tt.test('run_if example (run_if == false)', 'a > 0', { run_if: 'bb == 3' })
+tt.run('Set bb to 3', () => { bb = 3 })
+tt.test('run_if example (run_if == true)', 'a > 0', { run_if: 'bb == 3' })
+		</code>
+		
+		<script>
+			tt.test('run_if example (run_if == false)', 'a > 0', { run_if: 'bb == 3' })
+			tt.run('Set bb to 3', () => { bb = 3 })
+			tt.test('run_if example (run_if == true)', 'a > 0', { run_if: 'bb == 3' })
+		</script>
+				
+		
+				
+		<h3>message</h3>
+		<code>
+tt.test('Message example', 'a != 3', { message: 'Just saying hello!' })
+		</code>
+		
+		<script>
+			tt.test('Message example', 'a != 3', { message: 'Just saying hello!' })
+		</script>
+		
+		
+		
+		
+		
+		<h3>group (string or int) & position (int)</h3>
+		<p>If not position is given, the test will be added to the end of "group"</p>
+		
+		
+		<h3>before & after</h3>
+		<p>(function/promise) gets run before/after test</p>
 	
 	
 		<hr>
@@ -169,26 +221,27 @@ qt.test("Is today Thursday?", () => {
 		
 		<h3>Run</h3>
 		
-		<p>asdfasfasf</p>
+		<p>label, fn, options (basically the same options as test())</p>
+		<p>'fn' Can either be a function that returns truthy/falsey or a promise. If a promise is given, tests will wait for promise to resolve before continuing to next test.</p>
 
 		
 		<code>
-<b>qt.run("change a to -3", () => { a = -3 });</b>
-qt.test("Is a still positive?", "a > 0");
+<b>tt.run("change a to -3", () => { a = -3 });</b>
+tt.test("Is a still positive?", "a > 0");
 		</code>
 		
 		<script>
-			qt.run("change a to -3", () => { a = -3 });
-			qt.test("Is a still positive?", "a > 0");
+			tt.run("change a to -3", () => { a = -3 });
+			tt.test("Is a still positive?", "a > 0");
 		</script>
 		
 		
 		
 		
-		<h3>qt.wait()</h3>
+		<h3>tt.wait()</h3>
 		
 		
-		<h3>qt.pause()</h3>
+		<h3>tt.pause()</h3>
 		
 		
 		<hr>
@@ -196,54 +249,54 @@ qt.test("Is a still positive?", "a > 0");
 		
 		<h2>Events</h2>
 		
-		<h3>qt.start_tests()</h3>
-		<h3>qt.pause_tests()</h3>
+		<h3>tt.start_tests()</h3>
+		<h3>tt.pause_tests()</h3>
 		
-		<h3>qt.resume_tests()</h3>
+		<h3>tt.resume_tests()</h3>
 		
-		<h3>qt.run_test(group_index, test_index)</h3>
+		<h3>tt.run_test(group_index, test_index)</h3>
 		
-		<h3>qt.pass_test(group = qt.current_group, test = qt.current_test)</h3>
-		<h3>qt.fail_test(group = qt.current_group, test = qt.current_test)</h3>
-		<h3>qt.skip_test(group = qt.current_group, test = qt.current_test)</h3>
-		
-		
-		<h3>qt.run_next_test()</h3>
-		
-		<h3>qt.finish_tests()</h3>
-		
-		<h3>qt.alert(message, time_limit = 999999)</h3>
-		
-		<h3>qt.toggle_tests_panel()</h3>
-		
-		<h3>qt.toggle_tests_panel()</h3>
-		<h3>qt.enable_groups()</h3>
-		<h3>qt.disable_groups()</h3>
-		<h3>qt.collapse_groups()</h3>
-		<h3>qt.expand_groups()</h3>
+		<h3>tt.pass_test(group = tt.current_group, test = tt.current_test)</h3>
+		<h3>tt.fail_test(group = tt.current_group, test = tt.current_test)</h3>
+		<h3>tt.skip_test(group = tt.current_group, test = tt.current_test)</h3>
 		
 		
+		<h3>tt.run_next_test()</h3>
 		
-		<h3>qt.toggle_view_group(group_index) </h3>
-		<h3>qt.toggle_skip_group(group_index)</h3>
-		<h3>qt.toggle_skip_test(group_index, test_index)</h3>
-		<h3>qt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
+		<h3>tt.finish_tests()</h3>
+		
+		<h3>tt.alert(message, time_limit = 999999)</h3>
+		
+		<h3>tt.toggle_tests_panel()</h3>
+		
+		<h3>tt.toggle_tests_panel()</h3>
+		<h3>tt.enable_groups()</h3>
+		<h3>tt.disable_groups()</h3>
+		<h3>tt.collapse_groups()</h3>
+		<h3>tt.expand_groups()</h3>
+		
+		
+		
+		<h3>tt.toggle_view_group(group_index) </h3>
+		<h3>tt.toggle_skip_group(group_index)</h3>
+		<h3>tt.toggle_skip_test(group_index, test_index)</h3>
+		<h3>tt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
 	
 	
 		<hr>
 	
 		<h2>Other Settings</h2>
 		
-		<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>qt</b> object</p>
+		<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>tt</b> object</p>
 		
 		
 		
 		
 		<code>
-			&lt;button onclick="<b>qt.visible = !qt.visible</b>"&gt;Toggle panel&lt;/button&gt;
+			&lt;button onclick="<b>tt.visible = !tt.visible</b>"&gt;Toggle panel&lt;/button&gt;
 		</code>
 		
-		<button onclick="qt.visible = !qt.visible">Toggle panel</button>
+		<button onclick="tt.visible = !tt.visible">Toggle panel</button>
 
 	</div>
 

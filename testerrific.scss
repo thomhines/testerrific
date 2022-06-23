@@ -56,6 +56,13 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 		border: 1px solid rgba(0,0,0,.2);
 		border-radius: 3px;
 		transition: background .2s ease-in-out;
+		
+		svg {
+			display: inline-block;
+			margin: 0 .4em 0 0;
+			height: .8em;
+			width: auto;
+		}
 	
 		&:hover,
 		&:focus,
@@ -281,12 +288,12 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 		box-shadow: 0 7px 9px rgb(0 0 0 / 40%);
 		opacity: 0;
 		pointer-events: none;
-		transition: opacity .3s ease-in-out;
-		
+		transition: opacity .1s ease-in-out;
 		
 		&.visible {
 			opacity: 1;
 			pointer-events: all;
+			transition: opacity .3s ease-in-out;
 		}
 
 		button {
@@ -297,7 +304,7 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 			background: #333;
 			color: #fff;
 			font-size: 1em;
-			// border: 1px solid rgba(0,0,0,.3);
+			transition: all .2s ease-in-out;
 		}
 
 		.pass_fail_buttons {
@@ -315,11 +322,25 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 		}
 
 		button.close {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			width: 20px;
+			height: 20px;
 			margin: 0;
 			padding: 0;
 			color: #111;
-			background: none;
+			// background: none;
+			background: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' %3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.60297 42.4855C3.53485 44.4174 6.66693 44.4174 8.59882 42.4855L21.9609 29.1235L35.3232 42.4858C37.2551 44.4177 40.3873 44.4177 42.3192 42.4858C44.2509 40.5539 44.2509 37.4216 42.3192 35.4899L28.9568 22.1276L42.319 8.76532C44.2509 6.83344 44.2509 3.70135 42.319 1.76947C40.3873 -0.162415 37.2551 -0.162415 35.3232 1.76947L21.961 15.1318L8.59882 1.76947C6.66705 -0.16217 3.53485 -0.16217 1.60297 1.76947C-0.328918 3.70135 -0.328918 6.83368 1.60297 8.76556L14.965 22.1276L1.60297 35.4897C-0.328918 37.4216 -0.328918 40.5539 1.60297 42.4855Z' fill='black'/%3E%3C/svg%3E%0A") center center no-repeat;
+			background-size: 10px;
 			border: none;
+			text-indent: -9999px;
+			overflow: hidden;
+			opacity: .5;
+			
+			&:hover,&:focus,&:active {
+				opacity: 1;
+			}
 		}
 	}
 
@@ -351,10 +372,10 @@ $fonts: 'Lato', 'Barlow', 'Helvetica Neue', Helvetica, sans-serif;
 	font-family: 'Lato', 'Barlow', sans-serif;
 	letter-spacing: .06em;
 	border-radius: 0;
+	border: none;
 	box-shadow: 0 0 10px rgba(0,0,0,.5);
 	transition: all .3s ease-in-out;
 	cursor: pointer;
-	z-index: -1;
 
 	&.visible {
 		right: 500px

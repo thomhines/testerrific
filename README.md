@@ -1,33 +1,9 @@
 # Testerrific
 
-Here's a link to the demo...
+Link to Demo
 
+Brief description of what this tool does
 
-# Table of Contents
-
-- [About the Project](#about-the-project)
-  * [Tech Stack](#tech-stack)
-  * [Features](#features)
-  * [Color Reference](#color-reference)
-  * [Environment Variables](#environment-variables)
-- [Getting Started](#getting-started)
-  * [Prerequisites](#prerequisites)
-  * [Installation](#installation)
-  * [Run Locally](#run-locally)
-- [Usage](#usage)
-- [Roadmap](#roadmap)
-- [Contributing](#contributing)
-  * [Code of Conduct](#code-of-conduct)
-- [License](#license)
-- [Contact](#contact)
-- [Acknowledgements](#acknowledgements)
-  
-
-## About the Project
-
-<div align="center"> 
-  <img src="https://placehold.co/600x400?text=Your+Screenshot+here" alt="screenshot" />
-</div>
 
 
 ### Features
@@ -58,32 +34,6 @@ Install my-project with npm
 ```
 
 
-<!-- Run Locally -->
-### Run Locally
-
-Clone the project
-
-```bash
-  git clone https://github.com/Louis3797/awesome-readme-template.git
-```
-
-Go to the project directory
-
-```bash
-  cd my-project
-```
-
-Install dependencies
-
-```bash
-  yarn install
-```
-
-Start the server
-
-```bash
-  yarn start
-```
 
 
 <!-- Usage -->
