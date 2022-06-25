@@ -26,17 +26,45 @@
 			
 		}
 		
+		h3 {
+			margin: 1em 0 .3em;
+		}
+		
+		button {
+			padding: 0.4em 0.8em;
+			background: #333;
+			color: #fff;
+			border: none;
+			border-radius: 3px;
+			transition: background .2s ease-in-out;
+		}
+		
+		button:hover,button:focus,button:active {
+			background: #666;
+		}
+		
 		code {
+			position: relative;
 			display: block;
+			margin: 0 0 3em;
 			padding: 0 1.5em;
 			background: #ddd;
 			white-space: pre-wrap;
+		}
+		
+		code button {
+			position: absolute;
+			top: 10px;
+			right: 10px;
 		}
 		
 		hr {
 			margin: 5em 0;
 			border: none;
 			border-top: 3px solid #aaa;
+		}
+		
+		.runnable_code {
 		}
 	
 	</style>
@@ -55,9 +83,58 @@
 		<h1>Testerrific</h1>
 		
 		
+		<div class="toc">
+			<ul>
+				<li><a href="#getting_started">Getting Started</a></li>
+				<li>
+					<a href="#getting_started">Test Groups</a>
+					<!-- <ul>
+						<li>Options</li>
+					</ul> -->
+				</li>
+				<li>
+					<a href="#getting_started">Creating Tests</a>
+					<!-- <ul>
+						<li>Options</li>
+					</ul> -->
+				</li>
+				<li>
+					<a href="#getting_started">Events</a>
+					<!-- <ul>
+						<li>Options</li>
+					</ul> -->
+				</li>
+				<li>
+					<a href="#getting_started">Other Tips</a>
+				</li>
+			</ul>
+		</div>
 		
 		
+		<hr>
+			
+		
+		
+		
+		<h2>Getting Started</h2>
+		
+		<p>So simple!</p>
+		
+		<code class="run_on_load">
+tt.group('First Test Group')
+
+tt.test('1 + 1 == 2')
+tt.test('window.innerHeight > 200')
+tt.test('"Testerrific is great"')
+		</code>
+		
+		
+		
+		<hr>
+			
+			
 		<h2>Creating Tests</h2>
+		
 		
 		<h3>Test Groups</h3>
 		
@@ -73,14 +150,11 @@
 			afterEach:	function that gets run after each test in group<br>
 		</p>
 		
-		<code>
-tt.group("Group 1");
+		<code class="run_on_load">
+tt.group("Test Group Two");
 		</code>
 		
-		<script>
-			tt.group("Group 1");
-		</script>
-		
+
 		
 		<hr>
 		
@@ -108,59 +182,39 @@ tt.group("Group 1");
 		
 		
 		
-		<h3>Test as boolean string</h3>
-				
-		<code>
-var a = 3;
-tt.test("Is a positive?", "a > 0");
-		</code>
+		<h3>Basic test</h3>
 		
-		<script>
-			var a = 3;
-			var bb = 5;
-			tt.test("Is a positive?", "a > 0");
-		</script>	
+		<p>Test if a string evaluates as truth-y or false-y</p>
+				
+		<code class="run_on_load">
+tt.test("1 > 0");
+		</code>
 		
 		
 		<h3>Labels</h3>
 		
-		<code>
-tt.test("a > 0");
+		<code class="run_on_load">
+tt.test("2. Is '1' a positive number?", "1 > 0");
 		</code>
-		
-		<script>
-			tt.test("a > 0");
-		</script>
 		
 		
 		<h3>Test as function</h3>
 		
 		
-		<code>
-tt.test("Is today Thursday?", () => {
-	const d = new Date();
-	return d.getDay() == 4
+		<code class="run_on_load">
+tt.test("3. Is today Thursday?", () => {
+	return (new Date()).getDay() == 4
 });
 		</code>
 		
-		<script>
-			tt.test("Is today Thursday?", () => {
-				const d = new Date();
-				return d.getDay() == 4
-			});
-		</script>
-		
-		
-		
 		
 		<h3>skip</h3>
-		<code>
-tt.test('Skip example', 'a == 3', { skip: 1 })
+		<p>Skipped tests are only disabled when the tests are first loaded. You can always enable a 'skipped' test or run it manually.</p>
+		
+		<code class="run_on_load">
+tt.test('4. Skip example', '4 == 4', { skip: 1 })
 		</code>
 		
-		<script>
-			tt.test('Skip example', 'a == 3', { skip: 1 })
-		</script>
 		
 		
 		<h3>only</h3>
@@ -169,43 +223,28 @@ tt.test('Skip example', 'a == 3', { skip: 1 })
 		
 		
 		<h3>max_time</h3>
-		<code>
-tt.test('Max Time example', 'a != 3', { max_time: 3000 })
+		<code class="run_on_load">
+tt.test('5. Max Time example (wait 3 sec)', 'a != 3', { max_time: 3000 })
 		</code>
-		
-		<script>
-			tt.test('Max Time example', 'a != 3', { max_time: 30000 })
-		</script>
 		
 		
 		
 		<h3>run_if</h3>
-		<code>
-tt.test('run_if example (run_if == false)', 'a > 0', { run_if: 'bb == 3' })
-tt.run('Set bb to 3', () => { bb = 3 })
-tt.test('run_if example (run_if == true)', 'a > 0', { run_if: 'bb == 3' })
+		<code class="run_on_load">
+tt.run('Set "b" to false', () => { b = false })
+tt.test('6. run_if example (run_if == false)', '1 > 0', { run_if: 'b == true' })
+tt.run('Set "b" to true', () => { b = true })
+tt.test('7. run_if example (run_if == true)', '1 > 0', { run_if: 'b == 3' })
 		</code>
-		
-		<script>
-			tt.test('run_if example (run_if == false)', 'a > 0', { run_if: 'bb == 3' })
-			tt.run('Set bb to 3', () => { bb = 3 })
-			tt.test('run_if example (run_if == true)', 'a > 0', { run_if: 'bb == 3' })
-		</script>
-				
+
 		
 				
 		<h3>message</h3>
-		<code>
-tt.test('Message example', 'a != 3', { message: 'Just saying hello!' })
+		<code class="run_on_load">
+tt.test('8. Message example', 'a != 3', { message: 'Just saying hello!', max_time: 3000 })
 		</code>
 		
-		<script>
-			tt.test('Message example', 'a != 3', { message: 'Just saying hello!' })
-		</script>
-		
-		
-		
-		
+
 		
 		<h3>group (string or int) & position (int)</h3>
 		<p>If not position is given, the test will be added to the end of "group"</p>
@@ -225,62 +264,146 @@ tt.test('Message example', 'a != 3', { message: 'Just saying hello!' })
 		<p>'fn' Can either be a function that returns truthy/falsey or a promise. If a promise is given, tests will wait for promise to resolve before continuing to next test.</p>
 
 		
-		<code>
+		<code class="run_on_load">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
 tt.test("Is a still positive?", "a > 0");
 		</code>
 		
-		<script>
-			tt.run("change a to -3", () => { a = -3 });
-			tt.test("Is a still positive?", "a > 0");
-		</script>
 		
 		
 		
 		
 		<h3>tt.wait()</h3>
 		
+		<code class="run_on_load">
+tt.wait(3000);
+		</code>
+		
 		
 		<h3>tt.pause()</h3>
+		<code class="run_on_load">
+tt.pause();
+		</code>
 		
+		
+		<code class="run_on_load">
+<b>tt.run("change a to -3", () => { a = -3 });</b>
+tt.test("Is a still positive?", "a > 0");
+		</code>
 		
 		<hr>
 		
 		
 		<h2>Events</h2>
 		
-		<h3>tt.start_tests()</h3>
-		<h3>tt.pause_tests()</h3>
+		<h3>start_tests()</h3>
+		<code>
+tt.start_tests(); <button>Run</button>
+		</code>
 		
-		<h3>tt.resume_tests()</h3>
+		
+		<h3>pause_tests()</h3>
+		<code>
+tt.pause_tests(); <button>Run</button>
+		</code>
+				
+		<h3>resume_tests()</h3>
+		<code>
+tt.resume_tests(); <button>Run</button>
+		</code>
+		
 		
 		<h3>tt.run_test(group_index, test_index)</h3>
+		<code>
+tt.run_test(0,3); <button>Run</button>
+		</code>
 		
 		<h3>tt.pass_test(group = tt.current_group, test = tt.current_test)</h3>
-		<h3>tt.fail_test(group = tt.current_group, test = tt.current_test)</h3>
-		<h3>tt.skip_test(group = tt.current_group, test = tt.current_test)</h3>
+		<code>
+tt.pass_test(0,3); <button>Run</button>
+		</code>
 		
+		<h3>tt.fail_test(group = tt.current_group, test = tt.current_test)</h3>
+		<code>
+tt.fail_test(0,3); <button>Run</button>
+		</code>
+		
+		<h3>tt.skip_test(group = tt.current_group, test = tt.current_test)</h3>
+		<code>
+tt.skip_test(0,3); <button>Run</button>
+		</code>
 		
 		<h3>tt.run_next_test()</h3>
+		<code>
+tt.run_next_test(); <button>Run</button>
+		</code>
 		
 		<h3>tt.finish_tests()</h3>
+		<code>
+tt.finish_tests(); <button>Run</button>
+		</code>
+		
+		<h3>tt.reset_tests()</h3>
+		<code>
+tt.reset_tests(); <button>Run</button>
+		</code>
 		
 		<h3>tt.alert(message, time_limit = 999999)</h3>
+		<code>
+tt.alert('You obviously love to press the buttons', 3000); <button>Run</button>
+		</code>
 		
 		<h3>tt.toggle_tests_panel()</h3>
-		
-		<h3>tt.toggle_tests_panel()</h3>
-		<h3>tt.enable_groups()</h3>
-		<h3>tt.disable_groups()</h3>
-		<h3>tt.collapse_groups()</h3>
-		<h3>tt.expand_groups()</h3>
+		<code>
+tt.toggle_tests_panel(); <button>Run</button>
+		</code>
 		
 		
+		<h3>tt.enable_all_groups()</h3>
+		<code>
+tt.enable_all_groups(); <button>Run</button>
+		</code>
+		
+		<h3>tt.disable_all_groups()</h3>
+		<code>
+tt.disable_all_groups(); <button>Run</button>
+		</code>
+		
+		<h3>tt.collapse_all_groups()</h3>
+		<code>
+tt.collapse_all_groups(); <button>Run</button>
+		</code>
+		
+		<h3>tt.expand_all_groups()</h3>
+		<code>
+tt.expand_all_groups(); <button>Run</button>
+		</code>
 		
 		<h3>tt.toggle_view_group(group_index) </h3>
+		<code>
+tt.toggle_view_group(0); <button>Run</button>
+		</code>		
+		
 		<h3>tt.toggle_skip_group(group_index)</h3>
+		<code>
+tt.toggle_skip_group(0); <button>Run</button>
+		</code>
+		
 		<h3>tt.toggle_skip_test(group_index, test_index)</h3>
+		<code>
+tt.toggle_tests_panel(); <button>Run</button>
+		</code>
+		<button onclick="tt.toggle_skip_test(0, 3)">Run</button>
+		
 		<h3>tt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
+		<p>asdfafasdf</p>
+		<code>
+alert(`
+all: ${tt.totals()}
+passed: ${tt.totals('passed')}
+passed: ${tt.totals('skipped', 1)}
+`); <button>Run</button>
+		</code>
 	
 	
 		<hr>
@@ -291,13 +414,46 @@ tt.test("Is a still positive?", "a > 0");
 		
 		
 		
-		
 		<code>
-			&lt;button onclick="<b>tt.visible = !tt.visible</b>"&gt;Toggle panel&lt;/button&gt;
+tt.visible = !tt.visible; <button>Run</button>
 		</code>
 		
-		<button onclick="tt.visible = !tt.visible">Toggle panel</button>
+		
+		
+		<p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
+		<code>
+tt.visible = false; <button>Run</button>
+		</code>
+		
+		<p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, simply add this to your code:</p>
+		<code>
+tt.groups.forEach((group) => { group.collapse = true });
+		</code>
 
+
+		<p>To skip a test programmatically, simply set the `skip` property for that test to true/false in the tt.groups array. This code will re-enable Test #4 in Group 1:</p>
+		<code>
+tt.groups[0].tests[3].skip = false; <button>Run</button>
+		</code>
+		
+		
+		
+		<script>
+		$(document).ready(function() {
+			$('.run_on_load').each(function() {		
+				$clone = $(this).closest('code').clone()
+				$clone.find('button').remove()
+				eval($clone.text())
+			})
+		})
+		
+		
+		$('code button').click(function() {			
+			$clone = $(this).closest('code').clone()
+			$clone.find('button').remove()
+			eval($clone.text())
+		})
+		</script>
 	</div>
 
 </body>

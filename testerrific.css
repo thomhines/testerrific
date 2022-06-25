@@ -1,10 +1,11 @@
-.tests_ui {
+#testerrific .tests_panel {
   position: fixed;
   top: 0;
   bottom: 0;
   right: -500px;
   width: 500px;
   background: #fff;
+  color: #111;
   border-left: 4px solid #555;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   transition: right 0.3s ease-in-out;
@@ -12,202 +13,197 @@
   font-size: 13px;
   user-select: none;
 }
-.tests_ui h2 {
-  float: left;
+#testerrific .tests_panel h2 {
+  display: none;
 }
-.tests_ui h3 {
+#testerrific .tests_panel h3 {
   margin: 0 0 0.7em;
   font-size: 1em;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-.tests_ui p {
+#testerrific .tests_panel p {
   margin: 0.2em 0;
   line-height: 1em;
 }
-.tests_ui a {
+#testerrific .tests_panel a {
   color: #139;
   text-decoration: underline;
 }
-.tests_ui a:hover, .tests_ui a:focus, .tests_ui a:active {
+#testerrific .tests_panel a:hover, #testerrific .tests_panel a:focus, #testerrific .tests_panel a:active {
   color: #933;
 }
-.tests_ui button {
+#testerrific .tests_panel button {
   font-size: 0.9em;
   padding: 0.4em 0.8em;
-  background: rgba(0, 0, 0, 0.2);
+  background: #ccc;
+  color: #111;
   font-family: "Lato", "Barlow", "Helvetica Neue", Helvetica, sans-serif;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  font-weight: bold;
   border-radius: 3px;
   transition: background 0.2s ease-in-out;
 }
-.tests_ui button svg {
+#testerrific .tests_panel button svg {
   display: inline-block;
   margin: 0 0.4em 0 0;
   height: 0.8em;
   width: auto;
 }
-.tests_ui button:hover, .tests_ui button:focus, .tests_ui button:active {
+#testerrific .tests_panel button:hover, #testerrific .tests_panel button:focus, #testerrific .tests_panel button:active {
   background: #999;
 }
-.tests_ui.visible {
+#testerrific .tests_panel button:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+#testerrific .tests_panel.visible {
   right: 0;
 }
-.tests_ui .passed {
+#testerrific .tests_panel .passed {
   color: #090;
 }
-.tests_ui .failed {
+#testerrific .tests_panel .failed {
   color: #900;
 }
-.tests_ui .skipped {
-  color: rgba(0, 0, 0, 0.4);
+#testerrific .tests_panel .skipped {
+  color: #aaa;
 }
-.tests_ui .error {
+#testerrific .tests_panel .error {
   background: #fdd;
   color: #900;
 }
-.tests_ui .panel_inner_container {
+#testerrific .tests_panel .panel_inner_container {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 60px 30px;
+  padding: 30px;
   overflow-y: auto;
   overflow-x: visible;
 }
-.tests_ui .run_all_tests_container {
+#testerrific .tests_panel .run_all_tests_container {
   display: flex;
   justify-content: flex-end;
   grid-gap: 10px;
 }
-.tests_ui .run_all_tests_container button {
+#testerrific .tests_panel .run_all_tests_container button {
   font-size: 1rem;
 }
-.tests_ui .tests_table {
-  color: #111;
-}
-.tests_ui .table_controls {
+#testerrific .tests_panel .table_controls {
   display: flex;
   justify-content: flex-end;
   grid-gap: 0.7em;
   margin: 1em 0 0.5em;
 }
-.tests_ui .group {
+#testerrific .tests_panel .group {
   position: relative;
   margin: 0 0 2em;
 }
-.tests_ui .group.collapse {
+#testerrific .tests_panel .group.collapse {
   margin-bottom: 1em;
 }
-.tests_ui .group_title,
-.tests_ui .test > div {
+#testerrific .tests_panel .group_title,
+#testerrific .tests_panel .test > div {
   display: flex;
   align-items: center;
   grid-gap: 1em;
   padding: 2px 9px;
-  background: #fff;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.1);
 }
-.tests_ui .group_title input[type=checkbox],
-.tests_ui .test > div input[type=checkbox] {
+#testerrific .tests_panel .group_title input[type=checkbox],
+#testerrific .tests_panel .test > div input[type=checkbox] {
   display: inline-block;
   width: 25px;
   margin: 0;
 }
-.tests_ui .group_title p,
-.tests_ui .test > div p {
+#testerrific .tests_panel .group_title p,
+#testerrific .tests_panel .test > div p {
   flex: 1;
 }
-.tests_ui .group_title input[type=checkbox],
-.tests_ui .test > div input[type=checkbox] {
+#testerrific .tests_panel .group_title input[type=checkbox],
+#testerrific .tests_panel .test > div input[type=checkbox] {
   width: 13px;
 }
-.tests_ui .group_title .result_container,
-.tests_ui .test > div .result_container {
+#testerrific .tests_panel .group_title .result_container,
+#testerrific .tests_panel .test > div .result_container {
   line-height: 1em;
   text-align: right;
 }
-.tests_ui .group_title .result.error,
-.tests_ui .test > div .result.error {
+#testerrific .tests_panel .group_title .result.error,
+#testerrific .tests_panel .test > div .result.error {
   display: inline-block;
   padding: 0.1em 0.4em;
 }
-.tests_ui .group_title .time,
-.tests_ui .test > div .time {
+#testerrific .tests_panel .group_title .time,
+#testerrific .tests_panel .test > div .time {
   font-size: 0.8em;
 }
-.tests_ui .group_title:empty,
-.tests_ui .test > div:empty {
+#testerrific .tests_panel .group_title:empty,
+#testerrific .tests_panel .test > div:empty {
   padding: 0;
 }
-.tests_ui .running.test > div {
-  background: #f0fff0;
+#testerrific .tests_panel .running.test > div {
+  background: rgba(118, 255, 206, 0.3);
 }
-.tests_ui .running.fn:empty {
-  border-bottom: 2px solid #0c0;
-}
-.tests_ui .running_indicator {
-  width: 10px;
-  height: 10px;
+#testerrific .tests_panel .running_indicator {
+  width: 25px;
+  height: 25px;
   margin: 0 5px 0 0;
-  border: 2.5px solid rgba(0, 0, 0, 0.15);
-  border-top: 2.5px solid rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  animation: rotate 1s linear infinite;
+  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3' opacity='1'%3E%3Canimate id='a' begin='0;b.end-0.25s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3' opacity='.4'%3E%3Canimate begin='a.begin+0.15s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3' opacity='.3'%3E%3Canimate id='b' begin='a.begin+0.3s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3C/svg%3E");
+  opacity: 0.7;
 }
-.tests_ui .group_title {
+#testerrific .tests_panel .group_title {
   padding: 0.3em 9px;
   line-height: 2em;
   font-weight: 700;
-  background: #eee;
+  background: rgba(17, 17, 17, 0.1);
 }
-.tests_ui .group_title p {
+#testerrific .tests_panel .group_title p {
   font-size: 13px;
   cursor: pointer;
 }
-.tests_ui .group_title p:hover, .tests_ui .group_title p:focus, .tests_ui .group_title p:active {
+#testerrific .tests_panel .group_title p:hover, #testerrific .tests_panel .group_title p:focus, #testerrific .tests_panel .group_title p:active {
   color: #777;
 }
-.tests_ui .group_title span {
+#testerrific .tests_panel .group_title span {
   margin: 0 5px;
   font-size: 0.8em;
   cursor: pointer;
 }
-.tests_ui .group_title span:hover, .tests_ui .group_title span:focus, .tests_ui .group_title span:active {
+#testerrific .tests_panel .group_title span:hover, #testerrific .tests_panel .group_title span:focus, #testerrific .tests_panel .group_title span:active {
   color: #666;
 }
-.tests_ui .group_title .group_test_summary {
+#testerrific .tests_panel .group_title .group_test_summary {
   display: flex;
 }
-.tests_ui .group_title .group_test_summary b {
+#testerrific .tests_panel .group_title .group_test_summary b {
   display: inline-block;
   margin: 0;
   padding: 0 0.4em;
   line-height: 1em;
   border-right: 1px solid #aaa;
 }
-.tests_ui .group_title .group_test_summary b:last-child {
+#testerrific .tests_panel .group_title .group_test_summary b:last-child {
   border-right: none;
 }
-.tests_ui .fn > div p {
-  color: rgba(0, 0, 0, 0.6);
+#testerrific .tests_panel .fn > div p {
+  opacity: 0.6;
 }
-.tests_ui .fn > div:empty {
+#testerrific .tests_panel .fn > div:empty {
   border-bottom: none;
 }
-.tests_ui .skipped p {
-  color: rgba(0, 0, 0, 0.3);
+#testerrific .tests_panel .skipped p {
+  opacity: 0.5;
 }
-.tests_ui .tests_summary,
-.tests_ui .tests_message {
-  margin: 1em 0;
+#testerrific .tests_panel .tests_summary,
+#testerrific .tests_panel .tests_message {
+  margin: 1em 0 3em;
   padding: 1em;
   border: 1px solid #aaa;
-  color: #111;
   border-radius: 3px;
 }
-.tests_ui .tests_message {
+#testerrific .tests_panel .tests_message {
   position: fixed;
   top: 10px;
   right: 35px;
@@ -222,14 +218,13 @@
   box-shadow: 0 7px 9px rgba(0, 0, 0, 0.4);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.1s ease-in-out;
-}
-.tests_ui .tests_message.visible {
-  opacity: 1;
-  pointer-events: all;
   transition: opacity 0.3s ease-in-out;
 }
-.tests_ui .tests_message button {
+#testerrific .tests_panel .tests_message.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+#testerrific .tests_panel .tests_message button {
   display: block;
   flex: 1;
   margin: 1em auto 0;
@@ -239,7 +234,7 @@
   font-size: 1em;
   transition: all 0.2s ease-in-out;
 }
-.tests_ui .tests_message button.close {
+#testerrific .tests_panel .tests_message button.close {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -248,26 +243,26 @@
   margin: 0;
   padding: 0;
   color: #111;
-  background: url("data:image/svg+xml,%3Csvg width='44' height='44' viewBox='0 0 44 44' %3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.60297 42.4855C3.53485 44.4174 6.66693 44.4174 8.59882 42.4855L21.9609 29.1235L35.3232 42.4858C37.2551 44.4177 40.3873 44.4177 42.3192 42.4858C44.2509 40.5539 44.2509 37.4216 42.3192 35.4899L28.9568 22.1276L42.319 8.76532C44.2509 6.83344 44.2509 3.70135 42.319 1.76947C40.3873 -0.162415 37.2551 -0.162415 35.3232 1.76947L21.961 15.1318L8.59882 1.76947C6.66705 -0.16217 3.53485 -0.16217 1.60297 1.76947C-0.328918 3.70135 -0.328918 6.83368 1.60297 8.76556L14.965 22.1276L1.60297 35.4897C-0.328918 37.4216 -0.328918 40.5539 1.60297 42.4855Z' fill='black'/%3E%3C/svg%3E%0A") center center no-repeat;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44' viewBox='0 0 44 44' %3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M1.60297 42.4855C3.53485 44.4174 6.66693 44.4174 8.59882 42.4855L21.9609 29.1235L35.3232 42.4858C37.2551 44.4177 40.3873 44.4177 42.3192 42.4858C44.2509 40.5539 44.2509 37.4216 42.3192 35.4899L28.9568 22.1276L42.319 8.76532C44.2509 6.83344 44.2509 3.70135 42.319 1.76947C40.3873 -0.162415 37.2551 -0.162415 35.3232 1.76947L21.961 15.1318L8.59882 1.76947C6.66705 -0.16217 3.53485 -0.16217 1.60297 1.76947C-0.328918 3.70135 -0.328918 6.83368 1.60297 8.76556L14.965 22.1276L1.60297 35.4897C-0.328918 37.4216 -0.328918 40.5539 1.60297 42.4855Z' fill='black'/%3E%3C/svg%3E%0A") center center no-repeat;
   background-size: 10px;
   border: none;
   text-indent: -9999px;
   overflow: hidden;
   opacity: 0.5;
+  z-index: 10;
 }
-.tests_ui .tests_message button.close:hover, .tests_ui .tests_message button.close:focus, .tests_ui .tests_message button.close:active {
+#testerrific .tests_panel .tests_message button.close:hover, #testerrific .tests_panel .tests_message button.close:focus, #testerrific .tests_panel .tests_message button.close:active {
   opacity: 1;
 }
-.tests_ui.visible .tests_message {
+#testerrific .tests_panel.visible .tests_message {
   right: 525px;
 }
-.tests_ui .tests_summary_table {
+#testerrific .tests_panel .tests_summary_table {
   display: grid;
   grid-template-columns: fit-content(10px) 1fr;
   grid-gap: 0 0.4em;
 }
-
-.toggle_tests_panel {
+#testerrific .toggle_tests_panel {
   position: fixed;
   bottom: 150px;
   right: 0px;
@@ -285,15 +280,14 @@
   transition: all 0.3s ease-in-out;
   cursor: pointer;
 }
-.toggle_tests_panel.visible {
+#testerrific .toggle_tests_panel.visible {
   right: 500px;
 }
-.toggle_tests_panel:hover, .toggle_tests_panel:focus, .toggle_tests_panel:active {
+#testerrific .toggle_tests_panel:hover, #testerrific .toggle_tests_panel:focus, #testerrific .toggle_tests_panel:active {
   background: #555;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
-
-.collapse_group {
+#testerrific .collapse_group {
   position: absolute;
   top: 10px;
   left: -25px;
@@ -303,20 +297,15 @@
   transform-origin: 6px 3px;
   transition: transform 0.2s ease-in-out;
 }
-.collapse_group:hover, .collapse_group:focus, .collapse_group:active {
+#testerrific .collapse_group:hover, #testerrific .collapse_group:focus, #testerrific .collapse_group:active {
   border-top-color: #000;
 }
-.collapse .collapse_group {
+.collapse #testerrific .collapse_group {
   transform: rotate(-90deg);
 }
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+#testerrific .invisible {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /*# sourceMappingURL=testerrific.css.map */

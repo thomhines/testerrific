@@ -29,8 +29,8 @@ tt = {
 		run_if: '', // a boolean check that gets checked to determine if a test should be run. Helpful if you want to run specific tests only in certain scenarios.
 		message: '', // A message that can be presented to the user when the test is run.
 		fn: null,
-		before: () => {}, // A function that will be run before the test is executed. If a promise is returned, the test will wait until the promise is resolved
-		after: () => {}, // A function that will be run after the test is executed. If a promise is returned, the test will wait until the promise is resolved
+		before: function() {}, // A function that will be run before the test is executed. If a promise is returned, the test will wait until the promise is resolved
+		after: function() {}, // A function that will be run after the test is executed. If a promise is returned, the test will wait until the promise is resolved
 	},
 
 
@@ -55,8 +55,8 @@ tt = {
 			skip: 0,
 			only: 0,
 			run_if: '',
-			beforeEach: () => {},
-			afterEach: () => {},
+			beforeEach: function() {},
+			afterEach: function() {},
 		}, options))
 		
 		return
@@ -70,8 +70,8 @@ tt = {
 		// 	skip: 0,
 		// 	only: 0,
 		// 	run_if: '',
-		// 	beforeEach: () => {},
-		// 	afterEach: () => {},
+		// 	beforeEach: function() {},
+		// 	afterEach: function() {},
 		// }))
 	},
 
@@ -94,7 +94,7 @@ tt = {
 	// Test if logic is true on data
 	// label:		string that describes test
 	// check: 		string that evals to true/false. Eg. "x == 3"
-	// 			OR 	a function that returns true/false. Eg. () => { return x == 3 }. Currently only works with non-async functions
+	// 			OR 	a function that returns true/false. Eg. function() { return x == 3 }. Currently only works with non-async functions
 	// options:		(object) that can contain the following optional values:
 	//		skip: 		(boolean) whether to skip this test or not
 	//		only: 		(boolean) whether to run only this test or not
@@ -113,7 +113,7 @@ tt = {
 		if(typeof check == 'object' || !check) {
 			options = check
 			check = label
-			label = null
+			label = ''
 		}
 
 		// let test_obj = ttb.clone(tt.test_defaults)
@@ -157,7 +157,7 @@ tt = {
 		if(typeof fn == 'object' || !fn) {
 			options = fn
 			fn = label
-			label = null
+			label = ''
 		}
 
 
@@ -189,7 +189,7 @@ tt = {
 	// Add a delay to the test chain
 	// delay: 		integer, number of milliseconds to wait
 	wait: function(delay) {
-		tt.run(() => {
+		tt.run('Wait ' + delay + ' ms', function() {
 			return new Promise(function(resolve, reject) {
 				setTimeout(resolve, delay)
 			})
@@ -203,6 +203,7 @@ tt = {
 			tt.alert("Tests paused.")
 			tt.pause_tests()
 		})
+		tt.run("Pause", function(){return 1}, { pause: 1 })
 	},
 
 
@@ -286,14 +287,14 @@ tt = {
 		// Run specific group only
 		if(tt.running_group >= 0) {
 			tt.current_group = tt.running_group
-			tt.groups[tt.current_group].tests.forEach((test) => {
+			tt.groups[tt.current_group].tests.forEach(function(test) {
 				test.result = null
 			})
 		}
 		else {
 			tt.current_group = 0
-			tt.groups.forEach((group) => {
-				group.tests.forEach((test) => {
+			tt.groups.forEach(function(group) {
+				group.tests.forEach(function(test) {
 					group.result = null
 					test.result = null
 				})
@@ -503,11 +504,8 @@ tt = {
 	},
 
 
-
-
 	run_next_test: function() {
-
-
+		
 		if(tt.paused) return
 
 		let _group = tt.groups[tt.current_group]
@@ -579,6 +577,17 @@ tt = {
 
 		tt.alert('Tests Complete', 3000)
 	},
+	
+	
+	// Reset results on all tests
+	reset_tests: function() {
+		tt.groups.forEach(function(group) {
+			group.tests.forEach(function(test) {
+				test.result = null
+				test.time = null
+			})
+		})
+	},
 
 
 	// Display message to user
@@ -596,7 +605,10 @@ tt = {
 
 		clearTimeout(tt.alert_timeout)
 		tt.alert_timeout = setTimeout(function() {
-			tt.alert('')
+			$('.tests_message').removeClass('visible')
+			setTimeout(function() {
+				tt.message = ''
+			}, 300)
 		}, time_limit)
 
 	},
@@ -608,9 +620,9 @@ tt = {
 	},
 	
 	// Enable all groups and tests
-	enable_groups() {
-		tt.groups.forEach((group) => {
-			group.tests.forEach((test) => {
+	enable_all_groups() {
+		tt.groups.forEach(function(group) {
+			group.tests.forEach(function(test) {
 				group.skip = 0
 				test.skip = 0
 			})
@@ -618,23 +630,24 @@ tt = {
 	},
 	
 	// Disable all groups and tests
-	disable_groups() {
-		tt.groups.forEach((group) => {
-			group.tests.forEach((test) => {
+	disable_all_groups() {
+		tt.groups.forEach(function(group) {
+			group.skip = 1
+			group.tests.forEach(function(test) {
 				group.skip = 1
 				test.skip = 1
 			})
 		})
 	},
 	
-	collapse_groups() {
-		tt.groups.forEach((group) => {
+	collapse_all_groups() {
+		tt.groups.forEach(function(group) {
 			group.collapse = 1
 		})
 	},
 	
-	expand_groups() {
-		tt.groups.forEach((group) => {
+	expand_all_groups() {
+		tt.groups.forEach(function(group) {
 			group.collapse = 0
 		})
 	},
@@ -657,7 +670,6 @@ tt = {
 		// let group_index = $(e.target).closest('.group').attr('group_index')
 		// let test_index = $(e.target).closest('.test').attr('test_index')
 		let val = $('.group[group_index="' + group_index + '"] .test[test_index="' + test_index + '"]').find('input[type="checkbox"]').prop('checked')
-		console.log('val', val);
 		if(val) tt.groups[group_index].skip = 0
 		tt.groups[group_index].tests[test_index].skip = !val
 	},
@@ -872,7 +884,7 @@ var ttb = {
 			return eval(str)
 		}
 		catch(error) {
-			console.log('eval error', str);
+			// console.log('eval error (group '+(tt.current_group + 1)+', test '+(tt.current_test + 1)+'): ', str);
 		}
 	},
 
@@ -908,6 +920,7 @@ ttb.init.prototype.render = function () {
 	let bool_attrs = ['checked', 'disabled']
 	bool_attrs.forEach(function(attr) {
 		$(temp).find('[\\:' + attr + ']').each(function() {
+			if(attr == 'disabled') console.log($(this).attr(':' + attr));
 			if(ttb.seval($(this).attr(':' + attr))) $(this).attr(attr, 1)
 			$(this).removeAttr(':' + attr)
 		})
@@ -932,7 +945,7 @@ var testerrific_ui = new ttb.init({
 		
 			<div class="tests_container">
 			
-			<div class="tests_ui ${ttb.print_if({ visible: tt.visible })}">
+			<div class="tests_panel ${ttb.print_if({ visible: tt.visible })}">
 				
 				<div class="tests_message ${ttb.print_if({ visible: tt.message.length })}">
 					<span>${ tt.message }</span>
@@ -940,14 +953,14 @@ var testerrific_ui = new ttb.init({
 						<button class="pass" onclick="tt.pass_test()">Pass</button>
 						<button class="fail" onclick="tt.fail_test()">Fail</button>
 					</div>
-					<button :if="tt.running && tt.paused" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Resume</button>
-					<button class="close" onclick="tt.alert('')">close</button>
+					<button :if="tt.running && tt.paused" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="white"/></svg> Resume</button>
+					<button class="close" onclick="tt.alert(tt.message, 0)">close</button>
 				</div>
 				
 				
 				<div class="panel_inner_container">
 					
-					<h2>Tests</h2>
+					<h2>Testerrific</h2>
 					
 					<div class="run_all_tests_container">
 						<div :if="!tt.running">
@@ -971,9 +984,9 @@ var testerrific_ui = new ttb.init({
 					<div class="tests_summary" :if="tt.running || (tt.totals('run') && tt.totals('run') != tt.totals('skipped'))">
 						<h3>Summary:</h3>
 						<div class="tests_summary_table">
-							<div :if="tt.totals('run')"><b class="run">${tt.totals('run')}</b></div><div :if="tt.totals('run')"> tests run</div>
-							<div :if="tt.totals('passed')"><b class="passed">${tt.totals('passed')}</b></div><div :if="tt.totals('passed')"> passed</div>
-							<div :if="tt.totals('failed')"><b class="failed">${tt.totals('failed')}</b></div><div :if="tt.totals('failed')"> failed</div>
+							<div><b class="run">${tt.totals('run')}</b></div><div> tests run</div>
+							<div><b class="passed">${tt.totals('passed')}</b></div><div> passed</div>
+							<div><b class="failed">${tt.totals('failed')}</b></div><div> failed</div>
 							<div :if="tt.totals('skipped')"><b class="skipped">${tt.totals('skipped')}</b></div><div :if="tt.totals('skipped')"> skipped</div>
 							<div :if="tt.totals('error')"><b class="error">${tt.totals('error')}</b></div><div :if="tt.totals('error')"> errors</div>
 						</div>
@@ -988,11 +1001,11 @@ var testerrific_ui = new ttb.init({
 					
 					<div class="tests_table">
 						<div class="table_controls">
-							<a onclick="tt.enable_groups()">enable all</a>
-							<a onclick="tt.disable_groups()">disable all</a>
+							<a onclick="tt.enable_all_groups()">enable all</a>
+							<a onclick="tt.disable_all_groups()">disable all</a>
 							<div>|</div>
-							<a onclick="tt.expand_groups()">expand all</a>
-							<a onclick="tt.collapse_groups()">collapse all</a>
+							<a onclick="tt.expand_all_groups()">expand all</a>
+							<a onclick="tt.collapse_all_groups()">collapse all</a>
 						</div>
 						
 						${tt.groups.map(function(group, group_index) {
@@ -1017,17 +1030,18 @@ var testerrific_ui = new ttb.init({
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div :if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip })}" test_index="${test_index}" key="${test_index}">
-									
-										<div v-if="test.label">
-											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
+									<div :if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause })}" test_index="${test_index}" key="${test_index}">
+										
+										<div :if="${typeof test.label == 'string'}">
+											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}" :disabled="${test.pause}">
 											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
 												<div class="result ${test.result}">${test.result}</div>
 												<div class="time" :if="${test.time !== null}">${ test.time }ms</div>
 											</div>
-											<button onclick="tt.run_test(${group_index}, ${test_index}).then(tt.finish_tests)" :disabled="${tt.running == 1}">Run</button>
+											<button onclick="tt.run_test(${group_index}, ${test_index}).then(tt.finish_tests)" :if="${!test.pause}" :disabled="${tt.running == 1}">Run</button>
+											<button onclick="tt.resume_tests()" :if="${test.pause}" :disabled="${!tt.paused}">Resume</button>
 										</div>
 									
 									</div>
@@ -1047,7 +1061,7 @@ var testerrific_ui = new ttb.init({
 			</div>
 			
 			
-			<button class="toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">Tests</button>
+			<button class="toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">Testerrific</button>
 			
 			</div>
 			
