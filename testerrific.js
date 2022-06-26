@@ -189,7 +189,7 @@ tt = {
 	// Add a delay to the test chain
 	// delay: 		integer, number of milliseconds to wait
 	wait: function(delay) {
-		tt.run('Wait ' + delay + ' ms', function() {
+		tt.run('Wait ' + ttb.ms_to_s(delay) + ' sec', function() {
 			return new Promise(function(resolve, reject) {
 				setTimeout(resolve, delay)
 			})
@@ -441,9 +441,7 @@ tt = {
 
 							// If test returns a promise, wait for promise to resolve, save the result, and run_test_loop() again
 							if(test_function_result instanceof Promise) {
-								console.log('has promise')
 								Promise.resolve(test_function_result).then(function(promise_result) {
-									console.log('run_test_loop resolved')
 									if(promise_result) _test.result = 'passed'
 									else _test.result = 'failed'
 									_test.time = (new Date()).getTime() - tt.test_start.getTime()
@@ -501,6 +499,7 @@ tt = {
 	skip_test: function(group = tt.current_group, test = tt.current_test) {
 		tt.is_manual_test = 0
 		tt.groups[group].tests[test].result = 'skipped'
+		if(tt.paused) tt.current_test++
 	},
 
 
@@ -634,7 +633,6 @@ tt = {
 		tt.groups.forEach(function(group) {
 			group.skip = 1
 			group.tests.forEach(function(test) {
-				group.skip = 1
 				test.skip = 1
 			})
 		})
@@ -667,11 +665,11 @@ tt = {
 	},
 	
 	toggle_skip_test(group_index, test_index) {
-		// let group_index = $(e.target).closest('.group').attr('group_index')
-		// let test_index = $(e.target).closest('.test').attr('test_index')
-		let val = $('.group[group_index="' + group_index + '"] .test[test_index="' + test_index + '"]').find('input[type="checkbox"]').prop('checked')
-		if(val) tt.groups[group_index].skip = 0
-		tt.groups[group_index].tests[test_index].skip = !val
+		let skip = !!tt.groups[group_index].tests[test_index].skip
+		tt.groups[group_index].tests[test_index].skip = !skip
+		if(skip) {
+			tt.groups[group_index].skip = 0
+		}
 	},
 	
 	// Calculate the totals for each type of result in the tests
@@ -920,8 +918,9 @@ ttb.init.prototype.render = function () {
 	let bool_attrs = ['checked', 'disabled']
 	bool_attrs.forEach(function(attr) {
 		$(temp).find('[\\:' + attr + ']').each(function() {
-			if(attr == 'disabled') console.log($(this).attr(':' + attr));
-			if(ttb.seval($(this).attr(':' + attr))) $(this).attr(attr, 1)
+			let result = ttb.seval($(this).attr(':' + attr))
+			if(result == 'false') result = 0
+			if(result) $(this).attr(attr, 1)
 			$(this).removeAttr(':' + attr)
 		})
 	})
@@ -1030,10 +1029,11 @@ var testerrific_ui = new ttb.init({
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div :if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause })}" test_index="${test_index}" key="${test_index}">
+									<div if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" key="${test_index}">
 										
 										<div :if="${typeof test.label == 'string'}">
-											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}" :disabled="${test.pause}">
+											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}" :if="${!test.pause}">
+											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index}); tt.toggle_skip_test(${group_index}, ${test_index - 1})" :if="${test.pause}">
 											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
@@ -1041,7 +1041,7 @@ var testerrific_ui = new ttb.init({
 												<div class="time" :if="${test.time !== null}">${ test.time }ms</div>
 											</div>
 											<button onclick="tt.run_test(${group_index}, ${test_index}).then(tt.finish_tests)" :if="${!test.pause}" :disabled="${tt.running == 1}">Run</button>
-											<button onclick="tt.resume_tests()" :if="${test.pause}" :disabled="${!tt.paused}">Resume</button>
+											<button onclick="tt.resume_tests()" :if="${test.pause && tt.paused}">Resume</button>
 										</div>
 									
 									</div>

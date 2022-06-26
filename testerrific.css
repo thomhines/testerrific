@@ -88,7 +88,8 @@
   grid-gap: 10px;
 }
 #testerrific .tests_panel .run_all_tests_container button {
-  font-size: 1rem;
+  font-size: 14px;
+  padding: 0.8em 1.6em;
 }
 #testerrific .tests_panel .table_controls {
   display: flex;
@@ -99,6 +100,9 @@
 #testerrific .tests_panel .group {
   position: relative;
   margin: 0 0 2em;
+}
+#testerrific .tests_panel .group.running .group_title {
+  background: rgba(17, 17, 17, 0.15);
 }
 #testerrific .tests_panel .group.collapse {
   margin-bottom: 1em;
@@ -157,7 +161,8 @@
   padding: 0.3em 9px;
   line-height: 2em;
   font-weight: 700;
-  background: rgba(17, 17, 17, 0.1);
+  border-top: 1px solid rgba(17, 17, 17, 0.2);
+  background: rgba(17, 17, 17, 0.05);
 }
 #testerrific .tests_panel .group_title p {
   font-size: 13px;
@@ -292,20 +297,19 @@
   top: 10px;
   left: -25px;
   border: 6px solid rgba(0, 0, 0, 0);
-  border-top: 6px solid #555;
+  border-top: 6px solid rgba(0, 0, 0, 0.5);
   border-radius: 3px;
   transform-origin: 6px 3px;
-  transition: transform 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 #testerrific .collapse_group:hover, #testerrific .collapse_group:focus, #testerrific .collapse_group:active {
   border-top-color: #000;
 }
-.collapse #testerrific .collapse_group {
+#testerrific .collapse .collapse_group {
   transform: rotate(-90deg);
 }
-#testerrific .invisible {
-  opacity: 0;
-  pointer-events: none;
+#testerrific .hidden {
+  display: none;
 }
 
 /*# sourceMappingURL=testerrific.css.map */
