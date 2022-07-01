@@ -15,7 +15,7 @@ tt = {
 	is_manual_test: 0, // A flag that can indicate if a test requires manual intervention. It can be used to select all tests that might slow down a test run. No longer necessary???
 	skip_manual_tests: 0, // If enabled, all tests marked as manual tests are skipped
 	message: '', 
-
+	max_time: 1000, // How much time to wait for a test to be true before declaring it false
 	dom_check_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
 	dom_check_interval: 100, // Amount of time (ms) to wait before checking for the element again
 
@@ -25,7 +25,7 @@ tt = {
 		result: null, // Stores the result of the test (pass/fail/skipped)
 		skip: 0, // Determines if test is set to 'skip' on page load
 		only: 0, // Determines if test is set to be the only test to run. Multiple tests can be set to 'only'
-		max_time: 1000, // How much time to wait for a test to be true before declaring it false
+		max_time: null, // How much time to wait for a test to be true before declaring it false, will use tt.max_time if null
 		run_if: '', // a boolean check that gets checked to determine if a test should be run. Helpful if you want to run specific tests only in certain scenarios.
 		message: '', // A message that can be presented to the user when the test is run.
 		fn: null,
@@ -459,8 +459,10 @@ tt = {
 						result = false
 					}
 
-					if(!result && _test.max_time) {
-						if((new Date()).getTime() - tt.test_start.getTime() >= _test.max_time) {
+					if(!result && (_test.max_time !== null || tt.max_time)) {
+						let maxtime = _test.max_time
+						if(maxtime === null) maxtime = tt.max_time
+						if((new Date()).getTime() - tt.test_start.getTime() >= maxtime) {
 							_test.result = 'failed'
 							_test.error = 'timed out'
 							_test.time = (new Date()).getTime() - tt.test_start.getTime()
