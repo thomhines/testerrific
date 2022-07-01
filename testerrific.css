@@ -2,6 +2,7 @@
   position: fixed;
   top: 0;
   bottom: 0;
+  z-index: 9999;
   right: -500px;
   width: 500px;
   background: #fff;
@@ -261,6 +262,14 @@
 }
 #testerrific .tests_panel.visible .tests_message {
   right: 525px;
+}
+#testerrific .tests_panel .tests_summary {
+  position: relative;
+}
+#testerrific .tests_panel .tests_summary .clear_results {
+  position: absolute;
+  top: 1em;
+  right: 1em;
 }
 #testerrific .tests_panel .tests_summary_table {
   display: grid;

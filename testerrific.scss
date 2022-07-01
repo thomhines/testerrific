@@ -27,6 +27,7 @@ $skipped: #aaa;
 		position: fixed;
 		top: 0;
 		bottom: 0;
+		z-index: 9999;
 		right: -500px;
 		width: 500px;
 		background: $panel_bg;
@@ -402,6 +403,16 @@ $skipped: #aaa;
 	
 		&.visible .tests_message {
 			right: 525px;
+		}
+	
+		.tests_summary {
+			position: relative;
+			
+			.clear_results {
+				position: absolute;
+				top: 1em;
+				right: 1em;
+			}
 		}
 	
 		.tests_summary_table {

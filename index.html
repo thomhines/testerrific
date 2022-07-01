@@ -17,17 +17,31 @@
 	<style>
 		body {
 			font-family: 'Lato', sans-serif;
+			font-size: 17px;
 		}
 	
 		.container {
 			margin: 10vh 0 10vh calc(50vw - 350px - 250px);
-			
 			max-width: 700px;
-			
+		}
+		
+		h1 {
+			font-size: 3rem;
+			color: #ff5c75;
+		}
+		
+		h2 {
+			font-size: 1.2rem;
+			margin: -1.5em 0 1.5em;
+			color: #666;
 		}
 		
 		h3 {
 			margin: 1em 0 .3em;
+		}
+		
+		p {
+			
 		}
 		
 		button {
@@ -37,6 +51,7 @@
 			border: none;
 			border-radius: 3px;
 			transition: background .2s ease-in-out;
+			font-family: 'Lato', sans-serif;
 		}
 		
 		button:hover,button:focus,button:active {
@@ -49,7 +64,9 @@
 			margin: 0 0 3em;
 			padding: 0 1.5em;
 			background: #ddd;
+			font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
 			white-space: pre-wrap;
+			font-size: .9rem;
 		}
 		
 		code button {
@@ -58,13 +75,34 @@
 			right: 10px;
 		}
 		
+		a {
+			color: #ff5c75
+		}
+		
+		a:hover,a:focus,a:active {
+			color: #4f1922;
+		}
+		
+		
 		hr {
 			margin: 5em 0;
 			border: none;
 			border-top: 3px solid #aaa;
 		}
 		
-		.runnable_code {
+		.clear_tests {
+			position: fixed;
+			top: 20px;
+			right: calc(50vw - 350px - 280px);
+			padding: 10px;
+			background: #fff;
+			z-index: 10;
+		}
+		
+		.clear_tests button {
+			background: #ff5c75;
+			padding: .5em 1em;
+			font-size: 1rem;
 		}
 	
 	</style>
@@ -82,7 +120,11 @@
 			
 		<h1>Testerrific</h1>
 		
-		<button onclick="tt.groups = []">Clear all tests</button>
+		<h2>Test your code without the hassle</h2>
+		
+		<div class="clear_tests">
+			<button onclick="tt.groups = []">Clear all tests</button>
+		</div>
 		
 		
 		<div class="toc">
@@ -166,20 +208,20 @@ tt.group("Test Group Two"); <button>Run</button>
 		<p>asdfasfasf</p>
 		
 		<p>
-		label:		string that describes test
-		check: 		string that evals to true/false. Eg. "x == 3"
-					OR 	a function that returns true/false. Eg. () => { return x == 3 }. Currently only works with non-async functions
-		options:		(object) that can contain the following optional values:
-			skip: 		(boolean) whether to skip this test or not
-			only: 		(boolean) whether to run only this test or not
-			wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible
-			max_time:	Amount of time to wait for a truthy response. If blank, test will only test what value currently is
-			run_if:		(string that evals to truthy/false) Conditional that determines if test should be run
-			message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention
-			group:		(string or integer) The title or the group index of the group the test should be added to
-			position:	(integer) Position within a group the test should be inserted (starting from 0)
-			before:		(function/promise) gets run before test
-			after:		(function/promise) that gets run after test
+		label:		string that describes test<br>
+		check: 		string that evals to true/false. Eg. "x == 3"<br>
+					OR 	a function that returns true/false. Eg. () => { return x == 3 }. Currently only works with non-async functions<br>
+		options:		(object) that can contain the following optional values:<br>
+			skip: 		(boolean) whether to skip this test or not<br>
+			only: 		(boolean) whether to run only this test or not<br>
+			wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible<br>
+			max_time:	Amount of time to wait for a truthy response. If blank, test will only test what value currently is<br>
+			run_if:		(string that evals to truthy/false) Conditional that determines if test should be run<br>
+			message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention<br>
+			group:		(string or integer) The title or the group index of the group the test should be added to<br>
+			position:	(integer) Position within a group the test should be inserted (starting from 0)<br>
+			before:		(function/promise) gets run before test<br>
+			after:		(function/promise) that gets run after test<br>
 		</p>
 		
 		
@@ -248,7 +290,7 @@ tt.test('7. run_if example (run_if == true)', '1 > 0', {
 				
 		<h3>message</h3>
 		<code class="run_on_load">
-tt.test('8. Message example', 'a != 3', { message: 'Just saying hello!', max_time: 300 })
+tt.test('8. Message example', 'a != 3', { message: 'Just saying hello!', max_time: 300 }) <button>Run</button>
 		</code>
 		
 
@@ -273,7 +315,7 @@ tt.test('8. Message example', 'a != 3', { message: 'Just saying hello!', max_tim
 		
 		<code class="run_on_load">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
-tt.test("Is a still positive?", "a > 0");
+tt.test("Is a still positive?", "a > 0"); <button>Run</button>
 		</code>
 		
 		
@@ -283,13 +325,13 @@ tt.test("Is a still positive?", "a > 0");
 		<h3>tt.wait()</h3>
 		
 		<code class="run_on_load">
-tt.wait(300);
+tt.wait(300); <button>Run</button>
 		</code>
 		
 		
 		<h3>tt.pause()</h3>
 		<code class="run_on_load">
-tt.pause();
+tt.pause(); <button>Run</button>
 		</code>
 		
 		
@@ -443,6 +485,18 @@ tt.groups.forEach((group) => { group.collapse = true });
 		<p>To skip a test programmatically, simply set the `skip` property for that test to true/false in the tt.groups array. This code will re-enable Test #4 in Group 1:</p>
 		<code>
 tt.groups[0].tests[3].skip = false; <button>Run</button>
+		</code>
+		
+		
+		<p>Run tests on keystroke</p>
+		<code class="run_on_load">
+$(window).keydown(function(event) {
+	if(event.metaKey = true && event.key == 'g') {
+		event.preventDefault();
+		event.stopPropagation();
+		tt.start_tests();
+	}
+}) <button>Run</button>
 		</code>
 		
 		

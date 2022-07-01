@@ -199,11 +199,7 @@ tt = {
 
 	// Wait until user has clicked "Resume"
 	pause: function() {
-		tt.run(function() {
-			tt.alert("Tests paused.")
-			tt.pause_tests()
-		})
-		tt.run("Pause", function(){return 1}, { pause: 1 })
+		tt.run("Pause", function(){	tt.alert("Tests paused."); }, { pause: 1 })
 	},
 
 
@@ -330,6 +326,7 @@ tt = {
 	resume_tests: function() {
 		tt.paused = 0
 		tt.alert("")
+		if(tt.groups[tt.current_group].tests[tt.current_test].pause) tt.current_test++
 		tt.run_next_test()
 	},
 
@@ -366,6 +363,10 @@ tt = {
 						Promise.resolve(after_result).then(function(result) {
 							afterEach_result = _group.afterEach()
 							Promise.resolve(afterEach_result).then(function(result) {
+								if(!tt.running) {
+									tt.current_group = -1
+									tt.current_test = -1
+								}
 								resolve()
 							})
 						})
@@ -487,12 +488,14 @@ tt = {
 	pass_test: function(group = tt.current_group, test = tt.current_test) {
 		tt.is_manual_test = 0
 		tt.groups[group].tests[test].result = 'passed'
+		if(tt.paused) tt.current_test++
 	},
 
 
 	fail_test: function(group = tt.current_group, test = tt.current_test) {
 		tt.is_manual_test = 0
 		tt.groups[group].tests[test].result = 'failed'
+		if(tt.paused) tt.current_test++
 	},
 
 
@@ -559,6 +562,10 @@ tt = {
 		else {
 
 			tt.run_test(tt.current_group, tt.current_test).then(function() {
+				if(tt.groups[tt.current_group].tests[tt.current_test].pause) {
+					tt.paused = 1
+					return
+				}
 				tt.current_test = tt.current_test + 1
 				tt.run_next_test()
 			})
@@ -586,6 +593,7 @@ tt = {
 				test.time = null
 			})
 		})
+		tt.run_time = 0
 	},
 
 
@@ -919,7 +927,6 @@ ttb.init.prototype.render = function () {
 	bool_attrs.forEach(function(attr) {
 		$(temp).find('[\\:' + attr + ']').each(function() {
 			let result = ttb.seval($(this).attr(':' + attr))
-			if(result == 'false') result = 0
 			if(result) $(this).attr(attr, 1)
 			$(this).removeAttr(':' + attr)
 		})
@@ -980,12 +987,13 @@ var testerrific_ui = new ttb.init({
 					
 					
 					
-					<div class="tests_summary" :if="tt.running || (tt.totals('run') && tt.totals('run') != tt.totals('skipped'))">
+					<div class="tests_summary">
+						<button class="clear_results" onclick="tt.reset_tests()">Clear</button>
 						<h3>Summary:</h3>
 						<div class="tests_summary_table">
 							<div><b class="run">${tt.totals('run')}</b></div><div> tests run</div>
-							<div><b class="passed">${tt.totals('passed')}</b></div><div> passed</div>
-							<div><b class="failed">${tt.totals('failed')}</b></div><div> failed</div>
+							<div :if="tt.totals('passed')"><b class="passed">${tt.totals('passed')}</b></div><div :if="tt.totals('passed')"> passed</div>
+							<div :if="tt.totals('failed')"><b class="failed">${tt.totals('failed')}</b></div><div :if="tt.totals('failed')"> failed</div>
 							<div :if="tt.totals('skipped')"><b class="skipped">${tt.totals('skipped')}</b></div><div :if="tt.totals('skipped')"> skipped</div>
 							<div :if="tt.totals('error')"><b class="error">${tt.totals('error')}</b></div><div :if="tt.totals('error')"> errors</div>
 						</div>
@@ -994,12 +1002,11 @@ var testerrific_ui = new ttb.init({
 				
 						<div :if="tt.run_time">Total time: <b>${ttb.ms_to_s(tt.run_time)}</b> sec</div>
 						<div :if="!tt.run_time && tt.paused">Paused...</div>
-						<div :if="!tt.run_time && !tt.paused">Running...</div>
 					</div>
 					
 					
 					<div class="tests_table">
-						<div class="table_controls">
+						<div class="table_controls" :if="tt.groups.length">
 							<a onclick="tt.enable_all_groups()">enable all</a>
 							<a onclick="tt.disable_all_groups()">disable all</a>
 							<div>|</div>
@@ -1012,7 +1019,7 @@ var testerrific_ui = new ttb.init({
 							
 							<div class="group ${ ttb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == tt.current_group })}" group_index="${group_index}">
 								<div class="group_title">
-									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})">
+									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})" index="${group_index}">
 									<p onclick="tt.toggle_view_group(${group_index})">${ group.label }</p>
 									<span class="collapse_group" onclick="tt.toggle_view_group(${group_index})"></span>
 									<div class="group_test_summary" :if="${group_index} != tt.current_group && tt.totals('run', ${group_index})">
