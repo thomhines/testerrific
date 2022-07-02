@@ -18,7 +18,7 @@ tt = {
 	max_time: 1000, // How much time to wait for a test to be true before declaring it false
 	dom_check_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
 	dom_check_interval: 100, // Amount of time (ms) to wait before checking for the element again
-	display_test_index: 1, // Whether or not to display test number in list of tests
+	display_test_index: 0, // Whether or not to display test number in list of tests
 
 	test_defaults: {
 		running: 0, // Boolean that indicates if this is the test currently running

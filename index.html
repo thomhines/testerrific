@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>Testerrific</title>
+	<title>Testerrific | The absolute best way test your site</title>
 	<meta charset="utf-8" />
 	<meta name="description" content="" />
 	<meta name="theme-color" content="#333">
@@ -23,21 +23,20 @@
 			
 		<h1>Testerrific</h1>
 		
-<h2>The easiest way to test your code</h2>
+		<h2>The absolute best way test your site</h2>
 		
 		<div class="clear_tests">
 			<button onclick="tt.groups = []">Clear all tests</button>
 		</div>
 		
-		
 		<div class="toc">
-	<p><a href="#getting_started">Getting Started</a>
+			<p><a href="#getting_started">Getting Started</a>
 				<ul>
 					<li><a href="#getting_started">Installation</a></li>
 					<li><a href="#getting_started">Testing Basics</a></li>
 				</ul>
 			</p>
-	<p>
+			<p>
 				<a href="#creating_tests">Creating Tests</a>
 				<ul>
 					<li><a href="#getting_started">Groups</a></li>
@@ -45,13 +44,13 @@
 					<li><a href="#getting_started">Scheduled Functions</a></li>
 				</ul>
 			</p>
-	<p>
+			<p>
 				<a href="#events">Global Options</a>
 			</p>
-	<p>
+			<p>
 				<a href="#events">Events</a>
 			</p>
-	<p>
+			<p>
 				<a href="#other_tips">Examples & Tips</a>
 			</p>
 		</div>
@@ -63,14 +62,33 @@
 
 <h2 id="creating_tests">Features</h2>
 
-<ul>
-	<li>Simple syntax: By far the easiest syntax of any testing suite. In fact, you don't even have to use anything more than just one function, eg. <b>tt.test("a < 4")</b></li>
-	<li>Extensible: Even though it's simple, you can customize tests in a number of ways to create exactly the scenarios you need to check.</li>
-	<li>Reactive: A reactive UI means you have the ability to change tests and settings and see the interface update in real-time.</li>
-	<li>Async friendly: Whether you're waiting for the server, the DOM, even on user input, Testerrrific has a things like auto-retry, conditional checks, and promise-friendly input to make sure tests complete when they should.</li>
-	<li>Helper functions and events:</li>
-	<li>Intuitive UI: You can disable tests, pause execution, or even run a specific test on demand, all without having to go back to your code to change settings.</li>
-</ul>
+<div class="features grid">
+	<div>
+		<h5>Simple syntax</h5>
+		<p>By far the easiest syntax of any testing suite. In fact, you don't even have to use anything more than just one function, eg. <b>tt.test("a < 4")</b></p>
+	</div>
+	<div>
+		<h5>Extensible</h5>
+		<p>Even though it's simple, you can customize tests in a number of ways to create exactly the scenarios you need to check.</p>
+	</div>
+	<div>
+		<h5>Reactive</h5>
+		<p>A reactive UI means you have the ability to change tests and settings and see the interface update in real-time.</p>
+	</div>
+	<div>
+		<h5>Async friendly</h5>
+		<p>Whether you're waiting for the server, the DOM, even on user input, Testerrific has things like <a href="#auto_retry">auto-retry</a>, <a href="#wait_for_element">conditional checks</a>, and promise-friendly inputs to make sure tests run when they should.</p>
+	</div>
+	<div>
+		<h5>Helper functions and events</h5>
+		<p>A whole set of functions and events to be able to track and adjust how your tests affect or respond to just about any situation on your site.</p>
+	</div>
+	<div>
+		<h5>Intuitive UI</h5>
+		<p>You can disable tests, pause execution, or even run a specific test on demand, all without having to go back to your code to change settings.</p>
+	</div>
+</div>
+
 
 <hr>
 		
@@ -82,9 +100,9 @@
 <p>Just link to the jQuery and the Testerrific JS and CSS files...</p>
 
 <pre class="no_run_button no_edit">
-&lt;script src="<b>jquery.js</b>">&lt;/script> &lt;!-- any version (incl. "slim") OK -->
-&lt;script src="<b>testerrific.js</b>">&lt;/script>
-&lt;link rel="Stylesheet" href="<b>testerrific.css</b>" type="text/css" />
+&lt;script src="jquery.js">&lt;/script> &lt;!-- any version (incl. "slim") OK -->
+&lt;script src="testerrific.js">&lt;/script>
+&lt;link rel="Stylesheet" href="testerrific.css" type="text/css" />
 </pre>
 
 <p>And then add some tests.</p>
@@ -100,7 +118,7 @@ tt.group('First Test Group');
 
 tt.test('1 + 1 == 2');
 tt.test('window.innerHeight > 200');
-tt.test('"Testerrific is great alskja sjflkjasf lkasjf alskfj aslfkj asldfkjasdlfakj sflaksjf laksjf alksfdja s"');
+tt.test('"Testerrific is great!!"');
 </pre>
 
 <div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
@@ -242,8 +260,8 @@ tt.test('wait_for_element example', '4 == 4', {
 </pre>
 
 		
-<h5>max_time</h5>
-<p>The amount of time (in ms) to keep trying a test until it returns truthy.</p>
+<h5 id="auto_retry">max_time (auto-retry)</h5>
+<p>By default, Testerrific will retry a test multiple times until it is true in case there are asynchronous factors that a test might be waiting on. This setting controls the amount of time (integer, in ms) to keep trying a test until it returns truthy. Set to '0' to disable auto-retry.</p>
 <pre class="run_on_load">
 tt.test('Max Time example (wait 3 sec)', '1 > 2', { 
 	max_time: 3000 
@@ -542,7 +560,7 @@ tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group"
 
 
 <link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
-<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="testerrific.js"></script>
 
 <script>
@@ -553,17 +571,17 @@ $(document).ready(function() {
 	// $('code *').prop('contenteditable', false)
 	
 	
-	// $('a[href*="#"]').click(function(e) {
-	// 	e.preventDefault();
-	// 	var target = $(this.hash);
-	// 	$('html, body').animate({
-	// 	  scrollTop: target.offset().top - 50
-	// 	}, 1000, function() {
-	// 		// var $target = $(target);
-	// 		target.attr('tabindex','-1');
-	// 		target.focus();
-	// 	})
-	// })
+	$('a[href*="#"]').click(function(e) {
+		e.preventDefault();
+		var target = $(this.hash);
+		$('html, body').animate({
+		  scrollTop: target.offset().top - 50
+		}, 1000, function() {
+			// var $target = $(target);
+			target.attr('tabindex','-1');
+			target.focus();
+		})
+	})
 	
 	$('.run_on_load').each(function() {		
 		$clone = $(this).clone()

@@ -10,15 +10,15 @@ body {
 }
 
 h1 {
-	font-size: 3.4rem;
+	font-size: 4.2rem;
 	line-height: 1em;
-	margin: 0 0 .7em;
+	margin: 0 0 .4em;
 	color: #ff5c75;
-	font-family: 'Bungee Shade', cursive;
+	font-family: 'Bungee Shade', sans-serif;
 }
 
 h2 {
-	font-family: 'Bungee Hairline', cursive;
+	font-family: 'Bungee Hairline', sans-serif;
 	text-shadow: 0 0 1px #ff5c75, 0 0 1px #ff5c75;
 	font-size: 1.9rem;
 	margin: -.5em 0 1.5em -.15em;
@@ -158,6 +158,14 @@ hr {
 	display: grid;
 	grid-template-columns: auto auto;
 	gap: 1em 2em;
+}
+
+.features {
+	gap: 1em;
+}
+
+.features h5 {
+	margin: 0 0 1em;
 }
 
 .pre {
