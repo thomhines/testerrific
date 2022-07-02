@@ -332,7 +332,7 @@ $skipped: #aaa;
 		.tests_message {
 			position: fixed;
 			top: 10px;
-			right: 35px;
+			right: 65px;
 			width: 300px;
 			background: $attention;
 			color: #000;
@@ -344,7 +344,7 @@ $skipped: #aaa;
 			box-shadow: 0 7px 9px rgb(0 0 0 / 40%);
 			opacity: 0;
 			pointer-events: none;
-			transition: opacity .3s ease-in-out;
+			transition: all .3s ease-in-out;
 			
 			&.visible {
 				opacity: 1;
@@ -402,7 +402,7 @@ $skipped: #aaa;
 		}
 	
 		&.visible .tests_message {
-			right: 525px;
+			right: 555px;
 		}
 	
 		.tests_summary {
@@ -428,16 +428,18 @@ $skipped: #aaa;
 	
 	.toggle_tests_panel {
 		position: fixed;
-		bottom: 150px;
-		right: 0px;
+		top: 0;
+		right: 0;
 		margin: 0;
-		padding: .8em 1.5em;
+		padding: .8em 1.5em 1.1em;
 		transform: rotate(-90deg);
 		transform-origin: bottom right;
 		background: #000;
 		color: #fff;
 		font-family: 'Lato', 'Barlow', sans-serif;
-		letter-spacing: .06em;
+		font-size: 11px;
+		font-weight: 600;
+		letter-spacing: .1em;
 		border-radius: 0;
 		border: none;
 		box-shadow: 0 0 10px rgba(0,0,0,.5);

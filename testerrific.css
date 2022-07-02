@@ -212,7 +212,7 @@
 #testerrific .tests_panel .tests_message {
   position: fixed;
   top: 10px;
-  right: 35px;
+  right: 65px;
   width: 300px;
   background: #76ffce;
   color: #000;
@@ -224,7 +224,7 @@
   box-shadow: 0 7px 9px rgba(0, 0, 0, 0.4);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
 }
 #testerrific .tests_panel .tests_message.visible {
   opacity: 1;
@@ -261,7 +261,7 @@
   opacity: 1;
 }
 #testerrific .tests_panel.visible .tests_message {
-  right: 525px;
+  right: 555px;
 }
 #testerrific .tests_panel .tests_summary {
   position: relative;
@@ -278,16 +278,18 @@
 }
 #testerrific .toggle_tests_panel {
   position: fixed;
-  bottom: 150px;
-  right: 0px;
+  top: 0;
+  right: 0;
   margin: 0;
-  padding: 0.8em 1.5em;
+  padding: 0.8em 1.5em 1.1em;
   transform: rotate(-90deg);
   transform-origin: bottom right;
   background: #000;
   color: #fff;
   font-family: "Lato", "Barlow", sans-serif;
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   border-radius: 0;
   border: none;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

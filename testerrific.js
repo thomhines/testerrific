@@ -127,6 +127,9 @@ tt = {
 
 		// Use test as label if no label given
 		if(!test_obj.label && typeof check == 'string') test_obj.label = check
+		
+		// If no groups exist yet, add one
+		if(tt.groups.length < 1) tt.group("Test Group")
 
 		let current_group = tt.groups[tt.groups.length - 1]
 
@@ -553,7 +556,6 @@ tt = {
 		// Skip steps that are set to 'skip' or 'run_if' returns false
 		if(_test.skip || (_test.run_if && ttb.seval(_test.run_if) == false)) {
 			_test.result = 'skipped'
-			// Vue.set(tt, 'current_test', tt.current_test + 1)
 			tt.current_test = tt.current_test + 1
 			tt.run_next_test()
 			return
@@ -1070,7 +1072,7 @@ var testerrific_ui = new ttb.init({
 			</div>
 			
 			
-			<button class="toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">Testerrific</button>
+			<button class="toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">TESTS</button>
 			
 			</div>
 			

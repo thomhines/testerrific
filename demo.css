@@ -1,0 +1,176 @@
+body {
+	font-family: 'Lato', sans-serif;
+	font-size: 17px;
+	tab-size: 3;
+}
+
+.container {
+	margin: 10vh 0 10vh calc(50vw - 350px - 250px);
+	max-width: 700px;
+}
+
+h1 {
+	font-size: 3.4rem;
+	line-height: 1em;
+	margin: 0 0 .7em;
+	color: #ff5c75;
+	font-family: 'Bungee Shade', cursive;
+}
+
+h2 {
+	font-family: 'Bungee Hairline', cursive;
+	text-shadow: 0 0 1px #ff5c75, 0 0 1px #ff5c75;
+	font-size: 1.9rem;
+	margin: -.5em 0 1.5em -.15em;
+	color: #ff5c75;
+}
+
+h1 + h2 {
+	margin: -1em 0 2em;
+	font-family: 'Lato', sans-serif;
+	font-size: 1.2rem;			
+	color: #666;
+	text-shadow: none;
+}
+
+h3 {
+	font-size: 1.6rem;
+	margin: 5em 0 .3em;
+	outline: none;
+}
+
+h2 + h3 {
+	margin-top: 2em;
+}
+
+h2:focus,
+h3:focus {
+	color: #ff5c75;
+}
+
+h4 {
+	margin: 3em 0 .6em;
+	font-size: 1.3rem;
+	font-weight: 600;
+}
+
+h5 {
+	margin: 4em 0 1em;
+	font-size: .8rem;
+	text-transform: uppercase;
+	font-weight: 800;
+	letter-spacing: .1em;
+	color: #888;
+}
+
+p {
+	
+}
+
+ul {
+	margin: -1em 0 1em;
+	padding: 0;
+	font-size: 1rem;
+	list-style-position: inside;
+}
+
+
+
+button {
+	padding: 0.4em 0.8em;
+	background: #333;
+	color: #fff;
+	border: none;
+	border-radius: 5px;
+	outline: none;
+	transition: background .2s ease-in-out;
+	font-family: 'Lato', sans-serif;
+}
+
+button:hover,button:focus,button:active {
+	background: #ff5c75;			
+}
+
+.code_container {
+	position: relative;
+	margin: 0 0 3em;
+}
+
+.code_container pre,
+.code_container pre.prettyprint {
+	display: block;
+	margin: 0 0 3em;
+	padding: 1em;
+	background: #f5f2f0;
+	font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
+	white-space: pre-wrap;
+	font-size: .9rem;
+	border: 3px solid #aaa;
+	border-radius: 5px;
+}
+
+
+
+.code_container button {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+a {
+	color: #ff5c75
+}
+
+a:hover,a:focus,a:active {
+	color: #4f1922;
+}
+
+
+hr {
+	margin: 5em 0;
+	border: none;
+	border-top: 3px solid #aaa;
+}
+
+.clear_tests {
+	position: fixed;
+	top: 20px;
+	right: calc(50vw - 600px);
+	padding: 10px;
+	background: #fff;
+	z-index: 10;
+}
+
+.clear_tests button {
+	background: #ff5c75;
+	padding: .5em 1em;
+	font-size: 1rem;
+}
+
+.clear_tests button:hover,
+.clear_tests button:focus,
+.clear_tests button:active {
+	background: #333;
+	color: #fff;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: auto auto;
+	gap: 1em 2em;
+}
+
+.pre {
+	white-space: pre-wrap;
+}
+
+.indent {
+	text-indent: 1.5em;
+}
+
+.note {
+	padding: 1em;
+	background: #ffcdd4;
+	border: 4px solid #ff5c75;
+	border-radius: 5px;
+}

@@ -2,122 +2,18 @@
 <html lang="en-us">
 <head>
 	<title>Testerrific</title>
-	<link href="https://plus.google.com/GooglePlusId" rel="publisher"/>
 	<meta charset="utf-8" />
 	<meta name="description" content="" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 	<meta name="theme-color" content="#333">
 	<link rel="shortcut icon" href="favicon.ico" />
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 	
-	<link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Bungee+Hairline&family=Bungee+Shade&display=swap" rel="stylesheet">
 	
-	<style>
-	
-		body {
-			font-family: 'Lato', sans-serif;
-			font-size: 17px;
-		}
-	
-		.container {
-			margin: 10vh 0 10vh calc(50vw - 350px - 250px);
-			max-width: 700px;
-		}
-		
-		h1 {
-			font-size: 3rem;
-			color: #ff5c75;
-		}
-		
-		h2 {
-			font-size: 1.2rem;
-			margin: -1.5em 0 1.5em;
-			color: #666;
-		}
-		
-		h2:focus {
-			color: #ff5c75;
-		}
-		
-		h3 {
-			margin: 1em 0 .3em;
-			outline: none;
-		}
-		
-		p {
-			
-		}
-		
-		button {
-			padding: 0.4em 0.8em;
-			background: #333;
-			color: #fff;
-			border: none;
-			border-radius: 3px;
-			outline: none;
-			transition: background .2s ease-in-out;
-			font-family: 'Lato', sans-serif;
-		}
-		
-		button:hover,button:focus,button:active {
-			background: #ff5c75;			
-		}
-		
-		code {
-			position: relative;
-			display: block;
-			margin: 0 0 3em;
-			padding: 0 1.5em;
-			background: #ddd;
-			font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
-			white-space: pre-wrap;
-			font-size: .9rem;
-		}
-		
-		code button {
-			position: absolute;
-			top: 10px;
-			right: 10px;
-		}
-		
-		a {
-			color: #ff5c75
-		}
-		
-		a:hover,a:focus,a:active {
-			color: #4f1922;
-		}
-		
-		
-		hr {
-			margin: 5em 0;
-			border: none;
-			border-top: 3px solid #aaa;
-		}
-		
-		.clear_tests {
-			position: fixed;
-			top: 20px;
-			right: calc(50vw - 350px - 280px);
-			padding: 10px;
-			background: #fff;
-			z-index: 10;
-		}
-		
-		.clear_tests button {
-			background: #ff5c75;
-			padding: .5em 1em;
-			font-size: 1rem;
-		}
-	
-	</style>
-	
-	
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="testerrific.js"></script>
-	
+	<link rel="Stylesheet" href="demo.css" type="text/css" />	
 </head>
 
 <body>
@@ -127,7 +23,7 @@
 			
 		<h1>Testerrific</h1>
 		
-		<h2>Test your code without the hassle</h2>
+<h2>The easiest way to test your code</h2>
 		
 		<div class="clear_tests">
 			<button onclick="tt.groups = []">Clear all tests</button>
@@ -135,427 +31,510 @@
 		
 		
 		<div class="toc">
-			<ul>
-				<li><a href="#getting_started">Getting Started</a></li>
-				<li>
-					<a href="#test_groups">Test Groups</a>
-					<!-- <ul>
-						<li>Options</li>
-					</ul> -->
-				</li>
-				<li>
-					<a href="#creating_tests">Creating Tests</a>
-					<!-- <ul>
-						<li>Options</li>
-					</ul> -->
-				</li>
-				<li>
-					<a href="#events">Events</a>
-					<!-- <ul>
-						<li>Options</li>
-					</ul> -->
-				</li>
-				<li>
-					<a href="#other_tips">Other Tips</a>
-				</li>
-			</ul>
+	<p><a href="#getting_started">Getting Started</a>
+				<ul>
+					<li><a href="#getting_started">Installation</a></li>
+					<li><a href="#getting_started">Testing Basics</a></li>
+				</ul>
+			</p>
+	<p>
+				<a href="#creating_tests">Creating Tests</a>
+				<ul>
+					<li><a href="#getting_started">Groups</a></li>
+					<li><a href="#getting_started">Tests</a></li>
+					<li><a href="#getting_started">Scheduled Functions</a></li>
+				</ul>
+			</p>
+	<p>
+				<a href="#events">Global Options</a>
+			</p>
+	<p>
+				<a href="#events">Events</a>
+			</p>
+	<p>
+				<a href="#other_tips">Examples & Tips</a>
+			</p>
 		</div>
 		
 		
-		<hr>
+<hr>
 			
 		
 		
 		
-		<h2 id="getting_started">Getting Started</h2>
+<h2 id="getting_started">Getting Started</h2>
 		
-		<p>So simple!</p>
-		
-		<code class="run_on_load">
-tt.group('First Test Group')
+<h4>Installation</h4>
 
-tt.test('1 + 1 == 2')
-tt.test('window.innerHeight > 200')
-tt.test('"Testerrific is great"') <button>Run</button>
-		</code>
+<p>Just link to the jQuery and the Testerrific JS and CSS files...</p>
+
+<pre class="no_run_button no_edit">
+&lt;link rel="Stylesheet" href="<b>testerrific.css</b>" type="text/css" />
+
+&lt;script src="<b>jquery.js</b>">&lt;/script>
+&lt;script src="<b>testerrific.js</b>">&lt;/script>
+</pre>
+
+<p>And then add some tests.</p>
+
+<h4>The Basics</h4>
+
+<p>To start adding tests, simply run tt.test() to add a test to your list</p>
+		
+<pre class="run_on_load">
+tt.group('First Test Group');
+
+tt.test('1 + 1 == 2');
+tt.test('window.innerHeight > 200');
+tt.test('"Testerrific is great"');
+</pre>
+
+<div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
 		
 		
 		
-		<hr>
+<hr>
 			
 		
 		
-		<h3 id="test_groups">Test Groups</h3>
+<h2 id="creating_tests">Creating Tests</h2>
 		
-		<p>asdfasfasf</p>
+<h3 id="test_groups">Test Groups</h3>
 		
-		<p>
-		options:		object that can contain the following values:<br>
-			label:		string, label of test<br>
-			skip: 		boolean, whether to skip this test or not<br>
-			only: 		boolean, whether to run only this test or not<br>
-			collapse:	boolean, whether tests are shown or not<br>
-			beforeEach:	function that gets run before each test in group<br>
-			afterEach:	function that gets run after each test in group<br>
-		</p>
+<p>Tests are organized into test groups</p>
 		
-		<code class="run_on_load">
-tt.group("Test Group Two"); <button>Run</button>
-		</code>
+<h4>group(label, [options]);</h4>
 		
-
+<p>The <b>group()</b> function will create a new test group. Every test written after that will be in that test group until another test group is created.</p>
 		
-		<hr>
-		
-		
-		
-		<h3 id="creating_tests">Creating Tests</h3>
-		
-		<p>asdfasfasf</p>
-		
-		<p>
-		label:		string that describes test<br>
-		check: 		string that evals to true/false. Eg. "x == 3"<br>
-					OR 	a function that returns true/false. Eg. () => { return x == 3 }. Currently only works with non-async functions<br>
-		options:		(object) that can contain the following optional values:<br>
-			skip: 		(boolean) whether to skip this test or not<br>
-			only: 		(boolean) whether to run only this test or not<br>
-			wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible<br>
-			max_time:	Amount of time to wait for a truthy response. If blank, test will only test what value currently is<br>
-			run_if:		(string that evals to truthy/false) Conditional that determines if test should be run<br>
-			message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention<br>
-			group:		(string or integer) The title or the group index of the group the test should be added to<br>
-			position:	(integer) Position within a group the test should be inserted (starting from 0)<br>
-			before:		(function/promise) gets run before test<br>
-			after:		(function/promise) that gets run after test<br>
-		</p>
+<p class="grid">
+	<span><b>label</b>:</span> <span>(string) text shown as title for test group</span>
+	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
+<!-- label:		(string) label of test group<br> -->
+	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
+	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>collapse</b>:</span> <span>(boolean) whether tests are shown or not when page is loaded</span>
+	<span class="indent"> <b>beforeEach</b>:</span> <span>(function) function that gets run before each test in group</span>
+	<span class="indent"> <b>afterEach</b>:</span> <span>(function) function that gets run after each test in group</span>
+</p>
 		
 		
 		
-		<h3>Basic test</h3>
-		
-		<p>Test if a string evaluates as truth-y or false-y</p>
-				
-		<code class="run_on_load">
-tt.test("1 > 0"); <button>Run</button>
-		</code>
-		
-		
-		<h3>Labels</h3>
-		
-		<code class="run_on_load">
-tt.test("2. Is '1' a positive number?", "1 > 0"); <button>Run</button>
-		</code>
-		
-		
-		<h3>Test as function</h3>
-		<code class="run_on_load">
-tt.test("3. Is today Thursday?", () => {
-	return (new Date()).getDay() == 4
-}); <button>Run</button>
-		</code>
-		
+<h5>Examples</h5>
 		
 		
 				
+<p>To create a new test group:</p>
+		
+<pre class="run_on_load">
+tt.group("Test Group Two");
+</pre>
+		
+		
 				
-		<h3>Async tests</h3>
-		resolve with true or false
-		<code class="run_on_load">
+<h3>Tests</h3>
+		
+<h4>test([label], check, [options]);</h4>
+		
+<p>The <b>test()</b> function will create a new test, added to the end of the last test group. If you haven't defined a test group yet, Testerrific will make one for you.</p>
+		
+<p class="grid">
+	<span><b>label</b>:</span> <span>(string) text shown as title for test group. If no label is given and "check" value is a string, the check value will be used as the label</span>
+	<span><b>check</b>:</span> <span>(string, function, or promise) a string that resolves as truth-y or false-y<br>Eg. "x > 3"</span>
+	<span></span><span><b>OR</b> a function that returns true/false.<br>Eg. function() { return x == 3 }. </span>
+	<span></span><span><b>OR</b> a promise that resolves true/false.<br>Eg. new Promise((resolve, reject) => { resolve(true) }). </span>
+	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
+<!-- label:		(string) label of test group<br> -->
+	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
+	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>wait_for_element</b>:</span> <span>(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible</span>
+	<span class="indent"> <b>max_time</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>run_if</b>:</span> <span>(string that evals to truthy/false) Conditional that determines if test should be run</span>
+	<span class="indent"> <b>message</b>:</span> <span>(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention</span>
+	<span class="indent"> <b>group</b>:</span> <span>(string or integer) The title or the group index of the group the test should be added to</span>
+	<span class="indent"> <b>position</b>:</span> <span>(integer) Position within a group the test should be inserted (starting from 0)</span>
+	<span class="indent"> <b>before</b>:</span> <span>(function/promise) gets run before test. If a promise, test will wait for promise to resolve before beginning.</span>
+	<span class="indent"> <b>after</b>:</span> <span>(function/promise) gets run after test. If a promise, test will wait for promise to resolve before moving to next test.</span>
+</p>
+		
+		
+<h4>Basic (string) test</h4>
+		
+<p>Test if a string evaluates as truth-y or false-y</p>
+				
+<pre class="run_on_load">
+tt.test("1 > 0");
+</pre>
+		
+<p>You can also add a label to make your test easier to read or understand.</p>
+<pre class="run_on_load">
+tt.test("Is '1' a positive number?", "1 > 0");
+</pre>
+		
+<h4>Function tests</h4>
+<pre class="run_on_load">
 tt.test("Is today Thursday?", () => {
+	return (new Date()).getDay() == 4;
+});
+</pre>
+		
+				
+				
+<h4>Async (promise) tests</h4>
+<p>Tests that return a promise will run until they resolve with a truthy or falsey value.</p>
+<pre class="run_on_loadd">
+tt.test("Promise example", () => {
 	return new Promise(function(resolve, reject) {
 		setTimeout(() => {
-			reject(true)	
-		}, 3000)
+			resolve(true);
+		}, 3000);
 	})
-}); <button>Run</button>
-		</code>
-		
-		
-		<h3>skip</h3>
-		<p>Skipped tests are only disabled when the tests are first loaded. You can always enable a 'skipped' test or run it manually.</p>
-		
-		<code class="run_on_load">
-tt.test('4. Skip example', '4 == 4', { skip: 1 }) <button>Run</button>
-		</code>
-		
-		
-		
-		<h3>only</h3>
+});
+</pre>
 
-		<h3>wait_for_element</h3>
+
+<h4>Test options</h4>
 		
 		
-		<h3>max_time</h3>
-		<code class="run_on_load">
-tt.test('5. Max Time example (wait 3 sec)', '1 > 2', { max_time: 3000 }) <button>Run</button>
-		</code>
+<h5>skip</h5>
+<p>Disable this test. Skipped tests are only disabled when the tests are first loaded. You can always re-enable a 'skipped' test or run it manually.</p>
+		
+<pre class="run_on_load">
+tt.test('Skip example', '4 == 4', { 
+	skip: true 
+});
+</pre>
 		
 		
 		
-		<h3>run_if</h3>
-		<code class="run_on_load">
+<h5>only</h5>
+<p>Skip all other tests that are not also flagged as "only". This effect will only happen when Testerrific is first loaded.</p>	
+<pre>
+tt.test('Skip example', '4 == 4', { 
+	only: true 
+});
+</pre>
+
+<h5>wait_for_element</h5>
+<p>Wait to run test until specified elements (string with CSS or jQuery selector) are 100% visible. The test will wait up until the number of milliseconds set in <b>tt.dom_check_timeout</b>.</p>		
+<pre>
+tt.test('wait_for_element example', '4 == 4', { 
+	wait_for_element: '.test_element' 
+});
+</pre>
+
+		
+<h5>max_time</h5>
+<p>The amount of time (in ms) to keep trying a test until it returns truthy.</p>
+<pre class="run_on_load">
+tt.test('Max Time example (wait 3 sec)', '1 > 2', { 
+	max_time: 3000 
+});
+</pre>
+		
+		
+		
+<h5>run_if</h5>
+<p>A pre-test check to determine if test should be run.</p>
+<pre class="run_on_load">
 b = 3;
 
-tt.test('6. run_if example (run_if == false)', '1 > 0', { 
-	run_if: 'b == 2' 
+tt.test('run_if example (run_if == false)', '1 > 0', {
+	run_if: 'b == 2'
 });
 
-tt.test('7. run_if example (run_if == true)', '1 > 0', { 
-	run_if: 'b == 3' 
-}); <button>Run</button>
-		</code>
+tt.test('run_if example (run_if == true)', '1 > 0', {
+	run_if: 'b == 3'
+});
+</pre>
 
 		
 				
-		<h3>message</h3>
-		<code class="run_on_loadd">
-tt.test('8. Message example', 'a != 3', { message: 'Just saying hello!', max_time: 300 }) <button>Run</button>
-		</code>
+<h5>message</h5>
+<p>Display a message while test is running. This can be helpful to give status updates or instructions to user for manual intervention.</p>
+<pre class="run_on_loadd">
+tt.test('Message example', 'a != 3', { 
+	message: 'Just saying hello!', 
+	max_time: 300 
+});
+</pre>
 		
 
 		
-		<h3>group (string or int) & position (int)</h3>
-		<p>If not position is given, the test will be added to the end of "group"</p>
+<h5>group & position</h5>
+<p>Group value can either be the index (integer) or title (string) of an existing test group. Position is an integer stating where the test should be inserted within the group (starting from 0). If no position is given, the test will be added to the end of group.</p>
+<pre class="run_on_loadd">
+tt.test('Group and Position example', '1 > 0', { 
+	group: 1,
+	position: 3
+});
+</pre>
 		
-		
-		<h3>before & after</h3>
-		<p>(function/promise) gets run before/after test</p>
+<h5>before & after</h5>
+<p>(function/promise) gets run before/after test</p>
+<pre class="run_on_loadd">
+tt.test('Group and Position example', '1 > 0', { 
+	group: 1,
+	position: 3
+});
+</pre>
 	
-	
-		<hr>
+<hr>
 		
 		
+<h2>Scheduled Functions</h2>
 		
-		<h3>Run</h3>
 		
-		<p>label, fn, options (basically the same options as test())</p>
-		<p>'fn' Can either be a function that returns truthy/falsey or a promise. If a promise is given, tests will wait for promise to resolve before continuing to next test.</p>
+<h3>run(label, fn, options)</h3>
+		
+<p>label, fn, options (basically the same options as test())</p>
+<p>'fn' Can either be a function that returns truthy/falsey or a promise. If a promise is given, tests will wait for promise to resolve before continuing to next test.</p>
 
 		
-		<code class="run_on_loadd">
-<b>tt.run("change a to -3", () => { a = -3 });</b>
-tt.test("Is a still positive?", "a > 0"); <button>Run</button>
-		</code>
-		
-		
-		
-		
-		
-		<h3>tt.wait()</h3>
-		
-		<code class="run_on_loadd">
-tt.wait(300); <button>Run</button>
-		</code>
-		
-		
-		<h3>tt.pause()</h3>
-		<code class="run_on_loadd">
-tt.pause(); <button>Run</button>
-		</code>
-		
-		
-		<code class="run_on_loadd">
+<pre class="run_on_loadd">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
 tt.test("Is a still positive?", "a > 0");
-		</code>
+</pre>
+	
+<h3>wait()</h3>
 		
-		<hr>
-		
-		
-		<h2>Events</h2>
-		
-		<h3>start_tests()</h3>
-		<code>
-tt.start_tests(); <button>Run</button>
-		</code>
+<pre class="run_on_loadd">
+tt.wait(300);
+</pre>
 		
 		
-		<h3>pause_tests()</h3>
-		<p>Note: the tests will only get paused at the conclusion of the current test</p>
-		<code>
-tt.pause_tests(); <button>Run</button>
-		</code>
+<h3>pause()</h3>
+<pre class="run_on_loadd">
+tt.pause();
+</pre>
+		
+		
+<pre class="run_on_loadd">
+<b>tt.run("change a to -3", () => { a = -3 });</b>
+tt.test("Is a still positive?", "a > 0");
+</pre>
+		
+<hr>
+
+
+
+
+
+
+
+
+<h2 id="events">Events</h2>
+		
+<h3>start_tests()</h3>
+<pre>
+tt.start_tests();
+</pre>
+		
+		
+<h3>pause_tests()</h3>
+<p>Note: the tests will only get paused at the conclusion of the current test</p>
+<pre>
+tt.pause_tests();
+</pre>
 				
-		<h3>resume_tests()</h3>
-		<code>
-tt.resume_tests(); <button>Run</button>
-		</code>
+<h3>resume_tests()</h3>
+<pre>
+tt.resume_tests();
+</pre>
 		
 		
-		<h3>tt.run_test(group_index, test_index)</h3>
-		<code>
-tt.run_test(0,3); <button>Run</button>
-		</code>
+<h3>run_test(group_index, test_index)</h3>
+<pre>
+tt.run_test(1,2);
+</pre>
 		
-		<h3>tt.pass_test(group = tt.current_group, test = tt.current_test)</h3>
-		<p>You can use this to pass tests triggered by outside actions, such as...</p>
-		<code>
-tt.pass_test(0,3); <button>Run</button>
-		</code>
+<h3>pass_test(group = tt.current_group, test = tt.current_test)</h3>
+<p>You can use this to pass tests triggered by outside actions, such as...</p>
+<pre>
+tt.pass_test(0,3);
+</pre>
 		
-		<h3>tt.fail_test(group = tt.current_group, test = tt.current_test)</h3>
-		<code>
-tt.fail_test(0,3); <button>Run</button>
-		</code>
+<h3>fail_test(group = tt.current_group, test = tt.current_test)</h3>
+<pre>
+tt.fail_test(0,3);
+</pre>
 		
-		<h3>tt.skip_test(group = tt.current_group, test = tt.current_test)</h3>
-		<code>
-tt.skip_test(0,3); <button>Run</button>
-		</code>
+<h3>skip_test(group = tt.current_group, test = tt.current_test)</h3>
+<pre>
+tt.skip_test(0,3);
+</pre>
 		
-		<h3>tt.run_next_test()</h3>
-		<code>
-tt.run_next_test(); <button>Run</button>
-		</code>
+<h3>run_next_test()</h3>
+<pre>
+tt.run_next_test();
+</pre>
 		
-		<h3>tt.finish_tests()</h3>
-		<code>
-tt.finish_tests(); <button>Run</button>
-		</code>
+<h3>finish_tests()</h3>
+<pre>
+tt.finish_tests();
+</pre>
 		
-		<h3>tt.reset_tests()</h3>
-		<code>
-tt.reset_tests(); <button>Run</button>
-		</code>
+<h3>reset_tests()</h3>
+<pre>
+tt.reset_tests();
+</pre>
 		
-		<h3>tt.alert(message, time_limit = 999999)</h3>
-		<code>
-tt.alert('You obviously love to press the buttons', 300); <button>Run</button>
-		</code>
+<h3>alert(message, time_limit = 999999)</h3>
+<pre>
+tt.alert('You obviously love to press the buttons', 300);
+</pre>
 		
-		<h3>tt.toggle_tests_panel()</h3>
-		<code>
-tt.toggle_tests_panel(); <button>Run</button>
-		</code>
+<h3>toggle_tests_panel()</h3>
+<pre>
+tt.toggle_tests_panel();
+</pre>
 		
 		
-		<h3>tt.enable_all_groups()</h3>
-		<code>
-tt.enable_all_groups(); <button>Run</button>
-		</code>
+<h3>enable_all_groups()</h3>
+<pre>
+tt.enable_all_groups();
+</pre>
 		
-		<h3>tt.disable_all_groups()</h3>
-		<code>
-tt.disable_all_groups(); <button>Run</button>
-		</code>
+<h3>disable_all_groups()</h3>
+<pre>
+tt.disable_all_groups();
+</pre>
 		
-		<h3>tt.collapse_all_groups()</h3>
-		<code>
-tt.collapse_all_groups(); <button>Run</button>
-		</code>
+<h3>collapse_all_groups()</h3>
+<pre>
+tt.collapse_all_groups();
+</pre>
 		
-		<h3>tt.expand_all_groups()</h3>
-		<code>
-tt.expand_all_groups(); <button>Run</button>
-		</code>
+<h3>expand_all_groups()</h3>
+<pre>
+tt.expand_all_groups();
+</pre>
 		
-		<h3>tt.toggle_view_group(group_index) </h3>
-		<code>
-tt.toggle_view_group(0); <button>Run</button>
-		</code>		
+<h3>toggle_view_group(group_index) </h3>
+<pre>
+tt.toggle_view_group(0);
+</pre>		
 		
-		<h3>tt.toggle_skip_group(group_index)</h3>
-		<code>
-tt.toggle_skip_group(0); <button>Run</button>
-		</code>
+<h3>toggle_skip_group(group_index)</h3>
+<pre>
+tt.toggle_skip_group(0);
+</pre>
 		
-		<h3>tt.toggle_skip_test(group_index, test_index)</h3>
-		<code>
-tt.toggle_tests_panel(); <button>Run</button>
-		</code>
-		<button onclick="tt.toggle_skip_test(0, 3)">Run</button>
+<h3>toggle_skip_test(group_index, test_index)</h3>
+<pre>
+tt.toggle_skip_test(1, 3);
+</pre>
 		
-		<h3>tt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
-		<p>asdfafasdf</p>
-		<code>
+<h3>tt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
+<p>asdfafasdf</p>
+<pre>
 alert(`
-all: ${tt.totals()}
-passed: ${tt.totals('passed')}
-passed: ${tt.totals('skipped', 1)}
-`); <button>Run</button>
-		</code>
+	all: ${tt.totals()}
+	passed: ${tt.totals('passed')}
+	passed: ${tt.totals('skipped', 1)}
+`);
+</pre>
 	
 	
-		<hr>
+<hr>
 	
-		<h2>Other Settings</h2>
+<h2 id="other_tips">Other Settings</h2>
 		
-		<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>tt</b> object</p>
-		
-		
-		<h3>max_time</h3>
-		<p>tt.max_time = 1000</p>
+<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>tt</b> object</p>
 		
 		
-		<code>
-tt.visible = !tt.visible; <button>Run</button>
-		</code>
+<h3>max_time</h3>
+<p>tt.max_time = 1000</p>
+		
+		
+<pre>
+tt.visible = !tt.visible;
+</pre>
 		
 		
 		
-		<p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
-		<code>
-tt.visible = false; <button>Run</button>
-		</code>
+<p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
+<pre>
+tt.visible = false;
+</pre>
 		
-		<p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, simply add this to your code:</p>
-		<code>
+<p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, simply add this to your code:</p>
+<pre>
 tt.groups.forEach((group) => { group.collapse = true });
-		</code>
+
+</pre>
 
 
-		<p>To skip a test programmatically, simply set the `skip` property for that test to true/false in the tt.groups array. This code will re-enable Test #4 in Group 1:</p>
-		<code>
-tt.groups[0].tests[3].skip = false; <button>Run</button>
-		</code>
+<p>To skip a test programmatically, simply set the `skip` property for that test to true/false in the tt.groups array. This code will re-enable Test #4 in Group 1:</p>
+<pre>
+tt.groups[0].tests[3].skip = false;
+</pre>
 		
 		
-		<p>Run tests on keystroke</p>
-		<code class="run_on_load">
+<p>Run tests on keystroke</p>
+<pre class="run_on_load">
 $(window).keydown(function(event) {
 	if(event.metaKey = true && event.key == 'g') {
 		event.preventDefault();
 		event.stopPropagation();
 		tt.start_tests();
 	}
-}) <button>Run</button>
-		</code>
-		
-		
-		
-		<script>
-		
-		$(document).ready(function() {
-			
-			
-			$('a[href*="#"]').click(function(e) {
-				e.preventDefault();
-				var target = $(this.hash);
-				$('html, body').animate({
-				  scrollTop: target.offset().top - 50
-				}, 1000, function() {
-					// var $target = $(target);
-					target.attr('tabindex','-1');
-					target.focus();
-				})
-			})
-			
-			$('.run_on_load').each(function() {		
-				$clone = $(this).closest('code').clone()
-				$clone.find('button').remove()
-				eval($clone.text())
-			})
-		})
-		
-		
-		$('code button').click(function() {			
-			$clone = $(this).closest('code').clone()
-			$clone.find('button').remove()
-			eval($clone.text())
-		})
-		</script>
-	</div>
+});
+
+</pre>
+
+<link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
+<script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
+<script src="testerrific.js"></script>
+<!-- <script src="prism.js"></script> -->
+
+<script>
+
+$(document).ready(function() {
+	
+	$('pre:not(.no_edit)').prop('contenteditable', true).prop('spellcheck', false)
+	// $('code *').prop('contenteditable', false)
+	
+	
+	// $('a[href*="#"]').click(function(e) {
+	// 	e.preventDefault();
+	// 	var target = $(this.hash);
+	// 	$('html, body').animate({
+	// 	  scrollTop: target.offset().top - 50
+	// 	}, 1000, function() {
+	// 		// var $target = $(target);
+	// 		target.attr('tabindex','-1');
+	// 		target.focus();
+	// 	})
+	// })
+	
+	$('.run_on_load').each(function() {		
+		$clone = $(this).clone()
+		$clone.find('button').remove()
+		eval($clone.text())
+	})
+	
+	$('pre').each(function() {
+		$(this).wrap('<div class="code_container"></div>')
+		if(!$(this).hasClass('no_run_button')) $(this).parent().append('<button>Run</button>')
+	})
+	
+	
+	$('.code_container button').click(function() {
+		$clone = $(this).parent().find('pre').clone()
+		eval($clone.text())
+	})
+})
+
+$('pre').addClass('prettyprint')
+
+
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+
+</div>
 
 </body>
 </html>
