@@ -93,13 +93,13 @@ button:hover,button:focus,button:active {
 
 .code_container {
 	position: relative;
-	margin: 0 0 3em;
+	margin: 0 0 1.5em;
 }
 
 .code_container pre,
 .code_container pre.prettyprint {
 	display: block;
-	margin: 0 0 3em;
+	margin: 0 0 1.5em;
 	padding: 1em;
 	background: #f5f2f0;
 	font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
@@ -173,4 +173,10 @@ hr {
 	background: #ffcdd4;
 	border: 4px solid #ff5c75;
 	border-radius: 5px;
+}
+
+footer {
+	margin: 100px 0;
+	color: #ff5c75;
+	font-size: .8em;
 }

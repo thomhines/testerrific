@@ -18,6 +18,7 @@ tt = {
 	max_time: 1000, // How much time to wait for a test to be true before declaring it false
 	dom_check_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
 	dom_check_interval: 100, // Amount of time (ms) to wait before checking for the element again
+	display_test_index: 1, // Whether or not to display test number in list of tests
 
 	test_defaults: {
 		running: 0, // Boolean that indicates if this is the test currently running
@@ -669,10 +670,12 @@ tt = {
 	
 	toggle_skip_group(group_index) {
 		// let group_index = $(e.target).closest('.group').attr('group_index')
-		let val = $('.group[group_index="' + group_index + '"]').find('.group_title input[type="checkbox"]').prop('checked')
-		tt.groups[group_index].skip = !val
+		// let val = $('.group[group_index="' + group_index + '"]').find('.group_title input[type="checkbox"]').prop('checked')
+		// console.log(val);
+		let skip = !!tt.groups[group_index].skip
+		tt.groups[group_index].skip = !skip
 		tt.groups[group_index].tests.forEach(function(test) {
-			test.skip = !val
+			test.skip = !skip
 		})
 	},
 	
@@ -1043,6 +1046,7 @@ var testerrific_ui = new ttb.init({
 									<div if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" key="${test_index}">
 										
 										<div :if="${typeof test.label == 'string'}">
+											<i :if="${ tt.display_test_index }">${ test_index }</i> 
 											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}" :if="${!test.pause}">
 											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index}); tt.toggle_skip_test(${group_index}, ${test_index - 1})" :if="${test.pause}">
 											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>

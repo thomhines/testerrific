@@ -52,7 +52,7 @@ $skipped: #aaa;
 	
 		p {
 			margin: .2em 0;
-			line-height: 1em;
+			line-height: 1.2em;
 		}
 		
 		a {
@@ -163,6 +163,14 @@ $skipped: #aaa;
 		}
 	
 		.test {
+			
+			i {
+				display: inline-block;
+				margin: 0 0 0 .2em;
+				font-style: normal;
+				font-size: .8em;
+				color: rgba(0,0,0,.4);
+			}
 			
 			// &.pause {
 			// 	margin: 0 0 -2px;
@@ -434,7 +442,7 @@ $skipped: #aaa;
 		padding: .8em 1.5em 1.1em;
 		transform: rotate(-90deg);
 		transform-origin: bottom right;
-		background: #000;
+		background: #555;
 		color: #fff;
 		font-family: 'Lato', 'Barlow', sans-serif;
 		font-size: 11px;

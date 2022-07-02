@@ -59,7 +59,20 @@
 		
 <hr>
 			
-		
+
+
+<h2 id="creating_tests">Features</h2>
+
+<ul>
+	<li>Simple syntax: By far the easiest syntax of any testing suite. In fact, you don't even have to use anything more than just one function, eg. <b>tt.test("a < 4")</b></li>
+	<li>Extensible: Even though it's simple, you can customize tests in a number of ways to create exactly the scenarios you need to check.</li>
+	<li>Reactive: A reactive UI means you have the ability to change tests and settings and see the interface update in real-time.</li>
+	<li>Async friendly: Whether you're waiting for the server, the DOM, even on user input, Testerrrific has a things like auto-retry, conditional checks, and promise-friendly input to make sure tests complete when they should.</li>
+	<li>Helper functions and events:</li>
+	<li>Intuitive UI: You can disable tests, pause execution, or even run a specific test on demand, all without having to go back to your code to change settings.</li>
+</ul>
+
+<hr>
 		
 		
 <h2 id="getting_started">Getting Started</h2>
@@ -69,15 +82,16 @@
 <p>Just link to the jQuery and the Testerrific JS and CSS files...</p>
 
 <pre class="no_run_button no_edit">
-&lt;link rel="Stylesheet" href="<b>testerrific.css</b>" type="text/css" />
-
-&lt;script src="<b>jquery.js</b>">&lt;/script>
+&lt;script src="<b>jquery.js</b>">&lt;/script> &lt;!-- any version (incl. "slim") OK -->
 &lt;script src="<b>testerrific.js</b>">&lt;/script>
+&lt;link rel="Stylesheet" href="<b>testerrific.css</b>" type="text/css" />
 </pre>
 
 <p>And then add some tests.</p>
 
 <h4>The Basics</h4>
+
+<p>Tests are organized into test groups, and every group is saved as an array in <b>tt.groups</b>. Testerrific uses a "reactive" UI, meaning that changes made to the data saved in the <b>tt</b> objects are shown instantly in the interface. Adding or changing a test will automatically make that test show up in the tests list.</p>
 
 <p>To start adding tests, simply run tt.test() to add a test to your list</p>
 		
@@ -86,7 +100,7 @@ tt.group('First Test Group');
 
 tt.test('1 + 1 == 2');
 tt.test('window.innerHeight > 200');
-tt.test('"Testerrific is great"');
+tt.test('"Testerrific is great alskja sjflkjasf lkasjf alskfj aslfkj asldfkjasdlfakj sflaksjf laksjf alksfdja s"');
 </pre>
 
 <div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
@@ -99,9 +113,10 @@ tt.test('"Testerrific is great"');
 		
 <h2 id="creating_tests">Creating Tests</h2>
 		
+
 <h3 id="test_groups">Test Groups</h3>
 		
-<p>Tests are organized into test groups</p>
+
 		
 <h4>group(label, [options]);</h4>
 		
@@ -139,10 +154,13 @@ tt.group("Test Group Two");
 <p>The <b>test()</b> function will create a new test, added to the end of the last test group. If you haven't defined a test group yet, Testerrific will make one for you.</p>
 		
 <p class="grid">
-	<span><b>label</b>:</span> <span>(string) text shown as title for test group. If no label is given and "check" value is a string, the check value will be used as the label</span>
-	<span><b>check</b>:</span> <span>(string, function, or promise) a string that resolves as truth-y or false-y<br>Eg. "x > 3"</span>
-	<span></span><span><b>OR</b> a function that returns true/false.<br>Eg. function() { return x == 3 }. </span>
-	<span></span><span><b>OR</b> a promise that resolves true/false.<br>Eg. new Promise((resolve, reject) => { resolve(true) }). </span>
+	<span><b>label</b>:</span> <span>(string) text shown as title for test. If no label is given and "check" value is a string, the "check" string will be used as the label.</span>
+	<span><b>check</b>:</span> <span>(string) that evaluates as truthy/falsey.<br>
+	<b>OR</b><br>
+	(function) that returns truthy/falsey.<br>
+	<b>OR</b><br>
+	(promise) that resolves truthy/falsey.
+	</span>
 	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
 <!-- label:		(string) label of test group<br> -->
 	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
@@ -272,48 +290,50 @@ tt.test('Group and Position example', '1 > 0', {
 		
 <h5>before & after</h5>
 <p>(function/promise) gets run before/after test</p>
-<pre class="run_on_loadd">
-tt.test('Group and Position example', '1 > 0', { 
-	group: 1,
-	position: 3
+<pre class="run_on_load">
+a = 0
+tt.test('before() example', 'a == 1', { 
+	before: () => {
+		a = 1
+	}
 });
 </pre>
-	
+
 <hr>
-		
-		
+
+
+
+
+
+	
 <h2>Scheduled Functions</h2>
 		
-		
-<h3>run(label, fn, options)</h3>
-		
-<p>label, fn, options (basically the same options as test())</p>
-<p>'fn' Can either be a function that returns truthy/falsey or a promise. If a promise is given, tests will wait for promise to resolve before continuing to next test.</p>
+<h4>run([label], fn, [options])</h4>
+<p>Run an arbitrary function as an item in the tests list.</p>
 
-		
+<p class="grid">
+	<span><b>label</b>:</span> <span>(string) text shown as title for test group. If no label is given and "check" value is a string, the check value will be used as the label</span>
+	<span><b>fn</b>:</span> <span>(function or promise) Function to be run. If a promise is given, tests will wait for promise to resolve before continuing.</span>
+	<span><b>options</b>:</span> <span>(object) Options to affect how function is run. See options for <a href="#">test()</a> function above for list of available options.</span>
+</p>
+
 <pre class="run_on_loadd">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
 tt.test("Is a still positive?", "a > 0");
 </pre>
 	
-<h3>wait()</h3>
-		
+<h4>wait(time)</h4>
+<p>Wait a specified amount of time (in ms) before moving to next test.</p>
 <pre class="run_on_loadd">
 tt.wait(300);
 </pre>
-		
-		
-<h3>pause()</h3>
+
+<h4>pause()</h4>
+<p>Pause tests at this point. User will need to manually click 'Resume' in order for tests to continue.</p>
 <pre class="run_on_loadd">
 tt.pause();
 </pre>
-		
-		
-<pre class="run_on_loadd">
-<b>tt.run("change a to -3", () => { a = -3 });</b>
-tt.test("Is a still positive?", "a > 0");
-</pre>
-		
+
 <hr>
 
 
@@ -325,113 +345,133 @@ tt.test("Is a still positive?", "a > 0");
 
 <h2 id="events">Events</h2>
 		
-<h3>start_tests()</h3>
+<h4>start_tests([group_index])</h4>
+<p>Run all of the unskipped tests. If a group_index is given, it will only run the tests in that group. If no index is given, all tests will be run starting from the first group.</p>
 <pre>
 tt.start_tests();
 </pre>
 		
 		
-<h3>pause_tests()</h3>
-<p>Note: the tests will only get paused at the conclusion of the current test</p>
+<h4>pause_tests()</h4>
+<p>Pause execution of tests.<br>
+Note: the tests will only get paused at the conclusion of the current test</p>
 <pre>
 tt.pause_tests();
 </pre>
 				
-<h3>resume_tests()</h3>
+<h4>resume_tests()</h4>
+<p>Resume execution of tests.</p>
 <pre>
 tt.resume_tests();
 </pre>
 		
 		
-<h3>run_test(group_index, test_index)</h3>
+<h4>run_test(group_index, test_index)</h4>
+<p>Run specific test. Both group_index and test_index are integers of the position of which group and test to run (starting from 0).</p>
 <pre>
 tt.run_test(1,2);
 </pre>
 		
-<h3>pass_test(group = tt.current_group, test = tt.current_test)</h3>
+<h4>pass_test([group_index], [test_index])</h4>
+<p>Set specific test as 'passed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, pass_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to pass tests triggered by outside actions, such as...</p>
 <pre>
 tt.pass_test(0,3);
 </pre>
 		
-<h3>fail_test(group = tt.current_group, test = tt.current_test)</h3>
+<h4>fail_test([group_index], [test_index])</h4>
+<p>Set specific test as 'failed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, fail_test() will assume the group and/or test currently being run.</p>
+<p>You can use this to fail tests triggered by outside actions, such as...</p>
 <pre>
 tt.fail_test(0,3);
 </pre>
-		
-<h3>skip_test(group = tt.current_group, test = tt.current_test)</h3>
+
+<h4>skip_test([group_index], [test_index])</h4>
+<p>Set specific test as 'skipped'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, skip_test() will assume the group and/or test currently being run.</p>
+<p>You can use this to skip tests triggered by outside actions, such as...</p>
 <pre>
 tt.skip_test(0,3);
 </pre>
 		
-<h3>run_next_test()</h3>
+<!-- <h4>run_next_test()</h4>
 <pre>
 tt.run_next_test();
-</pre>
+</pre> -->
 		
-<h3>finish_tests()</h3>
+<h4>finish_tests()</h4>
+<p>Quit execution of tests, cancelling any test that is currently being run.</p>
 <pre>
 tt.finish_tests();
 </pre>
 		
-<h3>reset_tests()</h3>
+<h4>reset_tests()</h4>
+<p>Reset all results and timers for all tests.</p>
 <pre>
 tt.reset_tests();
 </pre>
 		
-<h3>alert(message, time_limit = 999999)</h3>
+<h4>alert(message, [time_limit])</h4>
+<p>Display text 'message' (string) for the number of milliseconds set in time_limit. If time_limit is not set, it will display the message indefinitely or until another message is shown.</p>
 <pre>
-tt.alert('You obviously love to press the buttons', 300);
+tt.alert('You obviously love to press the buttons', 3000);
 </pre>
 		
-<h3>toggle_tests_panel()</h3>
+<h4>toggle_tests_panel()</h4>
+<p>Open tests panel if closed, close it if it's open.</p>
 <pre>
 tt.toggle_tests_panel();
 </pre>
 		
 		
-<h3>enable_all_groups()</h3>
+<h4>enable_all_groups()</h4>
+<p>Mark all groups and tests as enabled (ie. not 'skipped').</p>
 <pre>
 tt.enable_all_groups();
 </pre>
 		
-<h3>disable_all_groups()</h3>
+<h4>disable_all_groups()</h4>
+<p>Mark all groups and tests as disabled (ie. 'skipped').</p>
 <pre>
 tt.disable_all_groups();
 </pre>
 		
-<h3>collapse_all_groups()</h3>
+<h4>collapse_all_groups()</h4>
+<p>Visually collapse all groups in the tests panel. Tests within a collapsed group will still run even if they aren't visible.</p>
 <pre>
 tt.collapse_all_groups();
 </pre>
 		
-<h3>expand_all_groups()</h3>
+<h4>expand_all_groups()</h4>
+<p>Visually expand all groups in the tests panel.</p>
 <pre>
 tt.expand_all_groups();
 </pre>
 		
-<h3>toggle_view_group(group_index) </h3>
+<h4>toggle_view_group(group_index) </h4>
+<p>Toggle whether the tests within a specific test group are visible.</p>
 <pre>
 tt.toggle_view_group(0);
 </pre>		
 		
-<h3>toggle_skip_group(group_index)</h3>
+<h4>toggle_skip_group(group_index)</h4>
+<p>Toggle whether the tests within a specific test group are enabled (ie. not 'skipped') or not.</p>
 <pre>
 tt.toggle_skip_group(0);
 </pre>
 		
-<h3>toggle_skip_test(group_index, test_index)</h3>
+<h4>toggle_skip_test(group_index, test_index)</h4>
+<p>Toggle whether a specific test within a specific test group are enabled (ie. not 'skipped') or not.</p>
 <pre>
 tt.toggle_skip_test(1, 3);
 </pre>
 		
-<h3>tt.totals(type = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h3>
-<p>asdfafasdf</p>
+<h4>tt.totals([type] = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h4>
+<p>Returns the number of tests that have a certain result type for a specific test group. Result types can be 'all', 'run', 'passed', 'failed', 'skipped', or 'error'. If not type is given, totals() will assume 'all'. If not group_index is given, totals() will return a count for all test groups.</p>
 <pre>
 alert(`
-	all: ${tt.totals()}
-	passed: ${tt.totals('passed')}
-	passed: ${tt.totals('skipped', 1)}
+	total number of tests: ${tt.totals()}
+	total number 'passed' tests: ${tt.totals('passed')}
+	total number of 'skipped' tests in the 2nd test group: ${tt.totals('skipped', 1)}
 `);
 </pre>
 	
@@ -440,39 +480,45 @@ alert(`
 	
 <h2 id="other_tips">Other Settings</h2>
 		
-<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing the <b>tt</b> object</p>
+<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing properties of the <b>tt</b> object.</p>
 		
 		
-<h3>max_time</h3>
-<p>tt.max_time = 1000</p>
-		
-		
+<h4>max_time</h3>
+<p>The amount of time (in ms) to keep trying a test until it returns truthy. This applies to all tests unless a test overwrites its default max_time setting.</p>
 <pre>
-tt.visible = !tt.visible;
+tt.max_time = 1000
 </pre>
 		
 		
-		
+<h4>visible</h3>
+<p>Whether or not the tests panel is visible or shown.</p>
 <p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
 <pre>
 tt.visible = false;
 </pre>
-		
+
+
+<hr>
+
+<h2>Helpful Hints and Examples</h2>
+
+<h4>Start with test groups collapsed</h4>
 <p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, simply add this to your code:</p>
 <pre>
 tt.groups.forEach((group) => { group.collapse = true });
-
 </pre>
 
 
-<p>To skip a test programmatically, simply set the `skip` property for that test to true/false in the tt.groups array. This code will re-enable Test #4 in Group 1:</p>
+<h4>Skipping tests via code</h4>
+<p>To skip/unskip a test programmatically, simply set the `skip` property for that test to true/false in the <b>tt.groups</b> array. This code will re-enable Test #4 in Group 1:</p>
 <pre>
-tt.groups[0].tests[3].skip = false;
+tt.groups[1].tests[3].skip = false;
 </pre>
 		
 		
-<p>Run tests on keystroke</p>
-<pre class="run_on_load">
+<h4>Run tests on keystroke</h4>
+<p>This one's already been run. Press <b>Cmd-G</b> or <b>Ctrl-G</b> to start running the tests!</p>
+<pre class="run_on_load no_run_button">
 $(window).keydown(function(event) {
 	if(event.metaKey = true && event.key == 'g') {
 		event.preventDefault();
@@ -480,13 +526,24 @@ $(window).keydown(function(event) {
 		tt.start_tests();
 	}
 });
-
 </pre>
+
+<h4>Duplicating a test group</h4>
+<p>There are times when you want to run a set of tests that are very similar to another set of tests. You can duplicate and modify a test group simply by copying and altering elements of the <b>tt.groups</b> array.</p>
+<pre>
+tt.groups.push(tt.groups[0]);
+tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group";
+</pre>
+
+
+<footer>
+	Testerrific &copy;2021-<script>document.write((new Date).getFullYear());</script>, Thom Hines
+</footer>
+
 
 <link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
 <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js"></script>
 <script src="testerrific.js"></script>
-<!-- <script src="prism.js"></script> -->
 
 <script>
 
