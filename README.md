@@ -38,7 +38,7 @@ Control and respond to your tests with a large assortment of helper functions an
 
 To get Testerrific working, just link to jQuery (any version, incl. "slim", will work) and the Testerrific JS and CSS files:
 
-```
+```html
 <script src="jquery.js"></script>
 <script src="testerrific.js"></script>
 <link rel="Stylesheet" href="testerrific.css" type="text/css" />
@@ -52,7 +52,7 @@ then write some tests...
 Tests are saved as an array. Testerrific uses a "reactive" UI (meaning that changes made to the data saved in the tt objects are shown instantly in the interface), so adding or changing a test in the array will also update the list of tests in the UI.
 
 
-```
+```javascript
 // Create a group to organize your tests.
 // Tests will be added to this group until another test group is created
 tt.group('First Test Group');
