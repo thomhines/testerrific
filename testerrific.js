@@ -275,19 +275,12 @@ tt = {
 
 	//
 	start_tests: function(group_index = -1) {
-		tt.groups.forEach(function(group) {
-			group.result = null
-			group.time = null
-			group.tests.forEach(function(test) {
-				// test.result = null
-				test.time = null
-			})
-		})
 		tt.running_group = group_index
 		// Run specific group only
 		if(tt.running_group >= 0) {
 			tt.current_group = tt.running_group
 			tt.groups[tt.current_group].tests.forEach(function(test) {
+				test.time = null
 				test.result = null
 			})
 		}

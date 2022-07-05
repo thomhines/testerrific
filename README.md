@@ -1,5 +1,6 @@
 # Testerrific
-*The best, fastest, easiest way test your site*
+
+**The absolute best, fastest, easiest way test your site**
 
 ### [Demo & Docs Site](projects.thomhines.com/testerrific/)
 

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>Testerrific | The absolute best way test your site</title>
+	<title>Testerrific | The absolute best, fastest, easiest way test your site</title>
 	<meta charset="utf-8" />
 	<meta name="description" content="" />
 	<meta name="theme-color" content="#333">
@@ -13,6 +13,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Bungee+Hairline&family=Bungee+Shade&display=swap" rel="stylesheet">
 
+	<link rel="Stylesheet" href="testerrific.min.css" type="text/css" media="all" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	
 	<link rel="Stylesheet" href="demo.css" type="text/css" />	
@@ -25,9 +26,10 @@
 			
 		<h1>Testerrific</h1>
 		
-		<h2>The absolute best way test your site</h2>
+		<h2>The absolute best, fastest, easiest way test your site</h2>
 		
-		<div class="github_link">
+		<div class="header_links">
+			<a class="button" href="https://github.com/thomhines/testerrific">Download</a>
 			<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
 		</div>
 		
@@ -123,8 +125,8 @@
 tt.group('First Test Group');
 
 tt.test('1 + 1 == 2');
-tt.test('window.innerHeight > 200');
-tt.test('"Testerrific is great!!"');
+tt.test("Is window tall enough?", 'window.innerHeight > 200');
+tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 </code>
 
 <div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
@@ -565,15 +567,14 @@ tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group"
 </footer>
 
 
-<link rel="Stylesheet" href="testerrific.css" type="text/css" media="all" />
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="testerrific.js"></script>
+<script src="testerrific.min.js"></script>
 
 <script>
 
 $(document).ready(function() {
 	
-	// $('pre:not(.no_edit)').prop('contenteditable', true).prop('spellcheck', false)
+	$('code:not(.no_edit)').prop('contenteditable', true).prop('spellcheck', false)
 	// $('code *').prop('contenteditable', false)
 	
 	
