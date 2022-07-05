@@ -96,20 +96,25 @@ button:hover,button:focus,button:active {
 	margin: 0 0 1.5em;
 }
 
-.code_container pre,
-.code_container pre.prettyprint {
+.code_container pre {
 	display: block;
 	margin: 0 0 1.5em;
-	padding: 1em;
+	padding: 0 4em 2em 1em;
 	background: #f5f2f0;
 	font-family: Menlo, Consolas, DejaVu Sans Mono, monospace;
 	white-space: pre-wrap;
 	font-size: .9rem;
 	border: 3px solid #aaa;
 	border-radius: 5px;
+	overflow: auto;
 }
 
-
+.container .code_container code {
+	display: block;
+	margin: -1em 0;
+	padding: 0 4em 0 0;
+	font-size: 1rem;
+}
 
 .code_container button {
 	position: absolute;
@@ -164,7 +169,11 @@ hr {
 	gap: 1em;
 }
 
-.features h5 {
+.features h4 {
+	margin: 0 0 .3em;
+}
+
+.features p {
 	margin: 0 0 1em;
 }
 

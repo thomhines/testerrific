@@ -12,6 +12,8 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Bungee+Hairline&family=Bungee+Shade&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	
 	<link rel="Stylesheet" href="demo.css" type="text/css" />	
 </head>
@@ -19,7 +21,7 @@
 <body>
 	
 	
-	<div class="container">
+	<div class="container language-javascript">
 			
 		<h1>Testerrific</h1>
 		
@@ -64,27 +66,27 @@
 
 <div class="features grid">
 	<div>
-		<h5>Simple syntax</h5>
+		<h4>Simple syntax</h4>
 		<p>By far the easiest syntax of any testing suite. In fact, you don't even have to use anything more than just one function, eg. <b>tt.test("a < 4")</b></p>
 	</div>
 	<div>
-		<h5>Extensible</h5>
+		<h4>Extensible</h4>
 		<p>Even though it's simple, you can customize tests in a number of ways to create exactly the scenarios you need to check.</p>
 	</div>
 	<div>
-		<h5>Reactive</h5>
+		<h4>Reactive</h4>
 		<p>A reactive UI means you have the ability to change tests and settings and see the interface update in real-time.</p>
 	</div>
 	<div>
-		<h5>Async friendly</h5>
+		<h4>Async friendly</h4>
 		<p>Whether you're waiting for the server, the DOM, even on user input, Testerrific has things like <a href="#auto_retry">auto-retry</a>, <a href="#wait_for_element">conditional checks</a>, and promise-friendly inputs to make sure tests run when they should.</p>
 	</div>
 	<div>
-		<h5>Helper functions and events</h5>
+		<h4>Helper functions and events</h4>
 		<p>A whole set of functions and events to be able to track and adjust how your tests affect or respond to just about any situation on your site.</p>
 	</div>
 	<div>
-		<h5>Intuitive UI</h5>
+		<h4>Intuitive UI</h4>
 		<p>You can disable tests, pause execution, or even run a specific test on demand, all without having to go back to your code to change settings.</p>
 	</div>
 </div>
@@ -97,13 +99,13 @@
 		
 <h4>Installation</h4>
 
-<p>Just link to the jQuery and the Testerrific JS and CSS files...</p>
+<p>Just link to the jQuery (any version (incl. "slim") OK) and the Testerrific JS and CSS files...</p>
 
-<pre class="no_run_button no_edit">
-&lt;script src="jquery.js">&lt;/script> &lt;!-- any version (incl. "slim") OK -->
+<code class="no_run_button no_edit javascript-html">
+&lt;script src="jquery.js">&lt;/script>
 &lt;script src="testerrific.js">&lt;/script>
 &lt;link rel="Stylesheet" href="testerrific.css" type="text/css" />
-</pre>
+</code>
 
 <p>And then add some tests.</p>
 
@@ -112,14 +114,14 @@
 <p>Tests are organized into test groups, and every group is saved as an array in <b>tt.groups</b>. Testerrific uses a "reactive" UI, meaning that changes made to the data saved in the <b>tt</b> objects are shown instantly in the interface. Adding or changing a test will automatically make that test show up in the tests list.</p>
 
 <p>To start adding tests, simply run tt.test() to add a test to your list</p>
-		
-<pre class="run_on_load">
+
+<code class="run_on_load">
 tt.group('First Test Group');
 
 tt.test('1 + 1 == 2');
 tt.test('window.innerHeight > 200');
 tt.test('"Testerrific is great!!"');
-</pre>
+</code>
 
 <div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
 		
@@ -159,9 +161,9 @@ tt.test('"Testerrific is great!!"');
 				
 <p>To create a new test group:</p>
 		
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.group("Test Group Two");
-</pre>
+</code>
 		
 		
 				
@@ -198,27 +200,27 @@ tt.group("Test Group Two");
 		
 <p>Test if a string evaluates as truth-y or false-y</p>
 				
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.test("1 > 0");
-</pre>
+</code>
 		
 <p>You can also add a label to make your test easier to read or understand.</p>
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.test("Is '1' a positive number?", "1 > 0");
-</pre>
+</code>
 		
 <h4>Function tests</h4>
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.test("Is today Thursday?", () => {
 	return (new Date()).getDay() == 4;
 });
-</pre>
+</code>
 		
 				
 				
 <h4>Async (promise) tests</h4>
 <p>Tests that return a promise will run until they resolve with a truthy or falsey value.</p>
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 tt.test("Promise example", () => {
 	return new Promise(function(resolve, reject) {
 		setTimeout(() => {
@@ -226,7 +228,7 @@ tt.test("Promise example", () => {
 		}, 3000);
 	})
 });
-</pre>
+</code>
 
 
 <h4>Test options</h4>
@@ -235,44 +237,44 @@ tt.test("Promise example", () => {
 <h5>skip</h5>
 <p>Disable this test. Skipped tests are only disabled when the tests are first loaded. You can always re-enable a 'skipped' test or run it manually.</p>
 		
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.test('Skip example', '4 == 4', { 
 	skip: true 
 });
-</pre>
+</code>
 		
 		
 		
 <h5>only</h5>
 <p>Skip all other tests that are not also flagged as "only". This effect will only happen when Testerrific is first loaded.</p>	
-<pre>
+<code>
 tt.test('Skip example', '4 == 4', { 
 	only: true 
 });
-</pre>
+</code>
 
 <h5>wait_for_element</h5>
 <p>Wait to run test until specified elements (string with CSS or jQuery selector) are 100% visible. The test will wait up until the number of milliseconds set in <b>tt.dom_check_timeout</b>.</p>		
-<pre>
+<code>
 tt.test('wait_for_element example', '4 == 4', { 
 	wait_for_element: '.test_element' 
 });
-</pre>
+</code>
 
 		
 <h5 id="auto_retry">max_time (auto-retry)</h5>
 <p>By default, Testerrific will retry a test multiple times until it is true in case there are asynchronous factors that a test might be waiting on. This setting controls the amount of time (integer, in ms) to keep trying a test until it returns truthy. Set to '0' to disable auto-retry.</p>
-<pre class="run_on_load">
+<code class="run_on_load">
 tt.test('Max Time example (wait 3 sec)', '1 > 2', { 
 	max_time: 3000 
 });
-</pre>
+</code>
 		
 		
 		
 <h5>run_if</h5>
-<p>A pre-test check to determine if test should be run.</p>
-<pre class="run_on_load">
+<p>A code-test check to determine if test should be run.</p>
+<code class="run_on_load">
 b = 3;
 
 tt.test('run_if example (run_if == false)', '1 > 0', {
@@ -282,40 +284,40 @@ tt.test('run_if example (run_if == false)', '1 > 0', {
 tt.test('run_if example (run_if == true)', '1 > 0', {
 	run_if: 'b == 3'
 });
-</pre>
+</code>
 
 		
 				
 <h5>message</h5>
 <p>Display a message while test is running. This can be helpful to give status updates or instructions to user for manual intervention.</p>
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 tt.test('Message example', 'a != 3', { 
 	message: 'Just saying hello!', 
 	max_time: 300 
 });
-</pre>
+</code>
 		
 
 		
 <h5>group & position</h5>
 <p>Group value can either be the index (integer) or title (string) of an existing test group. Position is an integer stating where the test should be inserted within the group (starting from 0). If no position is given, the test will be added to the end of group.</p>
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 tt.test('Group and Position example', '1 > 0', { 
 	group: 1,
 	position: 3
 });
-</pre>
+</code>
 		
 <h5>before & after</h5>
 <p>(function/promise) gets run before/after test</p>
-<pre class="run_on_load">
+<code class="run_on_load">
 a = 0
 tt.test('before() example', 'a == 1', { 
 	before: () => {
 		a = 1
 	}
 });
-</pre>
+</code>
 
 <hr>
 
@@ -335,22 +337,22 @@ tt.test('before() example', 'a == 1', {
 	<span><b>options</b>:</span> <span>(object) Options to affect how function is run. See options for <a href="#">test()</a> function above for list of available options.</span>
 </p>
 
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
 tt.test("Is a still positive?", "a > 0");
-</pre>
+</code>
 	
 <h4>wait(time)</h4>
 <p>Wait a specified amount of time (in ms) before moving to next test.</p>
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 tt.wait(300);
-</pre>
+</code>
 
 <h4>pause()</h4>
 <p>Pause tests at this point. User will need to manually click 'Resume' in order for tests to continue.</p>
-<pre class="run_on_loadd">
+<code class="run_on_loadd">
 tt.pause();
-</pre>
+</code>
 
 <hr>
 
@@ -365,133 +367,133 @@ tt.pause();
 		
 <h4>start_tests([group_index])</h4>
 <p>Run all of the unskipped tests. If a group_index is given, it will only run the tests in that group. If no index is given, all tests will be run starting from the first group.</p>
-<pre>
+<code>
 tt.start_tests();
-</pre>
+</code>
 		
 		
 <h4>pause_tests()</h4>
 <p>Pause execution of tests.<br>
 Note: the tests will only get paused at the conclusion of the current test</p>
-<pre>
+<code>
 tt.pause_tests();
-</pre>
+</code>
 				
 <h4>resume_tests()</h4>
 <p>Resume execution of tests.</p>
-<pre>
+<code>
 tt.resume_tests();
-</pre>
+</code>
 		
 		
 <h4>run_test(group_index, test_index)</h4>
 <p>Run specific test. Both group_index and test_index are integers of the position of which group and test to run (starting from 0).</p>
-<pre>
+<code>
 tt.run_test(1,2);
-</pre>
+</code>
 		
 <h4>pass_test([group_index], [test_index])</h4>
 <p>Set specific test as 'passed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, pass_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to pass tests triggered by outside actions, such as...</p>
-<pre>
+<code>
 tt.pass_test(0,3);
-</pre>
+</code>
 		
 <h4>fail_test([group_index], [test_index])</h4>
 <p>Set specific test as 'failed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, fail_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to fail tests triggered by outside actions, such as...</p>
-<pre>
+<code>
 tt.fail_test(0,3);
-</pre>
+</code>
 
 <h4>skip_test([group_index], [test_index])</h4>
 <p>Set specific test as 'skipped'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, skip_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to skip tests triggered by outside actions, such as...</p>
-<pre>
+<code>
 tt.skip_test(0,3);
-</pre>
+</code>
 		
 <!-- <h4>run_next_test()</h4>
-<pre>
+<code>
 tt.run_next_test();
-</pre> -->
+</code> -->
 		
 <h4>finish_tests()</h4>
 <p>Quit execution of tests, cancelling any test that is currently being run.</p>
-<pre>
+<code>
 tt.finish_tests();
-</pre>
+</code>
 		
 <h4>reset_tests()</h4>
 <p>Reset all results and timers for all tests.</p>
-<pre>
+<code>
 tt.reset_tests();
-</pre>
+</code>
 		
 <h4>alert(message, [time_limit])</h4>
 <p>Display text 'message' (string) for the number of milliseconds set in time_limit. If time_limit is not set, it will display the message indefinitely or until another message is shown.</p>
-<pre>
+<code>
 tt.alert('You obviously love to press the buttons', 3000);
-</pre>
+</code>
 		
 <h4>toggle_tests_panel()</h4>
 <p>Open tests panel if closed, close it if it's open.</p>
-<pre>
+<code>
 tt.toggle_tests_panel();
-</pre>
+</code>
 		
 		
 <h4>enable_all_groups()</h4>
 <p>Mark all groups and tests as enabled (ie. not 'skipped').</p>
-<pre>
+<code>
 tt.enable_all_groups();
-</pre>
+</code>
 		
 <h4>disable_all_groups()</h4>
 <p>Mark all groups and tests as disabled (ie. 'skipped').</p>
-<pre>
+<code>
 tt.disable_all_groups();
-</pre>
+</code>
 		
 <h4>collapse_all_groups()</h4>
 <p>Visually collapse all groups in the tests panel. Tests within a collapsed group will still run even if they aren't visible.</p>
-<pre>
+<code>
 tt.collapse_all_groups();
-</pre>
+</code>
 		
 <h4>expand_all_groups()</h4>
 <p>Visually expand all groups in the tests panel.</p>
-<pre>
+<code>
 tt.expand_all_groups();
-</pre>
+</code>
 		
 <h4>toggle_view_group(group_index) </h4>
 <p>Toggle whether the tests within a specific test group are visible.</p>
-<pre>
+<code>
 tt.toggle_view_group(0);
-</pre>		
+</code>		
 		
 <h4>toggle_skip_group(group_index)</h4>
 <p>Toggle whether the tests within a specific test group are enabled (ie. not 'skipped') or not.</p>
-<pre>
+<code>
 tt.toggle_skip_group(0);
-</pre>
+</code>
 		
 <h4>toggle_skip_test(group_index, test_index)</h4>
 <p>Toggle whether a specific test within a specific test group are enabled (ie. not 'skipped') or not.</p>
-<pre>
+<code>
 tt.toggle_skip_test(1, 3);
-</pre>
+</code>
 		
 <h4>tt.totals([type] = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h4>
 <p>Returns the number of tests that have a certain result type for a specific test group. Result types can be 'all', 'run', 'passed', 'failed', 'skipped', or 'error'. If not type is given, totals() will assume 'all'. If not group_index is given, totals() will return a count for all test groups.</p>
-<pre>
+<code>
 alert(`
 	total number of tests: ${tt.totals()}
 	total number 'passed' tests: ${tt.totals('passed')}
 	total number of 'skipped' tests in the 2nd test group: ${tt.totals('skipped', 1)}
 `);
-</pre>
+</code>
 	
 	
 <hr>
@@ -503,17 +505,17 @@ alert(`
 		
 <h4>max_time</h3>
 <p>The amount of time (in ms) to keep trying a test until it returns truthy. This applies to all tests unless a test overwrites its default max_time setting.</p>
-<pre>
+<code>
 tt.max_time = 1000
-</pre>
+</code>
 		
 		
 <h4>visible</h3>
 <p>Whether or not the tests panel is visible or shown.</p>
 <p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
-<pre>
+<code>
 tt.visible = false;
-</pre>
+</code>
 
 
 <hr>
@@ -521,22 +523,22 @@ tt.visible = false;
 <h2>Helpful Hints and Examples</h2>
 
 <h4>Start with test groups collapsed</h4>
-<p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, simply add this to your code:</p>
-<pre>
+<p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, just loop through all of your groups and set their 'collapse' property to true like this:</p>
+<code>
 tt.groups.forEach((group) => { group.collapse = true });
-</pre>
+</code>
 
 
 <h4>Skipping tests via code</h4>
 <p>To skip/unskip a test programmatically, simply set the `skip` property for that test to true/false in the <b>tt.groups</b> array. This code will re-enable Test #4 in Group 1:</p>
-<pre>
+<code>
 tt.groups[1].tests[3].skip = false;
-</pre>
+</code>
 		
 		
 <h4>Run tests on keystroke</h4>
 <p>This one's already been run. Press <b>Cmd-G</b> or <b>Ctrl-G</b> to start running the tests!</p>
-<pre class="run_on_load no_run_button">
+<code class="run_on_load no_run_button">
 $(window).keydown(function(event) {
 	if(event.metaKey = true && event.key == 'g') {
 		event.preventDefault();
@@ -544,14 +546,14 @@ $(window).keydown(function(event) {
 		tt.start_tests();
 	}
 });
-</pre>
+</code>
 
 <h4>Duplicating a test group</h4>
 <p>There are times when you want to run a set of tests that are very similar to another set of tests. You can duplicate and modify a test group simply by copying and altering elements of the <b>tt.groups</b> array.</p>
-<pre>
+<code>
 tt.groups.push(tt.groups[0]);
 tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group";
-</pre>
+</code>
 
 
 <footer>
@@ -577,7 +579,6 @@ $(document).ready(function() {
 		$('html, body').animate({
 		  scrollTop: target.offset().top - 50
 		}, 1000, function() {
-			// var $target = $(target);
 			target.attr('tabindex','-1');
 			target.focus();
 		})
@@ -588,6 +589,8 @@ $(document).ready(function() {
 		$clone.find('button').remove()
 		eval($clone.text())
 	})
+	
+	$('code').wrap('<pre>')
 	
 	$('pre').each(function() {
 		$(this).wrap('<div class="code_container"></div>')
@@ -601,13 +604,11 @@ $(document).ready(function() {
 	})
 })
 
-$('pre').addClass('prettyprint')
-
 
 </script>
 
-
-<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js" integrity="sha512-RDQSW3KoqJMiX0L/UBgwBmH1EmRYp8LBOiLaA8rBHIy+7OGP/7Gxg8vbt8wG4ZYd29P0Fnoq6+LOytCqx3cyoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-fTl/qcO1VgvKtOMApX2PdZzkziyr2stM65GYPLGuYMnuMm1z2JLJG6XVU7C/mR+E7xBUqCivykuhlzfqxXBXbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </div>
 
