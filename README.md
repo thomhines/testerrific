@@ -81,7 +81,8 @@ Special thanks to a few folks whose code and libraries inspired some of the idea
 - Evan You's [Vue.js](https://vuejs.org/) was also a huge influence on making reactive DOM changes as smooth and efficient as possible
 
 
--
 
+
+--------------------------------
 
 Copyright (c) 2021-present, Thom Hines
