@@ -1,9 +1,7 @@
 # Testerrific
-The best, fastest, easiest way test your site
+*The best, fastest, easiest way test your site*
 
 ### [Demo & Docs Site](projects.thomhines.com/testerrific/)
-
-By far the easiest syntax of any testing suite.
 
 
 
@@ -19,7 +17,7 @@ Write tests as simply as `tt.test("a < 4")`
 Tons of settings give you control over how each test runs, giving you the power to test any situation.
 
 - **Reactive**: 
-Change the test data and the UI will keep up automatically.
+Change the test data and the UI will keep up automatically, which helps a lot with on-the-fly tweaks and the trial-and-error phase of writing tests.
 
 - **Intuitive UI**:
 Disable tests, pause execution, run individual tests/functions on demand, all without having to go back to your code to change settings.
@@ -77,13 +75,13 @@ tt.test("Is today Thursday?", () => { return (new Date()).getDay() == 4; });
 
 ## Acknowledgements
 
-Use this section to mention useful resources and libraries that you have used in your projects.
+Special thanks to a few folks whose code and libraries inspired some of the ideas built into Testerrific:
 
- - [Shields.io](https://shields.io/)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [Emoji Cheat Sheet](https://github.com/ikatyang/emoji-cheat-sheet/blob/master/README.md#travel--places)
- - [Readme Template](https://github.com/othneildrew/Best-README-Template)
+- Testerrific's reactive UI code was built with a lot of help from [this article](https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/) by Chris Ferdinandi at his site [Go Make Things](https://gomakethings.com/)
+- Evan You's [Vue.js](https://vuejs.org/) was also a huge influence on making reactive DOM changes as smooth and efficient as possible
 
+
+-
 
 
 Copyright (c) 2021-present, Thom Hines
