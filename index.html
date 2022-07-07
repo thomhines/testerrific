@@ -269,9 +269,9 @@ tt.test('wait_for_element example', '4 == 4', {
 
 		
 <h5 id="auto_retry">max_time (auto-retry)</h5>
-<p>By default, Testerrific will retry a test multiple times until it is true in case there are asynchronous factors that a test might be waiting on. This setting controls the amount of time (integer, in ms) to keep trying a test until it returns truthy. Set to '0' to disable auto-retry.</p>
+<p>By default, Testerrific will retry a test multiple times until it returns truthy, in case there are asynchronous factors that a test might be waiting on. This setting controls the amount of time (integer, in ms) to keep trying a test. Set to '0' to disable auto-retry.</p>
 <code class="run_on_load">
-tt.test('Max Time example (wait 3 sec)', '1 > 2', { 
+tt.test('Max Time example (wait 3 sec before giving up)', 'false', { 
 	max_time: 3000 
 });
 </code>
