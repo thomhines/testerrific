@@ -1,9 +1,18 @@
+/*!
+*	Testerrific
+*	Elegant form validation
+*	Copyright (c) 2017-2022 Thom Hines
+*	Licensed under MIT.
+*	@author Thom Hines
+*	https://github.com/thomhines/testerrific
+*	@version 0.1.0
+*/
+
+
 tt = {
 
+	// Global Default settings
 	collapse_skipped_groups: true, // When page loads, collapse all groups that are set to 'skip' in the tests panel
-
-	groups: [], // Used to store all test groups and tests
-
 	visible: true, // Boolean that indicates if the tests panel should be open or closed when page loads
 	current_group: -1, // Used to keep track of which group is currently tracking
 	running_group: -1, // Used to keep track of which group is currently running (I can't remember why these are different, but they are)
@@ -20,6 +29,20 @@ tt = {
 	dom_check_interval: 100, // Amount of time (ms) to wait before checking for the element again
 	display_test_index: 0, // Whether or not to display test number in list of tests
 
+	// Group default settings
+	group_defaults: {
+		group: true,
+		test_count: 0,
+		collapse: false,
+		tests: [],
+		skip: 0,
+		only: 0,
+		run_if: '',
+		beforeEach: function() {},
+		afterEach: function() {},
+	},
+	
+	// Test default settings
 	test_defaults: {
 		running: 0, // Boolean that indicates if this is the test currently running
 		time: null, // Stores how long a test took before it came back with a result
@@ -33,9 +56,10 @@ tt = {
 		before: function() {}, // A function that will be run before the test is executed. If a promise is returned, the test will wait until the promise is resolved
 		after: function() {}, // A function that will be run after the test is executed. If a promise is returned, the test will wait until the promise is resolved
 	},
-
-
-
+	
+	groups: [], // Used to store all test groups and tests
+	
+	
 
 
 	// Create new test group. All following tests will be added to this group
@@ -46,34 +70,11 @@ tt = {
 	// 		collapse:	boolean, whether tests are shown or not
 	// 		beforeEach:	function that gets run before each test in group
 	// 		afterEach:	function that gets run after each test in group
-	group: function(group_name, options = {}) {
-		tt.groups.push(Object.assign({
-			group: true,
-			label: group_name,
-			test_count: 0,
-			collapse: false,
-			tests: [],
-			skip: 0,
-			only: 0,
-			run_if: '',
-			beforeEach: function() {},
-			afterEach: function() {},
-		}, options))
-		
+	group: function(group_name = "Test Group", options = {}) {
+		let group_obj = Object.assign(ttb.clone(tt.group_defaults), options)
+		group_obj.label = group_name
+		tt.groups.push(group_obj)
 		return
-			
-		// tt.groups.push(_.defaults(options, {
-		// 	group: true,
-		// 	label: group_name,
-		// 	test_count: 0,
-		// 	collapse: false,
-		// 	tests: [],
-		// 	skip: 0,
-		// 	only: 0,
-		// 	run_if: '',
-		// 	beforeEach: function() {},
-		// 	afterEach: function() {},
-		// }))
 	},
 
 
@@ -130,7 +131,7 @@ tt = {
 		if(!test_obj.label && typeof check == 'string') test_obj.label = check
 		
 		// If no groups exist yet, add one
-		if(tt.groups.length < 1) tt.group("Test Group")
+		if(tt.groups.length < 1) tt.group()
 
 		let current_group = tt.groups[tt.groups.length - 1]
 
