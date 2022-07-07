@@ -35,7 +35,8 @@
 			<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
 		</div>
 		
-		<div class="clear_tests">
+		<div class="clear_tests">			
+			<div class="note"><b>NOTE</b>: This whole site is a testing playground! Use the button below to clear existing tests, and you can click the "Run" button on any block of code to see how it affects the tests (code blocks are editable).</div>
 			<button onclick="tt.groups = []">Clear all tests</button>
 		</div>
 		
@@ -126,7 +127,7 @@
 
 <p>Tests are organized into test groups, and every group is saved as an array in <b>tt.groups</b>. Testerrific uses a "reactive" UI, meaning that changes made to the data saved in the <b>tt</b> objects are shown instantly in the interface. Adding or changing a test will automatically make that test show up in the tests list.</p>
 
-<p>To start adding tests, simply run tt.test() to add a test to your list</p>
+<p>To start adding tests, simply run <b>tt.test()</b> to add a test to your list</p>
 
 <code class="run_on_load">
 tt.group('First Test Group');
@@ -136,7 +137,6 @@ tt.test("Is window tall enough?", 'window.innerHeight > 200');
 tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 </code>
 
-<div class="note">NOTE: This whole site is a testing playground! All code blocks are editable, and you can click the "Run" button on any block of code to see how it affects the tests</div>
 		
 		
 		
@@ -582,7 +582,15 @@ tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group"
 $(document).ready(function() {
 	
 	$('code:not(.no_edit)').prop('contenteditable', true).prop('spellcheck', false)
-	// $('code *').prop('contenteditable', false)
+	
+	setTimeout(function() {
+		$('.clear_tests .note').fadeIn()
+		
+		$(window).scroll(function() {
+			$('.clear_tests .note').fadeOut()
+		})
+			
+	}, 500);
 	
 	
 	$('a[href*="#"]').click(function(e) {
@@ -600,6 +608,7 @@ $(document).ready(function() {
 		$clone = $(this).clone()
 		$clone.find('button').remove()
 		eval($clone.text())
+		console.log('eval');
 	})
 	
 	$('code').wrap('<pre>')
@@ -607,8 +616,7 @@ $(document).ready(function() {
 	$('pre').each(function() {
 		$(this).wrap('<div class="code_container"></div>')
 		if(!$(this).find('code').hasClass('no_run_button')) $(this).parent().append('<button>Run</button>')
-	})
-	
+	})	
 	
 	$('.code_container button').click(function() {
 		$clone = $(this).parent().find('pre').clone()

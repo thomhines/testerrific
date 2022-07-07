@@ -148,7 +148,7 @@ hr {
 .clear_tests {
   position: fixed;
   top: 40px;
-  right: calc(50vw - 600px);
+  right: 550px;
   z-index: 10;
 }
 .header_links button,
@@ -178,6 +178,14 @@ hr {
 .clear_tests {
   top: unset;
   bottom: 40px;
+  text-align: right;
+}
+.clear_tests .note {
+  text-align: left;
+  width: calc(100vw - 1900px);
+  max-width: 400px;
+  min-width: 250px;
+  display: none;
 }
 
 .grid {
@@ -207,6 +215,7 @@ hr {
 }
 
 .note {
+  margin: 0 0 1em;
   padding: 1em;
   background: #b5e7d9;
   border: 4px solid #2d896f;
