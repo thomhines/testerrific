@@ -1,11 +1,11 @@
 /*!
 *	Testerrific
-*	Elegant form validation
-*	Copyright (c) 2017-2022 Thom Hines
+*	The absolute best, fastest, easiest way test your site
+*	Copyright (c) 2021-Present Thom Hines
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.1.0
+*	@version 0.1.1
 */
 
 

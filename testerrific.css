@@ -39,6 +39,7 @@
 }
 #testerrific .tests_panel button {
   font-size: 0.9em;
+  margin: 0 0 0 0.4em;
   padding: 0.4em 0.8em;
   background: #ccc;
   color: #111;
@@ -259,17 +260,6 @@
   font-size: 1em;
   transition: all 0.2s ease-in-out;
 }
-#testerrific .tests_panel .tests_message .pass_fail_buttons {
-  display: -webkit-flex;
-  display: flex;
-  grid-gap: 1em;
-}
-#testerrific .tests_panel .tests_message .pass_fail_buttons button.pass {
-  background: #2f7c2f;
-}
-#testerrific .tests_panel .tests_message .pass_fail_buttons button.fail {
-  background: #c74f4f;
-}
 #testerrific .tests_panel .tests_message button.close {
   position: absolute;
   top: 5px;
@@ -353,10 +343,8 @@
   -webkit-transform: rotate(-90deg);
           transform: rotate(-90deg);
 }
-#testerrific .invisible {
-  opacity: 0;
-  pointer-events: none;
-}
 #testerrific .hidden {
   display: none;
 }
+
+/*# sourceMappingURL=testerrific.css.map */
