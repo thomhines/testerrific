@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.0
+*	@version 0.2.1
 */
 
 
@@ -140,8 +140,6 @@ tt = {
 			current_group = tt.groups[test_obj.group]
 		}
 		else if(test_obj.group) {
-			// let group_index = _.findIndex(tt.groups, { label: test_obj.group })
-			// current_group = tt.groups[group_index]
 			current_group = ttb.find(tt.groups, { label: test_obj.group })
 		}
 		
@@ -168,8 +166,6 @@ tt = {
 
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {fn: fn})
 
-		// test_obj = _.defaults({ fn: fn}, options, tt.test_defaults)
-
 		if(!test_obj.label && label) test_obj.label = label
 
 		let current_group = tt.groups[tt.groups.length - 1]
@@ -179,8 +175,6 @@ tt = {
 			current_group = tt.groups[test_obj.group]
 		}
 		else if(test_obj.group) {
-			// let group_index = _.findIndex(tt.groups, { label: test_obj.group })
-			// current_group = tt.groups[group_index]
 			current_group = ttb.find(tt.groups, { label: test_obj.group })
 		}
 
@@ -211,17 +205,12 @@ tt = {
 	// No longer necessary???
 	// Set smart defaults and add flag to tests that require user intervention
 	manual_test: function(label = "", message = "", options = {}) {
-
 		// If no label is given, assume that arguments are (check, options, null)
 		if(typeof message == 'object' || !message) {
 			options = message
 			message = label
-		}
-
-		// test_obj = _.defaults({label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1}, options, tt.test_defaults)
-		
+		}		
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1})
-
 		tt.test(label, test_obj)
 	},
 
@@ -516,13 +505,11 @@ tt = {
 
 		let _group = tt.groups[tt.current_group]
 
-
 		// No more tests, tests complete
 		if(tt.current_group >= tt.groups.length || (tt.running_group >= 0 && tt.current_group != tt.running_group)) {
 			tt.finish_tests()
 			return
 		}
-
 
 		let _test = tt.groups[tt.current_group].tests[tt.current_test]
 
@@ -534,24 +521,6 @@ tt = {
 			return
 		}
 
-
-		// If group is finished or skipped or run_if returns false, move to next group
-		// if(_group.skip || (_group.run_if && ttb.seval(_group.run_if) == false)) {
-		// 	_group.result = 'skipped'
-		// 	// if(!test.only) test.result = 'skipped'
-
-		// 	// Vue.set(tt, 'current_group', tt.current_group + 1)
-		// 	// Vue.set(tt, 'current_test', 0)
-		// 	// if(_group.skip || (_group.run_if && ttb.seval(_group.run_if) == false)) {
-		// 	// 	_group.tests.forEach(function(test) {
-		// 	// 		if(!test.only) test.result = 'skipped'
-		// 	// 	})
-		// 	// }
-		// 	tt.run_next_test()
-		// 	return
-		// }
-
-
 		// Skip steps that are set to 'skip' or 'run_if' returns false
 		if(_test.skip || (_test.run_if && ttb.seval(_test.run_if) == false)) {
 			_test.result = 'skipped'
@@ -559,7 +528,6 @@ tt = {
 			tt.run_next_test()
 			return
 		}
-
 
 		// Starting next test
 		else {
@@ -785,8 +753,6 @@ var ttb = {
 		if($children2.length < 1) {
 			$el2.outerHTML = $el1.cloneNode(true).outerHTML
 			$children2 = $el1.cloneNode(true).children
-			// testerrific_ui.render();
-			// return
 		}
 		
 		
@@ -802,41 +768,27 @@ var ttb = {
 			let a = $children1[x].cloneNode(true)
 			// Remove all children so that only current element is evaluated (children will be compared individually and recursively)
 			a.querySelectorAll('*').forEach(function($this) { $this.remove() })
-			// Remove attributes to be checked separately
+			// Set checked and disabled properties based on values from template
 			if(a.getAttribute(':checked') == 'true') a.checked = true
 			if(a.getAttribute(':disabled') == 'true') a.disabled = true
-			// else a.checked = false
+			// Remove attributes, to be checked separately
 			for(let y = 0; y < a.attributes.length; y++) { a.removeAttribute(a.attributes[y].name) }
-			a.removeAttribute('class')
+			a.removeAttribute('class') // For some reason, these two don't get removed with the other attributes
 			a.removeAttribute('style')
-			// a = a.outerHTML + ""
-			// a = a.replace(/[\s]+/g, ' ')
 			
+			// Repeat everything for the DOM element ($el2)
 			let b = $children2[x].cloneNode(true)
 			b.querySelectorAll('*').forEach(function($this) { $this.remove() })
-			// Remove attributes to be checked separately
 			for(let y = 0; y < b.attributes.length; y++) { b.removeAttribute(b.attributes[y].name) }
 			b.removeAttribute('class')
 			b.removeAttribute('style')
-			
-					
-			// else $children2[x].checked = false
-			// b = b.outerHTML + ""
-			// b = b.replace(/[\s]+/g, ' ')
 
-			
+			// Replace elements if they don't match, then move on to next element
 			if(a.outerHTML != b.outerHTML) {
 				let clone = $children1[x].cloneNode(true)
 				$children2[x].outerHTML = clone.outerHTML
-				
 				if(a.checked) $children2[x].setAttribute('checked', 'checked')
 				if(a.disabled) $children2[x].setAttribute('disabled', 'disabled')
-				
-				// if(clone.getAttribute(':checked') == 'true') $children2[x].checked = true
-				// else $children2[x].checked = false
-				// console.log(clone.getAttribute(':disabled'));
-				// if(clone.getAttribute(':disabled') == 'true') $children2[x].disabled = true
-				// else $children2[x].disabled = false
 				continue;
 			}
 			
@@ -951,22 +903,8 @@ ttb.init.prototype.render = function () {
 		$el = temp.querySelectorAll('[\\:' + attr + ']')
 		for(let x = 0; x < $el.length; x++) {
 			let result = ttb.seval($el[x].getAttribute(':' + attr))
-	// 		// if(attr == 'checked') console.log($el[x]);
 			if(result) $el[x].setAttribute(attr, result)
 			else $el[x].removeAttribute(attr)
-			
-	// 		// if(attr == 'checked') console.log(result);
-	// 		// // if(result) $el[x].checked = result
-	// 		// // if(attr == 'checked') $el[x].checked = result
-	// 		// // $el[x].setAttribute(attr, result)
-	// 		// if(attr == 'checked' && result) {
-	// 		// 	$el[x].setAttribute(attr, 1)
-	// 		// }
-	// 		// else if(attr == 'checked' && !result) {
-	// 		// 	$el[x].setAttribute(attr, 0)
-	// 		// 	$el[x].removeAttribute(attr)
-	// 		// }
-	// 		// $el[x].removeAttribute(':' + attr)	
 		}
 	})
 	

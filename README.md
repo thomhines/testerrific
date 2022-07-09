@@ -14,6 +14,9 @@
 - **Simple syntax**:
 Write tests as simply as `tt.test("a < 4")`
 
+- **Flexible**:
+Completely agnostic, it can test anything that resolves truthy or falsey.
+
 - **Powerful**:
 Tons of settings give you control over how each test runs, giving you the power to test any situation.
 
@@ -35,12 +38,11 @@ Control and respond to your tests with a large assortment of helper functions an
 
 ### Installation
 
-To get Testerrific working, just link to jQuery (any version, incl. "slim", will work) and the Testerrific JS and CSS files:
+To get Testerrific working, just link to the Testerrific JS and CSS files:
 
 ```html
-<script src="jquery.js"></script>
-<script src="testerrific.js"></script>
-<link rel="Stylesheet" href="testerrific.css" type="text/css" />
+<script src="testerrific.min.js"></script>
+<link rel="Stylesheet" href="testerrific.min.css" type="text/css" />
 ```
 
 then write some tests...

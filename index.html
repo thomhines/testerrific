@@ -28,10 +28,10 @@
 		
 		<h2>The absolute best, fastest, easiest way test your site</h2>
 		
-		<p>Testerrific tries to take the headache out of site testing by making things simple and concise. <b>Dependencies</b>: Just <a href="https://jquery.com/">jQuery</a>.</p>
+		<p>Testerrific tries to take the headache out of site testing by making things simple and concise..</p>
 		
 		<div class="header_links">
-			<a class="button" href="https://github.com/thomhines/testerrific">Download</a>
+			<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download</a>
 			<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
 		</div>
 		
@@ -111,13 +111,12 @@
 		
 <h4 id="installation">Installation</h4>
 
-<p>Just link to the jQuery (any version (incl. "slim") OK) and the Testerrific JS and CSS files...</p>
+<p>Just link to the Testerrific JS and CSS files...</p>
 
 <code class="no_run_button no_edit javascript-html">
 &lt;!-- Download and link to the files locally: -->
-&lt;script src="jquery.js">&lt;/script>
-&lt;script src="testerrific.js">&lt;/script>
-&lt;link rel="Stylesheet" href="testerrific.css" type="text/css" />
+&lt;script src="testerrific.min.js">&lt;/script>
+&lt;link rel="Stylesheet" href="testerrific.min.css" type="text/css" />
 
 &lt;!-- Or use the jsdelivr CDN: -->
 &lt;script src="https://cdn.jsdelivr.net/gh/thomhines/testerrific@master/testerrific.min.js">&lt;/script>
@@ -214,7 +213,7 @@ tt.group("Another Test Group");
 		
 <h4>Basic (string) test</h4>
 		
-<p>Test if a string evaluates as truth-y or false-y</p>
+<p>Test if a string evaluates as truthy or falsey</p>
 				
 <code class="run_on_load">
 tt.test("1 > 0");
