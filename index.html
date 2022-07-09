@@ -340,10 +340,15 @@ tt.test('Message example', 'a != 3', {
 
 		
 <h5>group & position</h5>
-<p>Group value can either be the index (integer) or title (string) of an existing test group. Position is an integer stating where the test should be inserted within the group (starting from 0). If no position is given, the test will be added to the end of group.</p>
+<p>Group value can either be the index (integer, starting from 0) or title (string) of an existing test group. Position is the where the test should be inserted within the group (integer, starting from 0). If no position is given, the test will be added to the end of the selected group.</p>
 <code class="run_on_load">
-tt.test('Group and Position example', '1 > 0', { 
-	group: 1,
+// Add this test to the 4th spot of the 4th test group
+tt.test('Add test to specific group example', '1 > 0', { 
+	group: 'Simple Test Group'
+});
+
+tt.test('Add test at Group and Position index example', '1 > 0', { 
+	group: 3,
 	position: 3
 });
 </code>
@@ -452,28 +457,28 @@ tt.resume_tests();
 <h4>run_test(group_index, test_index)</h4>
 <p>Run specific test. Both group_index and test_index are integers of the position of which group and test to run (starting from 0).</p>
 <code>
-tt.run_test(1,2);
+tt.run_test(0,2);
 </code>
 		
 <h4>pass_test([group_index], [test_index])</h4>
 <p>Set specific test as 'passed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, pass_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to pass tests triggered by outside actions, such as...</p>
 <code>
-tt.pass_test(0,3);
+tt.pass_test(0,2);
 </code>
 		
 <h4>fail_test([group_index], [test_index])</h4>
 <p>Set specific test as 'failed'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, fail_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to fail tests triggered by outside actions, such as...</p>
 <code>
-tt.fail_test(0,3);
+tt.fail_test(0,2);
 </code>
 
 <h4>skip_test([group_index], [test_index])</h4>
 <p>Set specific test as 'skipped'. Both group_index and test_index are integers of the position of which group and test to run (starting from 0). If either index is blank, skip_test() will assume the group and/or test currently being run.</p>
 <p>You can use this to skip tests triggered by outside actions, such as...</p>
 <code>
-tt.skip_test(0,3);
+tt.skip_test(0,2);
 </code>
 		
 <!-- <h4>run_next_test()</h4>
