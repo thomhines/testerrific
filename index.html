@@ -41,28 +41,31 @@
 		</div>
 		
 		<div class="toc">
+			<p><a href="#features">Features</a>
 			<p><a href="#getting_started">Getting Started</a>
 				<ul>
-					<li><a href="#getting_started">Installation</a></li>
-					<li><a href="#getting_started">Testing Basics</a></li>
+					<li><a href="#installation">Installation</a></li>
+					<li><a href="#the_basics">The Basics</a></li>
 				</ul>
 			</p>
 			<p>
 				<a href="#creating_tests">Creating Tests</a>
 				<ul>
-					<li><a href="#getting_started">Groups</a></li>
-					<li><a href="#getting_started">Tests</a></li>
-					<li><a href="#getting_started">Scheduled Functions</a></li>
+					<li><a href="#getting_started">group()</a></li>
+					<li><a href="#getting_started">test()</a></li>
+					<li><a href="#getting_started">run()</a></li>
+					<li><a href="#getting_started">wait()</a></li>
+					<li><a href="#getting_started">pause()</a></li>
 				</ul>
 			</p>
 			<p>
 				<a href="#events">Global Options</a>
 			</p>
 			<p>
-				<a href="#events">Events</a>
+				<a href="#events">Events & Functions</a>
 			</p>
 			<p>
-				<a href="#other_tips">Examples & Tips</a>
+				<a href="#other_tips">Other Examples & Tips</a>
 			</p>
 		</div>
 		
@@ -71,7 +74,7 @@
 			
 
 
-<h2 id="creating_tests">Features</h2>
+<h2 id="features">Features</h2>
 
 <div class="features grid">
 	<div>
@@ -106,7 +109,7 @@
 		
 <h2 id="getting_started">Getting Started</h2>
 		
-<h4>Installation</h4>
+<h4 id="installation">Installation</h4>
 
 <p>Just link to the jQuery (any version (incl. "slim") OK) and the Testerrific JS and CSS files...</p>
 
@@ -123,7 +126,7 @@
 
 <p>and then add some tests in your javascript.</p>
 
-<h4>The Basics</h4>
+<h4 id="the_basics">The Basics</h4>
 
 <p>Tests are organized into test groups, and every group is saved as an array in <b>tt.groups</b>. Testerrific uses a "reactive" UI, meaning that changes made to the data saved in the <b>tt</b> objects are shown instantly in the interface. Adding or changing a test will automatically make that test show up in the tests list.</p>
 
@@ -175,7 +178,7 @@ tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 <p>To create a new test group:</p>
 		
 <code class="run_on_load">
-tt.group("Test Group Two");
+tt.group("Another Test Group");
 </code>
 		
 		
@@ -233,7 +236,7 @@ tt.test("Is today Thursday?", () => {
 				
 <h4>Async (promise) tests</h4>
 <p>Tests that return a promise will run until they resolve with a truthy or falsey value.</p>
-<code class="run_on_loadd">
+<code class="run_on_load">
 tt.test("Promise example", () => {
 	return new Promise(function(resolve, reject) {
 		setTimeout(() => {
@@ -261,18 +264,26 @@ tt.test('Skip example', '4 == 4', {
 <h5>only</h5>
 <p>Skip all other tests that are not also flagged as "only". This effect will only happen when Testerrific is first loaded.</p>	
 <code>
-tt.test('Skip example', '4 == 4', { 
+tt.test('only example', '4 == 4', { 
 	only: true 
 });
 </code>
 
+
+<!-- <div class="test_element">Test Element</div>
 <h5>wait_for_element</h5>
 <p>Wait to run test until specified elements (string with CSS or jQuery selector) are 100% visible. The test will wait up until the number of milliseconds set in <b>tt.dom_check_timeout</b>.</p>		
-<code>
+<code class="run_on_load">
 tt.test('wait_for_element example', '4 == 4', { 
-	wait_for_element: '.test_element' 
+	wait_for_element: '.test_element',
+	before: () => {
+		$('.test_element').fadeIn(1500)	
+	},
+	after: () => {
+		$('.test_element').fadeOut()	
+	}
 });
-</code>
+</code> -->
 
 		
 <h5 id="auto_retry">max_time (auto-retry)</h5>
@@ -303,10 +314,10 @@ tt.test('run_if example (run_if == true)', '1 > 0', {
 				
 <h5>message</h5>
 <p>Display a message while test is running. This can be helpful to give status updates or instructions to user for manual intervention.</p>
-<code class="run_on_loadd">
+<code class="run_on_load">
 tt.test('Message example', 'a != 3', { 
 	message: 'Just saying hello!', 
-	max_time: 300 
+	max_time: 3000 // max_time increased to allow message to appear for longer
 });
 </code>
 		
@@ -314,7 +325,7 @@ tt.test('Message example', 'a != 3', {
 		
 <h5>group & position</h5>
 <p>Group value can either be the index (integer) or title (string) of an existing test group. Position is an integer stating where the test should be inserted within the group (starting from 0). If no position is given, the test will be added to the end of group.</p>
-<code class="run_on_loadd">
+<code class="run_on_load">
 tt.test('Group and Position example', '1 > 0', { 
 	group: 1,
 	position: 3
@@ -350,20 +361,20 @@ tt.test('before() example', 'a == 1', {
 	<span><b>options</b>:</span> <span>(object) Options to affect how function is run. See options for <a href="#">test()</a> function above for list of available options.</span>
 </p>
 
-<code class="run_on_loadd">
+<code class="run_on_load">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
 tt.test("Is a still positive?", "a > 0");
 </code>
 	
 <h4>wait(time)</h4>
 <p>Wait a specified amount of time (in ms) before moving to next test.</p>
-<code class="run_on_loadd">
-tt.wait(300);
+<code class="run_on_load">
+tt.wait(3000);
 </code>
 
 <h4>pause()</h4>
 <p>Pause tests at this point. User will need to manually click 'Resume' in order for tests to continue.</p>
-<code class="run_on_loadd">
+<code class="run_on_load">
 tt.pause();
 </code>
 
@@ -373,10 +384,35 @@ tt.pause();
 
 
 
+	
+	
+<h2 id="global_options">Global Options</h2>
+		
+<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing properties of the <b>tt</b> object.</p>
+		
+		
+<h4>max_time</h3>
+<p>The amount of time (in ms) to keep trying a test until it returns truthy. This applies to all tests unless a test overwrites its default max_time setting.</p>
+<code>
+tt.max_time = 1000
+</code>
+		
+		
+<h4>visible</h3>
+<p>Whether or not the tests panel is visible or shown.</p>
+<p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
+<code>
+tt.visible = false;
+</code>
+
+<hr>
 
 
 
-<h2 id="events">Events</h2>
+
+
+
+<h2 id="events">Helper Functions & Events</h2>
 		
 <h4>start_tests([group_index])</h4>
 <p>Run all of the unskipped tests. If a group_index is given, it will only run the tests in that group. If no index is given, all tests will be run starting from the first group.</p>
@@ -384,20 +420,18 @@ tt.pause();
 tt.start_tests();
 </code>
 		
-		
 <h4>pause_tests()</h4>
 <p>Pause execution of tests.<br>
 Note: the tests will only get paused at the conclusion of the current test</p>
 <code>
 tt.pause_tests();
 </code>
-				
+
 <h4>resume_tests()</h4>
 <p>Resume execution of tests.</p>
 <code>
 tt.resume_tests();
 </code>
-		
 		
 <h4>run_test(group_index, test_index)</h4>
 <p>Run specific test. Both group_index and test_index are integers of the position of which group and test to run (starting from 0).</p>
@@ -502,38 +536,27 @@ tt.toggle_skip_test(1, 3);
 <p>Returns the number of tests that have a certain result type for a specific test group. Result types can be 'all', 'run', 'passed', 'failed', 'skipped', or 'error'. If not type is given, totals() will assume 'all'. If not group_index is given, totals() will return a count for all test groups.</p>
 <code>
 alert(`
-	total number of tests: ${tt.totals()}
-	total number 'passed' tests: ${tt.totals('passed')}
-	total number of 'skipped' tests in the 2nd test group: ${tt.totals('skipped', 1)}
+	Total number of tests: 
+	${tt.totals()}
+	
+	Total number 'passed' tests: 
+	${tt.totals('passed')}
+	
+	Total number of 'skipped' tests in the 2nd test group:
+	${tt.totals('skipped', 1)}
 `);
 </code>
-	
-	
-<hr>
-	
-<h2 id="other_tips">Other Settings</h2>
-		
-<p>Because Testerrific's UI is reactive, you can manipulate a number of aspects by changing properties of the <b>tt</b> object.</p>
-		
-		
-<h4>max_time</h3>
-<p>The amount of time (in ms) to keep trying a test until it returns truthy. This applies to all tests unless a test overwrites its default max_time setting.</p>
-<code>
-tt.max_time = 1000
-</code>
-		
-		
-<h4>visible</h3>
-<p>Whether or not the tests panel is visible or shown.</p>
-<p>To start with the Testerrific panel closed, for instance, simply add this to your code that gets run on page load:</p>
-<code>
-tt.visible = false;
-</code>
-
 
 <hr>
 
-<h2>Helpful Hints and Examples</h2>
+
+
+
+
+
+
+
+<h2 id="other_tips">Helpful Hints and Examples</h2>
 
 <h4>Start with test groups collapsed</h4>
 <p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, just loop through all of your groups and set their 'collapse' property to true like this:</p>
@@ -608,7 +631,6 @@ $(document).ready(function() {
 		$clone = $(this).clone()
 		$clone.find('button').remove()
 		eval($clone.text())
-		console.log('eval');
 	})
 	
 	$('code').wrap('<pre>')

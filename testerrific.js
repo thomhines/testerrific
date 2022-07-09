@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.1.1
+*	@version 0.2.0
 */
 
 
@@ -25,8 +25,8 @@ tt = {
 	skip_manual_tests: 0, // If enabled, all tests marked as manual tests are skipped
 	message: '', 
 	max_time: 1000, // How much time to wait for a test to be true before declaring it false
-	dom_check_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
-	dom_check_interval: 100, // Amount of time (ms) to wait before checking for the element again
+	wait_for_element_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
+	wait_for_element_interval: 100, // Amount of time (ms) to wait before checking for the element again
 	display_test_index: 0, // Whether or not to display test number in list of tests
 
 	// Group default settings
@@ -306,7 +306,7 @@ tt = {
 
 		}
 
-		clearTimeout(tt.dom_check_interval_obj)
+		clearTimeout(tt.wait_for_element_interval_obj)
 
 		tt.run_next_test()
 
@@ -332,7 +332,7 @@ tt = {
 
 	// Run through entire lifecycle for a given test (before_each(), before(), etc.). Each phase will wait for the previous phase to finish before moving on.
 	test_start: null,
-	dom_check_interval_obj: null,
+	wait_for_element_interval_obj: null,
 	run_test: function(group_index, test_index) {
 
 		return new Promise(function(resolve, reject) {
@@ -379,7 +379,7 @@ tt = {
 	run_test_loop: function(group_index, test_index, delay = 0) {
 		return new Promise(function(resolve, reject) {
 
-			tt.dom_check_interval_obj = setTimeout(function() {
+			tt.wait_for_element_interval_obj = setTimeout(function() {
 
 				let _group = tt.groups[tt.current_group]
 				let _test = tt.groups[tt.current_group].tests[tt.current_test]
@@ -391,27 +391,31 @@ tt = {
 					tt.test_start = new Date()
 				}
 
+
+				// Check to see if wait_for_element element is visible
 				if(_test.wait_for_element) {
 					// Fail test if requested element doesn't appear in time
-					if((new Date()) - tt.test_start > tt.dom_check_timeout) {
+					if((new Date()) - tt.test_start > tt.wait_for_element_timeout) {
 						_test.result = 'error'
 						_test.error = 'element not found'
 						_test.time = (new Date()).getTime() - tt.test_start.getTime()
 						resolve()
 						return
 					}
+					
+					let $wfe = document.querySelector(_test.wait_for_element)
+					if(!$wfe.offsetWidth || window.getComputedStyle($wfe).getPropertyValue("opacity") * 1 < 1) {
+						tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
+							if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
+							resolve()
+						})
+						return
+					}
 				}
 
-				// Check to see if element is in DOM
-				if(_test.wait_for_element && (!$(_test.wait_for_element).is(':visible') || $(_test.wait_for_element).css('opacity') < 1)) {
-					tt.run_test_loop(group_index, test_index, tt.dom_check_interval).then(function() {
-						if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
-						resolve()
-					})
-				}
 
 				// Run 'run' function
-				else if(_test.fn) {
+				if(_test.fn) {
 					result = _test.fn()
 					Promise.resolve(result).then(function(result) {
 						_test.time = (new Date()).getTime() - tt.test_start.getTime()
@@ -466,7 +470,7 @@ tt = {
 							_test.time = (new Date()).getTime() - tt.test_start.getTime()
 							resolve()
 						}
-						else tt.run_test_loop(group_index, test_index, tt.dom_check_interval).then(function() {
+						else tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
 							if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
 							resolve()
 						})
@@ -601,22 +605,16 @@ tt = {
 	// time_limit:	(int) Amount of time (ms) to display message before automatically hiding it.
 	alert_timeout: null,
 	alert: function(message, time_limit = 999999) {
-
-		// if($('.tests_message span').html() == message) return
-
-
-		// if(message) $('.tests_message span').html(message).parent().addClass('visible')
-		// else $('.tests_message span').html('').parent().removeClass('visible')
 		tt.message = message
 
 		clearTimeout(tt.alert_timeout)
 		tt.alert_timeout = setTimeout(function() {
-			$('.tests_message').removeClass('visible')
+			let $message = document.querySelector(".tests_message")
+			$message.classList.remove('visible')
 			setTimeout(function() {
 				tt.message = ''
 			}, 300)
 		}, time_limit)
-
 	},
 	
 
@@ -663,9 +661,6 @@ tt = {
 	},
 	
 	toggle_skip_group(group_index) {
-		// let group_index = $(e.target).closest('.group').attr('group_index')
-		// let val = $('.group[group_index="' + group_index + '"]').find('.group_title input[type="checkbox"]').prop('checked')
-		// console.log(val);
 		let skip = !!tt.groups[group_index].skip
 		tt.groups[group_index].skip = !skip
 		tt.groups[group_index].tests.forEach(function(test) {
@@ -779,64 +774,86 @@ var ttb = {
 	},
 	
 	
-	
+	// Make $el2 match $el1 by only changing the elements and attributes that are different (recursive)
 	matchDOMNode: function($el1, $el2) {
-		// let dom_map = []
-			
-		let $children1 = $el1.children()
-		let $children2 = $el2.children()
+		
+		let $children1 = $el1.children
+		let $children2 = $el2.children
 		
 		
 		// If $el2 is empty, just replace it with all of $el1
 		if($children2.length < 1) {
-			$el2.replaceWith($el1.clone())
-			return
+			$el2.outerHTML = $el1.cloneNode(true).outerHTML
+			$children2 = $el1.cloneNode(true).children
+			// testerrific_ui.render();
+			// return
 		}
+		
 		
 		for(let x = 0; x < $children1.length; x++) {
 			
-			// If elements have different numbers of children, replace $h2
-			if($children1.eq(x).children().length != $children2.eq(x).children().length) {
-				$children2.eq(x).replaceWith($children1.eq(x).clone())
+			// If elements have different numbers of children, replace $children2[x]
+			if($children1[x].children.length != $children2[x].children.length) {
+				$children2[x].outerHTML = $children1[x].outerHTML + ""
 				continue;
 			}
 			
-			// If elements don't match, replace child from $el2 
-			let a = $children1.eq(x).clone()
-			a.find('*').remove()
+			// If elements don't match, replace child from $el2 with child from $el1
+			let a = $children1[x].cloneNode(true)
+			// Remove all children so that only current element is evaluated (children will be compared individually and recursively)
+			a.querySelectorAll('*').forEach(function($this) { $this.remove() })
 			// Remove attributes to be checked separately
-			for(let aa = 0; aa < a[0].attributes.length; aa++) { a.removeAttr(a[0].attributes[aa].name) }
-			a.removeAttr('class style')
-			a = a.prop('outerHTML')
-			a = a.replace(/[\s]+/g, ' ')
+			if(a.getAttribute(':checked') == 'true') a.checked = true
+			if(a.getAttribute(':disabled') == 'true') a.disabled = true
+			// else a.checked = false
+			for(let y = 0; y < a.attributes.length; y++) { a.removeAttribute(a.attributes[y].name) }
+			a.removeAttribute('class')
+			a.removeAttribute('style')
+			// a = a.outerHTML + ""
+			// a = a.replace(/[\s]+/g, ' ')
 			
-			let b = $children2.eq(x).clone()
-			b.find('*').remove()
-			for(let ba = 0; ba < b[0].attributes.length; ba++) { b.removeAttr(b[0].attributes[ba].name) }
-			b = b.prop('outerHTML')
-			if(b) b = b.replace(/[\s]+/g, ' ')
-	
+			let b = $children2[x].cloneNode(true)
+			b.querySelectorAll('*').forEach(function($this) { $this.remove() })
+			// Remove attributes to be checked separately
+			for(let y = 0; y < b.attributes.length; y++) { b.removeAttribute(b.attributes[y].name) }
+			b.removeAttribute('class')
+			b.removeAttribute('style')
 			
-			if(a != b) {
-				$children2.eq(x).replaceWith($children1.eq(x).clone())
+					
+			// else $children2[x].checked = false
+			// b = b.outerHTML + ""
+			// b = b.replace(/[\s]+/g, ' ')
+
+			
+			if(a.outerHTML != b.outerHTML) {
+				let clone = $children1[x].cloneNode(true)
+				$children2[x].outerHTML = clone.outerHTML
+				
+				if(a.checked) $children2[x].setAttribute('checked', 'checked')
+				if(a.disabled) $children2[x].setAttribute('disabled', 'disabled')
+				
+				// if(clone.getAttribute(':checked') == 'true') $children2[x].checked = true
+				// else $children2[x].checked = false
+				// console.log(clone.getAttribute(':disabled'));
+				// if(clone.getAttribute(':disabled') == 'true') $children2[x].disabled = true
+				// else $children2[x].disabled = false
 				continue;
-			}		
+			}
 			
-			// If dynamic attributes don't match, just replace those attributes
-			// $.each($children1.eq(x).attributes, function(index, attribute) {
-			for(let ela = 0; ela < $children1.eq(x)[0].attributes.length; ela++) {
-				let attribute = $children1.eq(x)[0].attributes[ela]
-				if($children1.eq(x).attr(attribute.name) != $children2.eq(x).attr(attribute.name)) {
-					$children2.eq(x).attr(attribute.name, $children1.eq(x).attr(attribute.name))
+			// If attributes don't match, just replace those attributes
+			for(let z = 0; z < $children1[x].attributes.length; z++) {
+				let attribute = $children1[x].attributes[z]
+				if($children1[x].getAttribute(attribute.name) != $children2[x].getAttribute(attribute.name)) {
+					$children2[x].setAttribute(attribute.name, $children1[x].getAttribute(attribute.name))
 				}
 			}
 			
 			// If elements have children, run function recursively on children
-			if($children1.eq(x).children().length > 0) {
-				ttb.matchDOMNode($children1.eq(x), $children2.eq(x))
+			if($children1[x].children.length > 0) {
+				ttb.matchDOMNode($children1[x], $children2[x])
 			}
-			
 		}
+		
 		
 	},
 
@@ -870,6 +887,9 @@ var ttb = {
 		return newobj
 	},
 	
+	// print a string if test string evaluates as truthy
+	// tests: object of key/value pairs. If value returns truthy, key will be output as a string. print_if() can handle multiple key/value pairs
+	// eg. { hidden: "group.collapse == 1" }
 	print_if(tests) {
 		let str = ''
 		for(let key in tests) {
@@ -915,25 +935,42 @@ ttb.init.prototype.render = function () {
 		
 	let temp = document.createElement('div');
 	temp.innerHTML = this.template(this.data);
-	$(temp).attr('id', 'testerrific')
+	temp.id = 'testerrific'
 	
-	// Remove elements if their ":if" qualifier returns false
-	$(temp).find('[\\:if]').each(function() {
-		if(!ttb.seval($(this).attr(':if'))) $(this).remove()
-		$(this).removeAttr(':if')
-	})
+	let $el = temp.querySelectorAll('[\\:if]')
+	for(let x = 0; x < $el.length; x++) {
+		if(!ttb.seval($el[x].getAttribute(':if'))) $el[x].remove()
+		$el[x].removeAttribute(':if')		
+	}
 	
-	// Check for true/false attributes that can be enabled/disabled by a dynamic value
+	
+	
+	// // Check for attributes that can be enabled/disabled by a true/false value
 	let bool_attrs = ['checked', 'disabled']
 	bool_attrs.forEach(function(attr) {
-		$(temp).find('[\\:' + attr + ']').each(function() {
-			let result = ttb.seval($(this).attr(':' + attr))
-			if(result) $(this).attr(attr, 1)
-			$(this).removeAttr(':' + attr)
-		})
+		$el = temp.querySelectorAll('[\\:' + attr + ']')
+		for(let x = 0; x < $el.length; x++) {
+			let result = ttb.seval($el[x].getAttribute(':' + attr))
+	// 		// if(attr == 'checked') console.log($el[x]);
+			if(result) $el[x].setAttribute(attr, result)
+			else $el[x].removeAttribute(attr)
+			
+	// 		// if(attr == 'checked') console.log(result);
+	// 		// // if(result) $el[x].checked = result
+	// 		// // if(attr == 'checked') $el[x].checked = result
+	// 		// // $el[x].setAttribute(attr, result)
+	// 		// if(attr == 'checked' && result) {
+	// 		// 	$el[x].setAttribute(attr, 1)
+	// 		// }
+	// 		// else if(attr == 'checked' && !result) {
+	// 		// 	$el[x].setAttribute(attr, 0)
+	// 		// 	$el[x].removeAttribute(attr)
+	// 		// }
+	// 		// $el[x].removeAttribute(':' + attr)	
+		}
 	})
 	
-	ttb.matchDOMNode($(temp), $('#testerrific'))
+	ttb.matchDOMNode(temp, document.querySelector('#testerrific'))
 };
 
 
@@ -1033,7 +1070,6 @@ var testerrific_ui = new ttb.init({
 									<button onclick="tt.start_tests(${group_index})" :disabled="${tt.running == 1}">Run</button>
 								</div>
 								
-								
 								${group.tests.map(function(test, test_index) {
 									return `
 									
@@ -1084,7 +1120,9 @@ var testerrific_ui = new ttb.init({
 
 // Add UI to DOM and trigger rendering once the page has loaded
 document.addEventListener('DOMContentLoaded', function () {
-	$('body').append('<div id="testerrific"></div>')
+	let elem = document.createElement('div');
+	elem.id = 'testerrific'
+	document.body.appendChild(elem);
 	testerrific_ui.render();
 	tt = testerrific_ui.data
 }, false);

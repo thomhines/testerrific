@@ -14,16 +14,16 @@ h1 {
   font-size: 4.2rem;
   line-height: 1em;
   margin: 0 0 0.4em;
-  color: #2d896f;
+  color: #ff5c75;
   font-family: "Bungee Shade", sans-serif;
 }
 
 h2 {
   font-family: "Bungee Hairline", sans-serif;
-  text-shadow: 0 0 1px #2d896f, 0 0 1px #2d896f;
+  text-shadow: 0 0 1px #ff5c75, 0 0 1px #ff5c75;
   font-size: 1.9rem;
   margin: -0.5em 0 1.5em -0.15em;
-  color: #2d896f;
+  color: #ff5c75;
 }
 
 h1 + h2 {
@@ -46,7 +46,7 @@ h2 + h3 {
 
 h2:focus,
 h3:focus {
-  color: #2d896f;
+  color: #ff5c75;
 }
 
 h4 {
@@ -61,7 +61,7 @@ h5 {
   text-transform: uppercase;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: #2d896f;
+  color: #ff5c75;
 }
 
 ul {
@@ -71,11 +71,11 @@ ul {
 }
 
 a {
-  color: #2d896f;
+  color: #ff5c75;
   transition: color 0.3s ease-in-out;
 }
 a:hover, a:focus, a:active {
-  color: #143c31;
+  color: #f50026;
 }
 
 button,
@@ -95,7 +95,7 @@ button:hover, button:focus, button:active,
 .button:hover,
 .button:focus,
 .button:active {
-  background: #2d896f;
+  background: #ff5c75;
   color: #fff;
 }
 
@@ -148,7 +148,7 @@ hr {
 .clear_tests {
   position: fixed;
   top: 40px;
-  right: 550px;
+  right: 575px;
   z-index: 10;
 }
 .header_links button,
@@ -156,7 +156,7 @@ hr {
 .clear_tests button,
 .clear_tests .button {
   display: inline-block;
-  background: #2d896f;
+  background: #ff5c75;
   margin: 0 0 0 0.4em;
   padding: 0.5em 1em;
   font-size: 1rem;
@@ -217,14 +217,14 @@ hr {
 .note {
   margin: 0 0 1em;
   padding: 1em;
-  background: #b5e7d9;
-  border: 4px solid #2d896f;
+  background: white;
+  border: 4px solid #ff5c75;
   border-radius: 5px;
 }
 
 footer {
   margin: 100px 0;
-  color: #2d896f;
+  color: #ff5c75;
   font-size: 0.8em;
 }
 
