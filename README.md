@@ -44,7 +44,7 @@ To get Testerrific working, just link to the Testerrific JS and CSS files:
 
 ```html
 <!-- Download and link to the files locally: -->
-<script src="testerrific.min.js">&lt;/script>
+<script src="testerrific.min.js"></script>
 <link rel="Stylesheet" href="testerrific.min.css" type="text/css" />
 
 <!-- Or use the jsdelivr CDN: -->
