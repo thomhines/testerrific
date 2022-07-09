@@ -5,9 +5,9 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.3
+*	@version 0.2.4
 */
-tt_ver = '0.2.3';
+tt_ver = '0.2.4';
 
 tt = {
 
@@ -143,6 +143,8 @@ tt = {
 			current_group = ttb.find(tt.groups, { label: test_obj.group })
 		}
 		
+		if(current_group.skip) test_obj.skip = 1
+		
 		if(test_obj.position) current_group.tests.splice(test_obj.position, 0, test_obj)
 		else current_group.tests.push(test_obj)
 	},
@@ -177,6 +179,8 @@ tt = {
 		else if(test_obj.group) {
 			current_group = ttb.find(tt.groups, { label: test_obj.group })
 		}
+		
+		if(current_group.skip) test_obj.skip = 1
 
 		if(test_obj.position) current_group.tests.splice(test_obj.position, 0, test_obj)
 		else current_group.tests.push(test_obj)

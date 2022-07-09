@@ -6,7 +6,8 @@ body {
 }
 
 .container {
-  margin: 10vh 0 10vh calc(50vw - 350px - 250px);
+  margin: 10vh 0 10vh calc(50vw - 600px);
+  width: calc(100vw - 620px);
   max-width: 700px;
 }
 
@@ -192,6 +193,7 @@ hr {
 }
 
 .grid {
+  margin: 2em 0;
   display: grid;
   grid-template-columns: auto auto;
   gap: 1em 2em;
@@ -207,6 +209,10 @@ hr {
 
 .features p {
   margin: 0 0 1em;
+}
+
+.features b {
+  white-space: nowrap;
 }
 
 .pre {
@@ -229,4 +235,25 @@ footer {
   margin: 100px 0;
   color: #ff5c75;
   font-size: 0.8em;
+}
+
+@media (max-width: 1800px) {
+  .header_links {
+    position: absolute;
+  }
+}
+@media (max-width: 1400px) {
+  .container {
+    margin: 10vh 40px;
+  }
+
+  .clear_tests {
+    right: 535px;
+  }
+}
+@media (max-width: 1200px) {
+  .container {
+    width: auto;
+    max-width: none;
+  }
 }

@@ -95,6 +95,8 @@
   display: flex;
   -webkit-justify-content: flex-end;
           justify-content: flex-end;
+  -webkit-flex-wrap: wrap;
+          flex-wrap: wrap;
   grid-gap: 10px;
 }
 #testerrific .tests_panel .run_all_tests_container h2 {
@@ -349,7 +351,7 @@
   top: 10px;
   left: -25px;
   border: 6px solid rgba(0, 0, 0, 0);
-  border-top: 6px solid rgba(0, 0, 0, 0.5);
+  border-top: 6px solid rgba(17, 17, 17, 0.5);
   border-radius: 3px;
   -webkit-transform-origin: 6px 3px;
           transform-origin: 6px 3px;
@@ -380,6 +382,14 @@
 }
 #testerrific .hidden {
   display: none;
+}
+@media (max-width: 600px) {
+  #testerrific .tests_panel {
+    width: calc(100vw - 70px);
+  }
+  #testerrific .toggle_tests_panel.visible {
+    right: calc(100vw - 70px);
+  }
 }
 
 /*# sourceMappingURL=testerrific.css.map */

@@ -28,7 +28,7 @@
 
 <h2>The absolute best, fastest, easiest way test your site</h2>
 
-<p>Testerrific tries to take the headache out of site testing by making things simple and concise..</p>
+<p>Testerrific tries to take the headache out of site testing by making things simple and concise.</p>
 
 <div class="header_links">
 	<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download</a>
@@ -52,10 +52,10 @@
 		<a href="#creating_tests">Creating Tests</a>
 		<ul>
 			<li><a href="#getting_started">group()</a></li>
-			<li><a href="#getting_started">test()</a></li>
-			<li><a href="#getting_started">run()</a></li>
-			<li><a href="#getting_started">wait()</a></li>
-			<li><a href="#getting_started">pause()</a></li>
+			<li><a href="#tests">test()</a></li>
+			<li><a href="#run">run()</a></li>
+			<li><a href="#wait">wait()</a></li>
+			<li><a href="#pause">pause()</a></li>
 		</ul>
 	</p>
 	<p>
@@ -95,7 +95,7 @@
 	</div>
 	<div>
 		<h4>Reactive</h4>
-		<p>A reactive UI means you have the ability to change tests and settings and see the tests update in real-time.</p>
+		<p>Change the Testerrific data object (ie. '<b>tt</b>') and the UI will update automatically, which helps a lot with on-the-fly tweaks and the trial-and-error phase of writing tests.</p>
 	</div>
 	<div>
 		<h4>Async friendly</h4>
@@ -107,7 +107,7 @@
 	</div>
 	<div>
 		<h4>Lightweight & dependency-free</h4>
-		<p>Testerrific weighs only 8.5kb gzipped (5.7kb JS, 2.8kb CSS).</p>
+		<p>Testerrific weighs only 8.5kb gzipped (5.7kb JS, 2.8kb CSS) and doesn't require any other libraries.</p>
 	</div>
 </div>
 
@@ -121,12 +121,12 @@
 
 <p>Just link to the Testerrific JS and CSS files...</p>
 
-<code class="no_run_button no_edit javascript-html">
+<code class="no_run_button no_edit language-html">
 &lt;!-- Download and link to the files locally: -->
 &lt;script src="testerrific.min.js">&lt;/script>
 &lt;link rel="Stylesheet" href="testerrific.min.css" type="text/css" />
 
-&lt;!-- Or use the jsdelivr CDN: -->
+&lt;!-- OR use link to the files on jsdelivr CDN: -->
 &lt;script src="https://cdn.jsdelivr.net/gh/thomhines/testerrific@master/testerrific.min.js">&lt;/script>
 &lt;link rel="Stylesheet" href="https://cdn.jsdelivr.net/gh/thomhines/testerrific@master/testerrific.min.css" type="text/css" />
 </code>
@@ -166,26 +166,35 @@ tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 <p>The <b>group()</b> function will create a new test group. Every test written after that will be in that test group until another test group is created.</p>
 		
 <p class="grid">
-	<span><b>label</b>:</span> <span>(string) text shown as title for test group</span>
+	<span><b>label</b>:</span> <span>(string) text shown as title for test group<br><br></span>
 	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
 <!-- label:		(string) label of test group<br> -->
 	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
 	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
 	<span class="indent"> <b>collapse</b>:</span> <span>(boolean) whether tests are shown or not when page is loaded</span>
-	<span class="indent"> <b>beforeEach</b>:</span> <span>(function) function that gets run before each test in group</span>
-	<span class="indent"> <b>afterEach</b>:</span> <span>(function) function that gets run after each test in group</span>
+	<span class="indent"> <b>beforeEach</b>:</span> <span>(function/promise) function that gets run before each test in group</span>
+	<span class="indent"> <b>afterEach</b>:</span> <span>(function/promise) function that gets run after each test in group</span>
 </p>
 		
 		
 		
 <h5>Examples</h5>
-		
-		
 				
 <p>To create a new test group:</p>
-		
 <code class="run_on_load">
-tt.group("Another Test Group");
+tt.group("Simple Test Group");
+</code>
+
+
+<p>You can also add settings to a group to modify how it loads and functions.</p>
+<code class="run_on_load">
+tt.group("Skipped Test Group", {
+	skip: 1
+});
+
+tt.group("Another Test Group", {
+	beforeEach: () => { /* Run this code before each test */ }
+});
 </code>
 		
 		
@@ -194,15 +203,15 @@ tt.group("Another Test Group");
 		
 <h4>test([label], check, [options]);</h4>
 		
-<p>The <b>test()</b> function will create a new test, added to the end of the last test group. If you haven't defined a test group yet, Testerrific will make one for you.</p>
+<p>The <b>test()</b> function will create a new test (string, function, or promise) and add it to the end of the last test group. If you haven't defined a test group yet, Testerrific will make one for you.</p>
 		
 <p class="grid">
-	<span><b>label</b>:</span> <span>(string) text shown as title for test. If no label is given and "check" value is a string, the "check" string will be used as the label.</span>
+	<span><b>label</b>:</span> <span>(string) text shown as title for test. If no label is given and "check" value is a string, the "check" string will be used as the label.<br><br></span>
 	<span><b>check</b>:</span> <span>(string) that evaluates as truthy/falsey.<br>
 	<b>OR</b><br>
 	(function) that returns truthy/falsey.<br>
 	<b>OR</b><br>
-	(promise) that resolves truthy/falsey.
+	(promise) that resolves truthy/falsey.<br><br>
 	</span>
 	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
 <!-- label:		(string) label of test group<br> -->
@@ -359,12 +368,12 @@ tt.test('before() example', 'a == 1', {
 	
 <h2>Scheduled Functions</h2>
 		
-<h4>run([label], fn, [options])</h4>
+<h4 id="run">run([label], fn, [options])</h4>
 <p>Run an arbitrary function as an item in the tests list.</p>
 
 <p class="grid">
 	<span><b>label</b>:</span> <span>(string) text shown as title for test group. If no label is given and "check" value is a string, the check value will be used as the label</span>
-	<span><b>fn</b>:</span> <span>(function or promise) Function to be run. If a promise is given, tests will wait for promise to resolve before continuing.</span>
+	<span><b>fn</b>:</span> <span>(function/promise) Function to be run. If a promise is given, tests will wait for promise to resolve before continuing.</span>
 	<span><b>options</b>:</span> <span>(object) Options to affect how function is run. See options for <a href="#">test()</a> function above for list of available options.</span>
 </p>
 
@@ -373,13 +382,13 @@ tt.test('before() example', 'a == 1', {
 tt.test("Is a still positive?", "a > 0");
 </code>
 	
-<h4>wait(time)</h4>
+<h4 id="wait">wait(time)</h4>
 <p>Wait a specified amount of time (in ms) before moving to next test.</p>
 <code class="run_on_load">
 tt.wait(3000);
 </code>
 
-<h4>pause()</h4>
+<h4 id="pause">pause()</h4>
 <p>Pause tests at this point. User will need to manually click 'Resume' in order for tests to continue.</p>
 <code class="run_on_load">
 tt.pause();
