@@ -43,8 +43,13 @@ Testerrific weighs only 8.5kb gzipped (5.7kb JS, 2.8kb CSS).
 To get Testerrific working, just link to the Testerrific JS and CSS files:
 
 ```html
-<script src="testerrific.min.js"></script>
+<!-- Download and link to the files locally: -->
+<script src="testerrific.min.js">&lt;/script>
 <link rel="Stylesheet" href="testerrific.min.css" type="text/css" />
+
+<!-- Or use the jsdelivr CDN: -->
+<script src="https://cdn.jsdelivr.net/gh/thomhines/testerrific@master/testerrific.min.js"></script>
+<link rel="Stylesheet" href="https://cdn.jsdelivr.net/gh/thomhines/testerrific@master/testerrific.min.css" type="text/css" />
 ```
 
 then write some tests...
