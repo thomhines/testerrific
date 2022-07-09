@@ -99,13 +99,26 @@
           flex-wrap: wrap;
   grid-gap: 10px;
 }
-#testerrific .tests_panel .run_all_tests_container h2 {
+#testerrific .tests_panel .run_all_tests_container .title {
   -webkit-flex: 1;
           flex: 1;
+}
+#testerrific .tests_panel .run_all_tests_container h2 {
+  display: inline-block;
   margin: 0;
-  font-size: 28px;
-  font-weight: 100;
-  color: rgba(17, 17, 17, 0.6);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  background: #111111;
+  border-left: 5px solid #ff5c75;
+  -webkit-transform: skewX(-14deg);
+          transform: skewX(-14deg);
+}
+#testerrific .tests_panel .run_all_tests_container h2 span {
+  display: inline-block;
+  padding: 0.3em 0.9em 0.4em 1em;
+  -webkit-transform: skewX(14deg);
+          transform: skewX(14deg);
+  color: #fff;
 }
 #testerrific .tests_panel .run_all_tests_container button {
   font-size: 14px;

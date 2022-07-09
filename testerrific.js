@@ -5,9 +5,8 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.4
+*	@version 0.2.5
 */
-tt_ver = '0.2.4';
 
 tt = {
 
@@ -662,9 +661,8 @@ tt = {
 			group.tests.forEach(function(test) {
 				if(!test.test) return
 				if(!results[test.result]) results[test.result] = 0
-				if(test.group) {}
-				else if(test.result == null) {}
-				else results[test.result]++
+				if(test.result == null) {}
+				else results[test.result]++				
 				if(test.result != null) results['run']++
 				results['all']++
 			})
@@ -947,7 +945,7 @@ var testerrific_ui = new ttb.init({
 				<div class="panel_inner_container">
 					
 					<div class="run_all_tests_container">
-						<h2>Testerrific</h2>
+						<div class="title"><h2><span>TESTERRIFIC</span></h2></div>
 						
 						<div :if="!tt.running">
 							<button onclick="tt.start_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Run selected tests</button>
@@ -1046,7 +1044,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<p>Testerrific v${tt_ver}</p>
+						<p>v0.2.5</p>
 						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Docs</a>
 					</footer>
 				</div>
