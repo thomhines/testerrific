@@ -15,7 +15,7 @@
 Write tests as simply as `tt.test("a < 4")`
 
 - **Flexible**:
-Completely agnostic, it can test anything that resolves truthy or falsey.
+Test *anything* that resolves truthy or falsey, no need to adjust your code.
 
 - **Powerful**:
 Tons of settings give you control over how each test runs, giving you the power to test any situation.
@@ -29,9 +29,11 @@ Disable tests, pause execution, run individual tests/functions on demand, all wi
 - **Async friendly**: 
 Support for promises and auto-retry means your tests won't get ahead of your code.
 
-- **Functions and events**:
-Control and respond to your tests with a large assortment of helper functions and event triggers.
+- **Helper Functions**:
+Control and respond to your tests with a large assortment of helper functions and triggers.
 
+- **Lightweight & dependency-free**
+Testerrific weighs only 8.5kb gzipped (5.7kb JS, 2.8kb CSS).
 
 
 ## Getting Started

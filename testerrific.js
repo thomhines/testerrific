@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.1
+*	@version 0.2.2
 */
 
 
@@ -942,9 +942,9 @@ var testerrific_ui = new ttb.init({
 				
 				<div class="panel_inner_container">
 					
-					<h2>Testerrific</h2>
-					
 					<div class="run_all_tests_container">
+						<h2>Testerrific</h2>
+						
 						<div :if="!tt.running">
 							<button onclick="tt.start_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Run selected tests</button>
 						</div>
@@ -985,7 +985,7 @@ var testerrific_ui = new ttb.init({
 						<div class="table_controls" :if="tt.groups.length">
 							<a onclick="tt.enable_all_groups()">enable all</a>
 							<a onclick="tt.disable_all_groups()">disable all</a>
-							<div>|</div>
+							<div></div>
 							<a onclick="tt.expand_all_groups()">expand all</a>
 							<a onclick="tt.collapse_all_groups()">collapse all</a>
 						</div>
@@ -1040,6 +1040,10 @@ var testerrific_ui = new ttb.init({
 					</div>
 					
 					<b>${tt.totals() + ' Total Tests'}</b>
+					
+					<footer>
+						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Testerrific Docs</a>
+					</footer>
 				</div>
 			</div>
 			

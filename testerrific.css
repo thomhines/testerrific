@@ -6,19 +6,18 @@
   right: -500px;
   width: 500px;
   background: #fff;
-  color: #111;
   border-left: 4px solid #555;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   transition: right 0.3s ease-in-out;
-  font-family: "Lato", "Barlow", "Helvetica Neue", Helvetica, sans-serif;
   font-size: 13px;
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none;
 }
-#testerrific .tests_panel h2 {
-  display: none;
+#testerrific .tests_panel * {
+  font-family: "Lato", "Barlow", "Helvetica Neue", Helvetica, sans-serif;
+  color: #111;
 }
 #testerrific .tests_panel h3 {
   margin: 0 0 0.7em;
@@ -86,6 +85,10 @@
   padding: 30px;
   overflow-y: auto;
   overflow-x: visible;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+          flex-direction: column;
 }
 #testerrific .tests_panel .run_all_tests_container {
   display: -webkit-flex;
@@ -93,6 +96,14 @@
   -webkit-justify-content: flex-end;
           justify-content: flex-end;
   grid-gap: 10px;
+}
+#testerrific .tests_panel .run_all_tests_container h2 {
+  -webkit-flex: 1;
+          flex: 1;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 100;
+  color: rgba(17, 17, 17, 0.6);
 }
 #testerrific .tests_panel .run_all_tests_container button {
   font-size: 14px;
@@ -103,8 +114,16 @@
   display: flex;
   -webkit-justify-content: flex-end;
           justify-content: flex-end;
-  grid-gap: 0.7em;
+  grid-gap: 1em;
   margin: 1em 0 0.5em;
+}
+#testerrific .tests_panel .table_controls div {
+  -webkit-flex: 1;
+          flex: 1;
+}
+#testerrific .tests_panel .table_controls a {
+  margin: 0;
+  text-decoration: none;
 }
 #testerrific .tests_panel .group {
   position: relative;
@@ -342,6 +361,18 @@
 #testerrific .collapse .collapse_group {
   -webkit-transform: rotate(-90deg);
           transform: rotate(-90deg);
+}
+#testerrific footer {
+  -webkit-flex: 1;
+          flex: 1;
+  margin: 0;
+  font-size: 1em;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: flex-end;
+          justify-content: flex-end;
+  -webkit-align-items: flex-end;
+          align-items: flex-end;
 }
 #testerrific .hidden {
   display: none;

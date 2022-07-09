@@ -22,53 +22,53 @@
 <body>
 	
 	
-	<div class="container language-javascript">
-			
-		<h1>Testerrific</h1>
+<div class="container language-javascript">
 		
-		<h2>The absolute best, fastest, easiest way test your site</h2>
-		
-		<p>Testerrific tries to take the headache out of site testing by making things simple and concise..</p>
-		
-		<div class="header_links">
-			<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download</a>
-			<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
-		</div>
-		
-		<div class="clear_tests">			
-			<div class="note"><b>NOTE</b>: This whole site is a testing playground! Use the button below to clear existing tests, and you can click the "Run" button on any block of code to see how it affects the tests (code blocks are editable).</div>
-			<button onclick="tt.groups = []">Clear all tests</button>
-		</div>
-		
-		<div class="toc">
-			<p><a href="#features">Features</a>
-			<p><a href="#getting_started">Getting Started</a>
-				<ul>
-					<li><a href="#installation">Installation</a></li>
-					<li><a href="#the_basics">The Basics</a></li>
-				</ul>
-			</p>
-			<p>
-				<a href="#creating_tests">Creating Tests</a>
-				<ul>
-					<li><a href="#getting_started">group()</a></li>
-					<li><a href="#getting_started">test()</a></li>
-					<li><a href="#getting_started">run()</a></li>
-					<li><a href="#getting_started">wait()</a></li>
-					<li><a href="#getting_started">pause()</a></li>
-				</ul>
-			</p>
-			<p>
-				<a href="#events">Global Options</a>
-			</p>
-			<p>
-				<a href="#events">Events & Functions</a>
-			</p>
-			<p>
-				<a href="#other_tips">Other Examples & Tips</a>
-			</p>
-		</div>
-		
+<h1>Testerrific</h1>
+
+<h2>The absolute best, fastest, easiest way test your site</h2>
+
+<p>Testerrific tries to take the headache out of site testing by making things simple and concise..</p>
+
+<div class="header_links">
+	<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download</a>
+	<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
+</div>
+
+<div class="clear_tests">			
+	<div class="note"><b>NOTE</b>: This whole site is a testing playground! Use the button below to clear existing tests, and you can click the "Run" button on any block of code to see how it affects the tests (code blocks are editable).</div>
+	<button onclick="tt.groups = []">Clear all tests</button>
+</div>
+
+<div class="toc">
+	<p><a href="#features">Features</a>
+	<p><a href="#getting_started">Getting Started</a>
+		<ul>
+			<li><a href="#installation">Installation</a></li>
+			<li><a href="#the_basics">The Basics</a></li>
+		</ul>
+	</p>
+	<p>
+		<a href="#creating_tests">Creating Tests</a>
+		<ul>
+			<li><a href="#getting_started">group()</a></li>
+			<li><a href="#getting_started">test()</a></li>
+			<li><a href="#getting_started">run()</a></li>
+			<li><a href="#getting_started">wait()</a></li>
+			<li><a href="#getting_started">pause()</a></li>
+		</ul>
+	</p>
+	<p>
+		<a href="#events">Global Options</a>
+	</p>
+	<p>
+		<a href="#events">Events & Functions</a>
+	</p>
+	<p>
+		<a href="#other_tips">Other Examples & Tips</a>
+	</p>
+</div>
+	
 		
 <hr>
 			
@@ -79,27 +79,35 @@
 <div class="features grid">
 	<div>
 		<h4>Simple syntax</h4>
-		<p>By far the easiest syntax of any testing suite. In fact, you don't even have to use anything more than just one function, eg. <b>tt.test("a < 4")</b></p>
+		<p>By far the easiest syntax of any testing suite. Write tests as simply as <b>tt.test("a < 4")</b></p>
 	</div>
 	<div>
-		<h4>Extensible</h4>
-		<p>Even though it's simple, you can customize tests in a number of ways to create exactly the scenarios you need to check.</p>
+		<h4>Flexible</h4>
+		<p>Test <em>anything</em> that resolves truthy or falsey, no need to adjust your code.</p>
+	</div>
+	<div>
+		<h4>Powerful</h4>
+		<p>Even though it's so simple, you can <a href="#tests">customize tests</a> in a number of ways to create exactly the scenarios you need to check.</p>
+	</div>
+	<div>
+		<h4>Intuitive UI</h4>
+		<p>You can disable tests, pause execution, or even run a specific test on demand&mdash;all without having to go back to your code to make changes.</p>
 	</div>
 	<div>
 		<h4>Reactive</h4>
-		<p>A reactive UI means you have the ability to change tests and settings and see the interface update in real-time.</p>
+		<p>A reactive UI means you have the ability to change tests and settings and see the tests update in real-time.</p>
 	</div>
 	<div>
 		<h4>Async friendly</h4>
-		<p>Whether you're waiting for the server, the DOM, even on user input, Testerrific has things like <a href="#auto_retry">auto-retry</a>, <a href="#wait_for_element">conditional checks</a>, and promise-friendly inputs to make sure tests run when they should.</p>
+		<p>Whether you're waiting for the server, the DOM, even on user input, Testerrific has things like <a href="#auto_retry">auto-retry</a>, conditional checks, and promise-friendly inputs to make sure tests run when they should.</p>
 	</div>
 	<div>
 		<h4>Helper functions and events</h4>
 		<p>A whole set of functions and events to be able to track and adjust how your tests affect or respond to just about any situation on your site.</p>
 	</div>
 	<div>
-		<h4>Intuitive UI</h4>
-		<p>You can disable tests, pause execution, or even run a specific test on demand, all without having to go back to your code to change settings.</p>
+		<h4>Lightweight & dependency-free</h4>
+		<p>Testerrific weighs only 8.5kb gzipped (5.7kb JS, 2.8kb CSS).</p>
 	</div>
 </div>
 
@@ -182,7 +190,7 @@ tt.group("Another Test Group");
 		
 		
 				
-<h3>Tests</h3>
+<h3 id="tests">Tests</h3>
 		
 <h4>test([label], check, [options]);</h4>
 		

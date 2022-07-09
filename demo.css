@@ -18,7 +18,7 @@ h1 {
   font-family: "Bungee Shade", sans-serif;
 }
 
-h2 {
+.container h2 {
   font-family: "Bungee Hairline", sans-serif;
   text-shadow: 0 0 1px #ff5c75, 0 0 1px #ff5c75;
   font-size: 1.9rem;
@@ -26,7 +26,7 @@ h2 {
   color: #ff5c75;
 }
 
-h1 + h2 {
+.container h1 + h2 {
   margin: -1em 0 2em;
   font-family: "Lato", sans-serif;
   font-size: 1.2rem;
