@@ -72,7 +72,7 @@ ul {
 
 a {
   color: #ff5c75;
-  transition: color 0.3s ease-in-out;
+  transition: color 0.2s ease-in-out;
 }
 a:hover, a:focus, a:active {
   color: #f50026;

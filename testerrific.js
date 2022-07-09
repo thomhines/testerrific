@@ -5,9 +5,9 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.2
+*	@version 0.2.3
 */
-
+tt_ver = '0.2.3';
 
 tt = {
 
@@ -1042,7 +1042,8 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Testerrific Docs</a>
+						<p>Testerrific v${tt_ver}</p>
+						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Docs</a>
 					</footer>
 				</div>
 			</div>
