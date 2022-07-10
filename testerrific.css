@@ -384,8 +384,8 @@
   font-size: 1em;
   display: -webkit-flex;
   display: flex;
-  -webkit-justify-content: space-between;
-          justify-content: space-between;
+  -webkit-justify-content: flex-end;
+          justify-content: flex-end;
   -webkit-align-items: flex-end;
           align-items: flex-end;
 }

@@ -270,7 +270,7 @@ tt.test("Promise example", () => {
 <p>Disable this test. Skipped tests are only disabled when the tests are first loaded. You can always re-enable a 'skipped' test or run it manually.</p>
 		
 <code class="run_on_load">
-tt.test('Skip example', '4 == 4', { 
+tt.test("'skip' example", "4 == 4", { 
 	skip: true 
 });
 </code>
@@ -278,11 +278,15 @@ tt.test('Skip example', '4 == 4', {
 		
 		
 <h5>only</h5>
-<p>Skip all other tests that are not also flagged as "only". This effect will only happen when Testerrific is first loaded.</p>	
-<code>
-tt.test('only example', '4 == 4', { 
+<p>Skip all other tests/groups that are not also flagged as "only".</p>	
+<code class="run_on_load">
+tt.test("'only' example", "4 == 4", { 
 	only: true 
 });
+</code>
+<p>This effect will only happen when Testerrific is first loaded or if you run:</p>
+<code>
+tt.skip_non_only_tests()
 </code>
 
 

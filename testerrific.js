@@ -220,7 +220,7 @@ tt = {
 
 
 	// Disable all tests if there are any tests/groups that are marked as 'only'
-	disable_skipped_tests: function() {
+	skip_non_only_tests: function() {
 		let has_only = 0
 		// Go through and find if there are any 'only' groups or tests
 		tt.groups.forEach(function(group) {
@@ -238,6 +238,7 @@ tt = {
 				// Skip all tests in a skipped group
 				if(group.skip) {
 					test.skip = 1
+					return
 				}
 
 				if(test.only) group_has_only = 1
@@ -1044,7 +1045,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<p>v0.2.5</p>
+						<p>Testerrific v0.2.5</p>
 						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Docs</a>
 					</footer>
 				</div>
@@ -1070,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', function () {
 	document.body.appendChild(elem);
 	testerrific_ui.render();
 	tt = testerrific_ui.data
+	tt.skip_non_only_tests()
 }, false);
 
 
