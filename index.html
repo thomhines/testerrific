@@ -278,13 +278,13 @@ tt.test("'skip' example", "4 == 4", {
 		
 		
 <h5>only</h5>
-<p>Skip all other tests/groups that are not also flagged as "only".</p>	
+<p>Skip all other tests/groups. You can set multiple tests/groups as "only".</p>	
 <code class="run_on_load">
 tt.test("'only' example", "4 == 4", { 
 	only: true 
 });
 </code>
-<p>This effect will only happen when Testerrific is first loaded or if you run:</p>
+<p>This effect will only happen when Testerrific is first loaded, or if you run <b>skip_non_only_tests()</b>.</p>
 <code>
 tt.skip_non_only_tests()
 </code>
