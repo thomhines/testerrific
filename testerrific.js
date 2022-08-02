@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.2.6
+*	@version 0.3.0
 */
 
 tt = {
@@ -71,6 +71,7 @@ tt = {
 	// 		afterEach:	function that gets run after each test in group
 	group: function(group_name = "Test Group", options = {}) {
 		let group_obj = Object.assign(ttb.clone(tt.group_defaults), options)
+		group_obj.id = ttb.id_count++
 		group_obj.label = group_name
 		tt.groups.push(group_obj)
 		return
@@ -116,11 +117,12 @@ tt = {
 			check = label
 			label = ''
 		}
-
+		
 		// let test_obj = ttb.clone(tt.test_defaults)
 		// test_obj.test = check
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {test: check})
 		
+		test_obj.id = ttb.id_count++	
 		
 		// test_obj = _.defaults({test: check}, options, tt.test_defaults)
 
@@ -164,8 +166,9 @@ tt = {
 			label = ''
 		}
 
-
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {fn: fn})
+		
+		test_obj.id = ttb.id_count++
 
 		if(!test_obj.label && label) test_obj.label = label
 
@@ -299,7 +302,7 @@ tt = {
 
 		}
 
-		clearTimeout(tt.wait_for_element_interval_obj)
+		clearTimeout(ttb.wait_for_element_interval_obj)
 
 		tt.run_next_test()
 
@@ -317,6 +320,7 @@ tt = {
 	resume_tests: function() {
 		tt.paused = 0
 		tt.alert("")
+		tt.groups[tt.current_group].tests[tt.current_test].id = tt.groups[tt.current_group].tests[tt.current_test].id * 1
 		if(tt.groups[tt.current_group].tests[tt.current_test].pause) tt.current_test++
 		tt.run_next_test()
 	},
@@ -324,8 +328,6 @@ tt = {
 
 
 	// Run through entire lifecycle for a given test (before_each(), before(), etc.). Each phase will wait for the previous phase to finish before moving on.
-	test_start: null,
-	wait_for_element_interval_obj: null,
 	run_test: function(group_index, test_index) {
 
 		return new Promise(function(resolve, reject) {
@@ -342,6 +344,8 @@ tt = {
 
 			if(_test.is_manual_test) tt.is_manual_test = 1
 			else tt.is_manual_test = 0
+			
+			ttb.test_start = new Date()
 
 			beforeEach_result = _group.beforeEach()
 			Promise.resolve(beforeEach_result).then(function(result) {
@@ -359,6 +363,7 @@ tt = {
 									tt.current_test = -1
 								}
 								resolve()
+								_test.time = (new Date()) - ttb.test_start
 							})
 						})
 					})
@@ -372,32 +377,25 @@ tt = {
 	run_test_loop: function(group_index, test_index, delay = 0) {
 		return new Promise(function(resolve, reject) {
 
-			tt.wait_for_element_interval_obj = setTimeout(function() {
+			ttb.wait_for_element_interval_obj = setTimeout(function() {
 
 				let _group = tt.groups[tt.current_group]
 				let _test = tt.groups[tt.current_group].tests[tt.current_test]
 
 				if(tt.run_start) tt.run_time = (new Date()).getTime() - tt.run_start.getTime()
 
-				// Reset clock for each test
-				if(delay == 0) {
-					tt.test_start = new Date()
-				}
-
-
 				// Check to see if wait_for_element element is visible
 				if(_test.wait_for_element) {
 					// Fail test if requested element doesn't appear in time
-					if((new Date()) - tt.test_start > tt.wait_for_element_timeout) {
+					if((new Date()) - ttb.test_start > tt.wait_for_element_timeout) {
 						_test.result = 'error'
 						_test.error = 'element not found'
-						_test.time = (new Date()).getTime() - tt.test_start.getTime()
 						resolve()
 						return
 					}
 					
 					let $wfe = document.querySelector(_test.wait_for_element)
-					if(!$wfe.offsetWidth || window.getComputedStyle($wfe).getPropertyValue("opacity") * 1 < 1) {
+					if(!$wfe || !$wfe.offsetWidth || window.getComputedStyle($wfe).getPropertyValue("opacity") * 1 < 1) {
 						tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
 							if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
 							resolve()
@@ -411,7 +409,6 @@ tt = {
 				if(_test.fn) {
 					result = _test.fn()
 					Promise.resolve(result).then(function(result) {
-						_test.time = (new Date()).getTime() - tt.test_start.getTime()
 						resolve()
 					});
 				}
@@ -423,7 +420,6 @@ tt = {
 
 					// Move to next test if test already has a result from elsewhere
 					if(_test.result) {
-						_test.time = (new Date()).getTime() - tt.test_start.getTime()
 						resolve()
 						return
 					}
@@ -440,7 +436,6 @@ tt = {
 								Promise.resolve(test_function_result).then(function(promise_result) {
 									if(promise_result) _test.result = 'passed'
 									else _test.result = 'failed'
-									_test.time = (new Date()).getTime() - tt.test_start.getTime()
 									resolve()
 								})
 								return
@@ -457,10 +452,9 @@ tt = {
 					if(!result && (_test.max_time !== null || tt.max_time)) {
 						let maxtime = _test.max_time
 						if(maxtime === null) maxtime = tt.max_time
-						if((new Date()).getTime() - tt.test_start.getTime() >= maxtime) {
+						if((new Date()) - ttb.test_start >= maxtime) {
 							_test.result = 'failed'
 							_test.error = 'timed out'
-							_test.time = (new Date()).getTime() - tt.test_start.getTime()
 							resolve()
 						}
 						else tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
@@ -471,7 +465,6 @@ tt = {
 					}
 					if(result) _test.result = 'passed'
 					else _test.result = 'failed'
-					_test.time = (new Date()).getTime() - tt.test_start.getTime()
 					if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
 					resolve()
 				}
@@ -680,7 +673,15 @@ tt = {
 
 
 // Internal functions for rendering results
+let render_debounce;
+let last_render = new Date();
 var ttb = {
+	
+	// Internal variables
+	id_count: 1, // used to generate unique ID for each group and test
+	changed_elements: {ui: 0, groups:[], tests: []}, // used to track which groups and tests have changed to make rendering more efficient
+	test_start: null, // used to track run time for tests
+	wait_for_element_interval_obj: null, // used to store setInterval for wait_for_element timer
 
 	// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
 	init: function (options) {
@@ -690,23 +691,16 @@ var ttb = {
 		_this.elem = document.querySelector(options.selector);
 		var _data = new Proxy(options.data, ttb.handler(this));
 		_this.template = options.template;
-		_this.debounce = null;
 	  
 		// Define setter and getter for data
 		Object.defineProperty(this, 'data', {
 			get: function () {
 				return _data;
-			},
-			set: function (data) {
-				_data = new Proxy(data, ttb.handler(_this));
-				debounce(_this);
-				return true;
 			}
 		});
 	
 	},
 
-	
 	
 	debounceRender: function (instance) {
 	
@@ -718,6 +712,7 @@ var ttb = {
 		// Setup the new render to run at the next animation frame
 		instance.debounce = window.requestAnimationFrame(function () {
 			instance.render();
+			ttb.changed_elements = {ui: 0, groups:[], tests: []} // Reset list of changed groups/tests
 		});
 	
 	},
@@ -731,6 +726,24 @@ var ttb = {
 				return obj[prop];
 			},
 			set: function (obj, prop, value) {
+				
+				// Create list of groups and tests to update so we don't try to re-check all of them for rendering
+				// If obj is a group, add it to list
+				if(obj.tests) {
+					ttb.changed_elements.groups.push(obj.id)
+				}
+				// If obj is a test, add test and parent group id to list (also, don't update either if all you're doing is updating run_time)
+				else if(obj.id && prop != 'run_time') {
+					ttb.changed_elements.tests.push(obj.id)
+					let group_id = 0
+					for(let x = 0; x < tt.groups.length; x++) {
+						for(let y = 0; y < tt.groups[x].tests.length; y++) {
+							if(tt.groups[x].tests[y].id == obj.id) group_id = tt.groups[x].id
+						}
+					}
+					ttb.changed_elements.groups.push(group_id)
+				}
+				
 				obj[prop] = value;
 				ttb.debounceRender(instance);
 				return true;
@@ -748,6 +761,18 @@ var ttb = {
 	// Make $el2 match $el1 by only changing the elements and attributes that are different (recursive)
 	matchDOMNode: function($el1, $el2) {
 		
+		// Skip groups that haven't been affected
+		if($el1.hasAttribute('group_id')) {
+			let gid = $el1.getAttribute('group_id') * 1
+			if(!ttb.changed_elements.groups.includes(gid)) return
+		}
+		
+		// Skip tests that haven't been affected
+		if($el1.hasAttribute('test_id')) {
+			let gid = $el1.getAttribute('test_id') * 1
+			if(!ttb.changed_elements.tests.includes(gid)) return
+		}
+
 		let $children1 = $el1.children
 		let $children2 = $el2.children
 		
@@ -756,9 +781,10 @@ var ttb = {
 		if($children2.length < 1) {
 			$el2.outerHTML = $el1.cloneNode(true).outerHTML
 			$children2 = $el1.cloneNode(true).children
+			return
 		}
 		
-		
+		// Loop through all child elements
 		for(let x = 0; x < $children1.length; x++) {
 			
 			// If elements have different numbers of children, replace $children2[x]
@@ -808,9 +834,8 @@ var ttb = {
 				ttb.matchDOMNode($children1[x], $children2[x])
 			}
 		}
-		
-		
 	},
+
 
 	// Return element in array that matches property/values in criteria
 	find(array, criteria) {
@@ -841,6 +866,7 @@ var ttb = {
 		
 		return newobj
 	},
+
 	
 	// print a string if test string evaluates as truthy
 	// tests: object of key/value pairs. If value returns truthy, key will be output as a string. print_if() can handle multiple key/value pairs
@@ -871,16 +897,11 @@ var ttb = {
 	},
 
 	
-	
 	// Convert milliseconds to seconds
 	ms_to_s(ms) {
 		return (ms / 1000).toFixed(1)
 	},
-	
 }
-
-
-
 
 
 
@@ -892,13 +913,18 @@ ttb.init.prototype.render = function () {
 	temp.innerHTML = this.template(this.data);
 	temp.id = 'testerrific'
 	
+	// Remove all elements whose :if attributes resolve false
 	let $el = temp.querySelectorAll('[\\:if]')
 	for(let x = 0; x < $el.length; x++) {
-		if(!ttb.seval($el[x].getAttribute(':if'))) $el[x].remove()
-		$el[x].removeAttribute(':if')		
+		let cond = $el[x].getAttribute(':if');
+		
+		// Checking for specific values is faster than running seval()
+		if(cond == 'null' || cond == 'false' || cond == 'undefined' || cond == '0') $el[x].remove();
+		else if(cond == 'true') {}
+		else if(!ttb.seval($el[x].getAttribute(':if'))) $el[x].remove();
+		
+		$el[x].removeAttribute(':if');
 	}
-	
-	
 	
 	// // Check for attributes that can be enabled/disabled by a true/false value
 	let bool_attrs = ['checked', 'disabled']
@@ -913,9 +939,6 @@ ttb.init.prototype.render = function () {
 	
 	ttb.matchDOMNode(temp, document.querySelector('#testerrific'))
 };
-
-
-
 
 
 
@@ -964,8 +987,6 @@ var testerrific_ui = new ttb.init({
 				
 					<br>
 					
-					
-					
 					<div class="tests_summary">
 						<button class="clear_results" onclick="tt.reset_tests()">Clear</button>
 						<h3>Summary:</h3>
@@ -983,7 +1004,6 @@ var testerrific_ui = new ttb.init({
 						<div :if="!tt.run_time && tt.paused">Paused...</div>
 					</div>
 					
-					
 					<div class="tests_table">
 						<div class="table_controls" :if="tt.groups.length">
 							<a onclick="tt.enable_all_groups()">enable all</a>
@@ -996,7 +1016,7 @@ var testerrific_ui = new ttb.init({
 						${tt.groups.map(function(group, group_index) {
 							return `
 							
-							<div class="group ${ ttb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == tt.current_group })}" group_index="${group_index}">
+							<div class="group ${ ttb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == tt.current_group })}" group_index="${group_index}" group_id="${group.id}">
 								<div class="group_title">
 									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})" index="${group_index}">
 									<p onclick="tt.toggle_view_group(${group_index})">${ group.label }</p>
@@ -1014,12 +1034,11 @@ var testerrific_ui = new ttb.init({
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div if="${!group.collapse}" class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" key="${test_index}">
+									<div class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" test_id="${test.id}" key="${test_index}">
 										
 										<div :if="${typeof test.label == 'string'}">
 											<i :if="${ tt.display_test_index }">${ test_index }</i> 
-											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}" :if="${!test.pause}">
-											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index}); tt.toggle_skip_test(${group_index}, ${test_index - 1})" :if="${test.pause}">
+											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
 											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
@@ -1045,8 +1064,11 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<p>Testerrific v0.2.6</p>
-						<a href="https://projects.thomhines.com/testerrific/" target="_blank">Docs</a>
+						<p>Testerrific v0.3.0</p>
+						<div>
+							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
+							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
+						</div>
 					</footer>
 				</div>
 			</div>
@@ -1073,6 +1095,3 @@ document.addEventListener('DOMContentLoaded', function () {
 	tt = testerrific_ui.data
 	tt.skip_non_only_tests()
 }, false);
-
-
-
