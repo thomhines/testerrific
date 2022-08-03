@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.3.0
+*	@version 0.3.1
 */
 
 tt = {
@@ -272,6 +272,7 @@ tt = {
 
 	//
 	start_tests: function(group_index = -1) {
+		ttb.force_render = 1
 		tt.running_group = group_index
 		// Run specific group only
 		if(tt.running_group >= 0) {
@@ -544,6 +545,7 @@ tt = {
 
 	// Wrap up tests and clear testing values
 	finish_tests: function() {
+		ttb.force_render = 1
 		tt.current_group = -1
 		tt.current_test = 0
 		tt.run_start = 0
@@ -555,6 +557,7 @@ tt = {
 	
 	// Reset results on all tests
 	reset_tests: function() {
+		ttb.force_render = 1
 		tt.groups.forEach(function(group) {
 			group.tests.forEach(function(test) {
 				test.result = null
@@ -761,18 +764,23 @@ var ttb = {
 	// Make $el2 match $el1 by only changing the elements and attributes that are different (recursive)
 	matchDOMNode: function($el1, $el2) {
 		
-		// Skip groups that haven't been affected
-		if($el1.hasAttribute('group_id')) {
-			let gid = $el1.getAttribute('group_id') * 1
-			if(!ttb.changed_elements.groups.includes(gid)) return
+		// force_render is used at a few selective moments to redraw entire panel in cases where groups/tests are not changed directly, esp. the beginning and end of tests
+		if(!ttb.force_render) {
+			
+			// Skip groups that haven't been affected
+			if($el1.hasAttribute('group_id')) {
+				let gid = $el1.getAttribute('group_id') * 1
+				if(!ttb.changed_elements.groups.includes(gid)) return
+			}
+			
+			// Skip tests that haven't been affected
+			if($el1.hasAttribute('test_id')) {
+				let gid = $el1.getAttribute('test_id') * 1
+				if(!ttb.changed_elements.tests.includes(gid)) return
+			}
+			
 		}
 		
-		// Skip tests that haven't been affected
-		if($el1.hasAttribute('test_id')) {
-			let gid = $el1.getAttribute('test_id') * 1
-			if(!ttb.changed_elements.tests.includes(gid)) return
-		}
-
 		let $children1 = $el1.children
 		let $children2 = $el2.children
 		
@@ -938,6 +946,8 @@ ttb.init.prototype.render = function () {
 	})
 	
 	ttb.matchDOMNode(temp, document.querySelector('#testerrific'))
+	
+	ttb.force_render = 0
 };
 
 
@@ -967,21 +977,17 @@ var testerrific_ui = new ttb.init({
 				
 				
 				<div class="panel_inner_container">
-					
-					<div class="run_all_tests_container">
+					<div class="run_buttons_container">
 						<div class="title"><h2><span>TESTERRIFIC</span></h2></div>
 						
 						<div :if="!tt.running">
-							<button onclick="tt.start_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Run selected tests</button>
+							<button class="run_all_button" onclick="tt.start_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Run selected tests</button>
 						</div>
-						<div :if="tt.running && !tt.paused">
-							<button onclick="tt.pause_tests()"><svg width="50" height="57" viewBox="0 0 50 57"><rect y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/><rect x="29.661" y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/></svg> Pause</button>
-						</div>
-						<div :if="tt.running && tt.paused">
-							<button onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Resume</button>
-						</div>
-						<div :if="tt.running">
+						<div class="run_buttons" :if="tt.running">
+							<button :if="!tt.paused" onclick="tt.pause_tests()"><svg width="50" height="57" viewBox="0 0 50 57"><rect y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/><rect x="29.661" y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/></svg> Pause</button>	
+							<button :if="tt.paused" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Resume</button>
 							<button onclick="tt.skip_test()"><svg width="62" height="53" viewBox="0 0 62 53"><path fill-rule="evenodd" clip-rule="evenodd" d="M26.5319 36.1232L6.005 51.6C3.50226 53.4871 0.37384 51.1283 0.37384 47.3543V5.79715C0.37384 2.02322 3.50226 -0.335662 6.005 1.5513L26.5319 17.0281V5.79715C26.5319 2.02322 29.6603 -0.335662 32.163 1.5513L59.7215 22.3299C62.2242 24.2169 62.2242 28.9345 59.7215 30.8214L32.163 51.6C29.6603 53.4871 26.5319 51.1283 26.5319 47.3543V36.1232Z" fill="black"/></svg> Skip</button>
+							<button onclick="tt.finish_tests()"><svg width="54" height="56" viewBox="0 0 54 56" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="54" height="56" rx="10" fill="black"/></svg> Stop</button>
 						</div>
 					</div>
 				
@@ -1043,7 +1049,7 @@ var testerrific_ui = new ttb.init({
 											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
 												<div class="result ${test.result}">${test.result}</div>
-												<div class="time" :if="${test.time !== null}">${ test.time }ms</div>
+												<div class="time" :if="${test.result != 'skipped' && test.time !== null}">${ test.time }ms</div>
 											</div>
 											<button onclick="tt.run_test(${group_index}, ${test_index}).then(tt.finish_tests)" :if="${!test.pause}" :disabled="${tt.running == 1}">Run</button>
 											<button onclick="tt.resume_tests()" :if="${test.pause && tt.paused}">Resume</button>
@@ -1064,7 +1070,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<p>Testerrific v0.3.0</p>
+						<p>Testerrific v0.3.1</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>

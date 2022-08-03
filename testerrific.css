@@ -90,22 +90,15 @@
   -webkit-flex-direction: column;
           flex-direction: column;
 }
-#testerrific .tests_panel .run_all_tests_container {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: flex-end;
-          justify-content: flex-end;
-  -webkit-flex-wrap: wrap;
-          flex-wrap: wrap;
-  grid-gap: 10px;
-}
-#testerrific .tests_panel .run_all_tests_container .title {
+#testerrific .tests_panel .run_buttons_container .title {
   -webkit-flex: 1;
           flex: 1;
+  -webkit-justify-content: flex-start;
+          justify-content: flex-start;
 }
-#testerrific .tests_panel .run_all_tests_container h2 {
+#testerrific .tests_panel .run_buttons_container .title h2 {
   display: inline-block;
-  margin: 0;
+  margin: 0 0 2em;
   font-size: 12px;
   letter-spacing: 0.2em;
   background: #111111;
@@ -113,16 +106,31 @@
   -webkit-transform: skewX(-14deg);
           transform: skewX(-14deg);
 }
-#testerrific .tests_panel .run_all_tests_container h2 span {
+#testerrific .tests_panel .run_buttons_container .title h2 span {
   display: inline-block;
   padding: 0.3em 0.9em 0.4em 1em;
   -webkit-transform: skewX(14deg);
           transform: skewX(14deg);
   color: #fff;
 }
-#testerrific .tests_panel .run_all_tests_container button {
+#testerrific .tests_panel .run_buttons_container, #testerrific .tests_panel .run_buttons_container div {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: flex-end;
+          justify-content: flex-end;
+  -webkit-align-items: flex-start;
+          align-items: flex-start;
+  -webkit-flex-wrap: wrap;
+          flex-wrap: wrap;
+  grid-gap: 7px;
+}
+#testerrific .tests_panel .run_buttons_container button {
   font-size: 14px;
-  padding: 0.8em 1.6em;
+  margin: 0;
+  padding: 0.7em 1em;
+}
+#testerrific .tests_panel .run_buttons_container .run_all_button {
+  padding: 0.7em 1.5em;
 }
 #testerrific .tests_panel .table_controls {
   display: -webkit-flex;
