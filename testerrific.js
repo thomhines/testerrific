@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.3.1
+*	@version 0.3.2
 */
 
 tt = {
@@ -335,6 +335,7 @@ tt = {
 
 			tt.current_group = group_index
 			tt.current_test = test_index
+			if(!tt.run_start) tt.run_start = new Date()
 
 			let _group = tt.groups[tt.current_group]
 			// let _test = tt.groups[tt.current_group].tests[tt.current_test]
@@ -577,7 +578,7 @@ tt = {
 
 		clearTimeout(tt.alert_timeout)
 		tt.alert_timeout = setTimeout(function() {
-			let $message = document.querySelector(".tests_message")
+			let $message = document.querySelector(".tt_message")
 			$message.classList.remove('visible')
 			setTimeout(function() {
 				tt.message = ''
@@ -961,13 +962,13 @@ var testerrific_ui = new ttb.init({
 	template: function (tt) {
 		return `
 		
-			<div class="tests_container">
+			<div class="tt_container">
 			
-			<div class="tests_panel ${ttb.print_if({ visible: tt.visible })}">
+			<div class="tt_panel ${ttb.print_if({ visible: tt.visible })}">
 				
-				<div class="tests_message ${ttb.print_if({ visible: tt.message.length })}">
+				<div class="tt_message ${ttb.print_if({ visible: tt.message.length })}">
 					<span>${ tt.message }</span>
-					<div class="pass_fail_buttonss" :if="tt.is_manual_test">
+					<div class="pass_fail_buttons" :if="tt.is_manual_test">
 						<button class="pass" onclick="tt.pass_test()">Pass</button>
 						<button class="fail" onclick="tt.fail_test()">Fail</button>
 					</div>
@@ -993,10 +994,10 @@ var testerrific_ui = new ttb.init({
 				
 					<br>
 					
-					<div class="tests_summary">
+					<div class="tt_summary">
 						<button class="clear_results" onclick="tt.reset_tests()">Clear</button>
 						<h3>Summary:</h3>
-						<div class="tests_summary_table">
+						<div class="tt_summary_table">
 							<div><b class="run">${tt.totals('run')}</b></div><div> tests run</div>
 							<div :if="tt.totals('passed')"><b class="passed">${tt.totals('passed')}</b></div><div :if="tt.totals('passed')"> passed</div>
 							<div :if="tt.totals('failed')"><b class="failed">${tt.totals('failed')}</b></div><div :if="tt.totals('failed')"> failed</div>
@@ -1010,8 +1011,8 @@ var testerrific_ui = new ttb.init({
 						<div :if="!tt.run_time && tt.paused">Paused...</div>
 					</div>
 					
-					<div class="tests_table">
-						<div class="table_controls" :if="tt.groups.length">
+					<div>
+						<div class="tt_table_controls" :if="tt.groups.length">
 							<a onclick="tt.enable_all_groups()">enable all</a>
 							<a onclick="tt.disable_all_groups()">disable all</a>
 							<div></div>
@@ -1022,7 +1023,7 @@ var testerrific_ui = new ttb.init({
 						${tt.groups.map(function(group, group_index) {
 							return `
 							
-							<div class="group ${ ttb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == tt.current_group })}" group_index="${group_index}" group_id="${group.id}">
+							<div class="tt_group ${ ttb.print_if({ collapse: group.collapse, skipped: group.skip, running: group_index == tt.current_group })}" group_index="${group_index}" group_id="${group.id}">
 								<div class="group_title">
 									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})" index="${group_index}">
 									<p onclick="tt.toggle_view_group(${group_index})">${ group.label }</p>
@@ -1040,7 +1041,7 @@ var testerrific_ui = new ttb.init({
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div class="test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" test_id="${test.id}" key="${test_index}">
+									<div class="tt_test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" test_id="${test.id}" key="${test_index}">
 										
 										<div :if="${typeof test.label == 'string'}">
 											<i :if="${ tt.display_test_index }">${ test_index }</i> 
@@ -1048,8 +1049,8 @@ var testerrific_ui = new ttb.init({
 											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
 											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
 											<div :if="${test.result != undefined}" class="result_container">
-												<div class="result ${test.result}">${test.result}</div>
-												<div class="time" :if="${test.result != 'skipped' && test.time !== null}">${ test.time }ms</div>
+												<div class="tt_result ${test.result}">${test.result}</div>
+												<div class="tt_time" :if="${test.result != 'skipped' && test.time !== null}">${ test.time }ms</div>
 											</div>
 											<button onclick="tt.run_test(${group_index}, ${test_index}).then(tt.finish_tests)" :if="${!test.pause}" :disabled="${tt.running == 1}">Run</button>
 											<button onclick="tt.resume_tests()" :if="${test.pause && tt.paused}">Resume</button>
@@ -1070,7 +1071,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<footer>
-						<p>Testerrific v0.3.1</p>
+						<p>Testerrific v0.3.2</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
@@ -1080,7 +1081,7 @@ var testerrific_ui = new ttb.init({
 			</div>
 			
 			
-			<button class="toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">TESTS</button>
+			<button class="tt_toggle_tests_panel ${ttb.print_if({ visible: tt.visible })}" onclick="tt.toggle_tests_panel()">TESTS</button>
 			
 			</div>
 			

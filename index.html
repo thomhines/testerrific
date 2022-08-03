@@ -253,13 +253,20 @@ tt.test("Is today Thursday?", () => {
 <h4>Async (promise) tests</h4>
 <p>Tests that return a promise will run until they resolve with a truthy or falsey value.</p>
 <code class="run_on_load">
-tt.test("Promise example", () => {
+tt.test("Test as Promise example", () => {
 	return new Promise(function(resolve, reject) {
 		setTimeout(() => {
 			resolve(true);
 		}, 3000);
 	})
 });
+</code>
+
+	
+<h4>Manual tests</h4>
+<p>Tests that can't be accomplished or validated programatically can be </p>
+<code class="run_on_load">
+tt.manual_test("'manual test' example", "Clicking buttons below will cause test to pass or fail")
 </code>
 
 
@@ -309,7 +316,7 @@ tt.test('wait_for_element example', '4 == 4', {
 <h5 id="auto_retry">max_time (auto-retry)</h5>
 <p>By default, Testerrific will retry a test multiple times until it returns truthy, in case there are asynchronous factors that a test might be waiting on. This setting controls the amount of time (integer, in ms) to keep trying a test. Set to '0' to disable auto-retry.</p>
 <code class="run_on_load">
-tt.test('Max Time example (wait 3 sec before giving up)', 'false', { 
+tt.test("'max_time' example (wait 3 sec before giving up)", 'false', { 
 	max_time: 3000 
 });
 </code>
@@ -321,11 +328,11 @@ tt.test('Max Time example (wait 3 sec before giving up)', 'false', {
 <code class="run_on_load">
 b = 3;
 
-tt.test('run_if example (run_if == false)', '1 > 0', {
+tt.test("'run_if' example (run_if == false)", '1 > 0', {
 	run_if: 'b == 2'
 });
 
-tt.test('run_if example (run_if == true)', '1 > 0', {
+tt.test("'run_if' example (run_if == true)", '1 > 0', {
 	run_if: 'b == 3'
 });
 </code>
@@ -335,7 +342,7 @@ tt.test('run_if example (run_if == true)', '1 > 0', {
 <h5>message</h5>
 <p>Display a message while test is running. This can be helpful to give status updates or instructions to user for manual intervention.</p>
 <code class="run_on_load">
-tt.test('Message example', 'a != 3', { 
+tt.test("'message' example", 'a != 3', { 
 	message: 'Just saying hello!', 
 	max_time: 3000 // max_time increased to allow message to appear for longer
 });
@@ -361,7 +368,7 @@ tt.test('Add test at Group and Position index example', '1 > 0', {
 <p>(function/promise) gets run before/after test</p>
 <code class="run_on_load">
 a = 0
-tt.test('before() example', 'a == 1', { 
+tt.test("'before()' example", 'a == 1', { 
 	before: () => {
 		a = 1
 	}

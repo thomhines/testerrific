@@ -6,7 +6,7 @@
   margin: 0.2em 0;
   line-height: 1.2em;
 }
-#testerrific .tests_panel {
+#testerrific .tt_panel {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -23,20 +23,20 @@
       -ms-user-select: none;
           user-select: none;
 }
-#testerrific .tests_panel h3 {
+#testerrific .tt_panel h3 {
   margin: 0 0 0.7em;
   font-size: 1em;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
-#testerrific .tests_panel a {
+#testerrific .tt_panel a {
   color: #139;
   text-decoration: underline;
 }
-#testerrific .tests_panel a:hover, #testerrific .tests_panel a:focus, #testerrific .tests_panel a:active {
+#testerrific .tt_panel a:hover, #testerrific .tt_panel a:focus, #testerrific .tt_panel a:active {
   color: #933;
 }
-#testerrific .tests_panel button {
+#testerrific .tt_panel button {
   font-size: 0.9em;
   margin: 0 0 0 0.4em;
   padding: 0.4em 0.8em;
@@ -47,36 +47,36 @@
   border-radius: 3px;
   transition: background 0.2s ease-in-out;
 }
-#testerrific .tests_panel button svg {
+#testerrific .tt_panel button svg {
   display: inline-block;
   margin: 0 0.4em 0 0;
   height: 0.8em;
   width: auto;
 }
-#testerrific .tests_panel button:hover, #testerrific .tests_panel button:focus, #testerrific .tests_panel button:active {
+#testerrific .tt_panel button:hover, #testerrific .tt_panel button:focus, #testerrific .tt_panel button:active {
   background: #999;
 }
-#testerrific .tests_panel button:disabled {
+#testerrific .tt_panel button:disabled {
   opacity: 0.4;
   pointer-events: none;
 }
-#testerrific .tests_panel.visible {
+#testerrific .tt_panel.visible {
   right: 0;
 }
-#testerrific .tests_panel .passed {
+#testerrific .tt_panel .passed {
   color: #090;
 }
-#testerrific .tests_panel .failed {
+#testerrific .tt_panel .failed {
   color: #900;
 }
-#testerrific .tests_panel .skipped {
+#testerrific .tt_panel .skipped {
   color: #aaa;
 }
-#testerrific .tests_panel .error {
+#testerrific .tt_panel .error {
   background: #fdd;
   color: #900;
 }
-#testerrific .tests_panel .panel_inner_container {
+#testerrific .tt_panel .panel_inner_container {
   position: absolute;
   top: 0;
   left: 0;
@@ -90,13 +90,13 @@
   -webkit-flex-direction: column;
           flex-direction: column;
 }
-#testerrific .tests_panel .run_buttons_container .title {
+#testerrific .tt_panel .run_buttons_container .title {
   -webkit-flex: 1;
           flex: 1;
   -webkit-justify-content: flex-start;
           justify-content: flex-start;
 }
-#testerrific .tests_panel .run_buttons_container .title h2 {
+#testerrific .tt_panel .run_buttons_container .title h2 {
   display: inline-block;
   margin: 0 0 2em;
   font-size: 12px;
@@ -106,14 +106,14 @@
   -webkit-transform: skewX(-14deg);
           transform: skewX(-14deg);
 }
-#testerrific .tests_panel .run_buttons_container .title h2 span {
+#testerrific .tt_panel .run_buttons_container .title h2 span {
   display: inline-block;
   padding: 0.3em 0.9em 0.4em 1em;
   -webkit-transform: skewX(14deg);
           transform: skewX(14deg);
   color: #fff;
 }
-#testerrific .tests_panel .run_buttons_container, #testerrific .tests_panel .run_buttons_container div {
+#testerrific .tt_panel .run_buttons_container, #testerrific .tt_panel .run_buttons_container div {
   display: -webkit-flex;
   display: flex;
   -webkit-justify-content: flex-end;
@@ -124,15 +124,15 @@
           flex-wrap: wrap;
   grid-gap: 7px;
 }
-#testerrific .tests_panel .run_buttons_container button {
+#testerrific .tt_panel .run_buttons_container button {
   font-size: 14px;
   margin: 0;
   padding: 0.7em 1em;
 }
-#testerrific .tests_panel .run_buttons_container .run_all_button {
+#testerrific .tt_panel .run_buttons_container .run_all_button {
   padding: 0.7em 1.5em;
 }
-#testerrific .tests_panel .table_controls {
+#testerrific .tt_panel .tt_table_controls {
   display: -webkit-flex;
   display: flex;
   -webkit-justify-content: flex-end;
@@ -140,33 +140,33 @@
   grid-gap: 1em;
   margin: 1em 0 0.5em;
 }
-#testerrific .tests_panel .table_controls div {
+#testerrific .tt_panel .tt_table_controls div {
   -webkit-flex: 1;
           flex: 1;
 }
-#testerrific .tests_panel .table_controls a {
+#testerrific .tt_panel .tt_table_controls a {
   margin: 0;
   text-decoration: none;
 }
-#testerrific .tests_panel .group {
+#testerrific .tt_panel .tt_group {
   position: relative;
   margin: 0 0 2em;
 }
-#testerrific .tests_panel .group.running .group_title {
+#testerrific .tt_panel .tt_group.running .group_title {
   background: rgba(17, 17, 17, 0.15);
 }
-#testerrific .tests_panel .group.collapse {
+#testerrific .tt_panel .tt_group.collapse {
   margin-bottom: 1em;
 }
-#testerrific .tests_panel .test i {
+#testerrific .tt_panel .tt_test i {
   display: inline-block;
   margin: 0 0 0 0.2em;
   font-style: normal;
   font-size: 0.8em;
   color: rgba(0, 0, 0, 0.4);
 }
-#testerrific .tests_panel .group_title,
-#testerrific .tests_panel .test > div {
+#testerrific .tt_panel .group_title,
+#testerrific .tt_panel .tt_test > div {
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
@@ -175,102 +175,102 @@
   padding: 2px 9px;
   border-bottom: 1px solid rgba(17, 17, 17, 0.1);
 }
-#testerrific .tests_panel .group_title input[type=checkbox],
-#testerrific .tests_panel .test > div input[type=checkbox] {
+#testerrific .tt_panel .group_title input[type=checkbox],
+#testerrific .tt_panel .tt_test > div input[type=checkbox] {
   display: inline-block;
   width: 25px;
   margin: 0;
 }
-#testerrific .tests_panel .group_title p,
-#testerrific .tests_panel .test > div p {
+#testerrific .tt_panel .group_title p,
+#testerrific .tt_panel .tt_test > div p {
   -webkit-flex: 1;
           flex: 1;
 }
-#testerrific .tests_panel .group_title input[type=checkbox],
-#testerrific .tests_panel .test > div input[type=checkbox] {
+#testerrific .tt_panel .group_title input[type=checkbox],
+#testerrific .tt_panel .tt_test > div input[type=checkbox] {
   width: 13px;
 }
-#testerrific .tests_panel .group_title .result_container,
-#testerrific .tests_panel .test > div .result_container {
+#testerrific .tt_panel .group_title .result_container,
+#testerrific .tt_panel .tt_test > div .result_container {
   line-height: 1em;
   text-align: right;
 }
-#testerrific .tests_panel .group_title .result.error,
-#testerrific .tests_panel .test > div .result.error {
+#testerrific .tt_panel .group_title .tt_result.error,
+#testerrific .tt_panel .tt_test > div .tt_result.error {
   display: inline-block;
   padding: 0.1em 0.4em;
 }
-#testerrific .tests_panel .group_title .time,
-#testerrific .tests_panel .test > div .time {
+#testerrific .tt_panel .group_title .tt_time,
+#testerrific .tt_panel .tt_test > div .tt_time {
   font-size: 0.8em;
 }
-#testerrific .tests_panel .group_title:empty,
-#testerrific .tests_panel .test > div:empty {
+#testerrific .tt_panel .group_title:empty,
+#testerrific .tt_panel .tt_test > div:empty {
   padding: 0;
 }
-#testerrific .tests_panel .running.test > div {
+#testerrific .tt_panel .running.tt_test > div {
   background: rgba(118, 255, 206, 0.3);
 }
-#testerrific .tests_panel .running_indicator {
+#testerrific .tt_panel .running_indicator {
   width: 25px;
   height: 25px;
   margin: 0 5px 0 0;
   background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='4' cy='12' r='3' opacity='1'%3E%3Canimate id='a' begin='0;b.end-0.25s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3Ccircle cx='12' cy='12' r='3' opacity='.4'%3E%3Canimate begin='a.begin+0.15s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3Ccircle cx='20' cy='12' r='3' opacity='.3'%3E%3Canimate id='b' begin='a.begin+0.3s' attributeName='opacity' dur='0.75s' values='.8;.1' fill='freeze'/%3E%3C/circle%3E%3C/svg%3E");
   opacity: 0.7;
 }
-#testerrific .tests_panel .group_title {
+#testerrific .tt_panel .group_title {
   padding: 0.3em 9px;
   line-height: 2em;
   font-weight: 700;
   border-top: 1px solid rgba(17, 17, 17, 0.2);
   background: rgba(17, 17, 17, 0.05);
 }
-#testerrific .tests_panel .group_title p {
+#testerrific .tt_panel .group_title p {
   font-size: 13px;
   cursor: pointer;
 }
-#testerrific .tests_panel .group_title p:hover, #testerrific .tests_panel .group_title p:focus, #testerrific .tests_panel .group_title p:active {
+#testerrific .tt_panel .group_title p:hover, #testerrific .tt_panel .group_title p:focus, #testerrific .tt_panel .group_title p:active {
   color: #777;
 }
-#testerrific .tests_panel .group_title span {
+#testerrific .tt_panel .group_title span {
   margin: 0 5px;
   font-size: 0.8em;
   cursor: pointer;
 }
-#testerrific .tests_panel .group_title span:hover, #testerrific .tests_panel .group_title span:focus, #testerrific .tests_panel .group_title span:active {
+#testerrific .tt_panel .group_title span:hover, #testerrific .tt_panel .group_title span:focus, #testerrific .tt_panel .group_title span:active {
   color: #666;
 }
-#testerrific .tests_panel .group_title .group_test_summary {
+#testerrific .tt_panel .group_title .group_test_summary {
   display: -webkit-flex;
   display: flex;
 }
-#testerrific .tests_panel .group_title .group_test_summary b {
+#testerrific .tt_panel .group_title .group_test_summary b {
   display: inline-block;
   margin: 0;
   padding: 0 0.4em;
   line-height: 1em;
   border-right: 1px solid #aaa;
 }
-#testerrific .tests_panel .group_title .group_test_summary b:last-child {
+#testerrific .tt_panel .group_title .group_test_summary b:last-child {
   border-right: none;
 }
-#testerrific .tests_panel .fn > div p {
+#testerrific .tt_panel .fn > div p {
   opacity: 0.6;
 }
-#testerrific .tests_panel .fn > div:empty {
+#testerrific .tt_panel .fn > div:empty {
   border-bottom: none;
 }
-#testerrific .tests_panel .skipped p {
+#testerrific .tt_panel .skipped p {
   opacity: 0.5;
 }
-#testerrific .tests_panel .tests_summary,
-#testerrific .tests_panel .tests_message {
+#testerrific .tt_panel .tt_summary,
+#testerrific .tt_panel .tt_message {
   margin: 1em 0 3em;
   padding: 1em;
   border: 1px solid #aaa;
   border-radius: 3px;
 }
-#testerrific .tests_panel .tests_message {
+#testerrific .tt_panel .tt_message {
   position: fixed;
   top: 10px;
   right: 65px;
@@ -287,11 +287,11 @@
   pointer-events: none;
   transition: all 0.3s ease-in-out;
 }
-#testerrific .tests_panel .tests_message.visible {
+#testerrific .tt_panel .tt_message.visible {
   opacity: 1;
   pointer-events: all;
 }
-#testerrific .tests_panel .tests_message button {
+#testerrific .tt_panel .tt_message button {
   display: block;
   -webkit-flex: 1;
           flex: 1;
@@ -302,7 +302,18 @@
   font-size: 1em;
   transition: all 0.2s ease-in-out;
 }
-#testerrific .tests_panel .tests_message button.close {
+#testerrific .tt_panel .tt_message .pass_fail_buttons {
+  display: -webkit-flex;
+  display: flex;
+  grid-gap: 1em;
+}
+#testerrific .tt_panel .tt_message .pass_fail_buttons button.pass {
+  background: #03935f;
+}
+#testerrific .tt_panel .tt_message .pass_fail_buttons button.fail {
+  background: #c74f4f;
+}
+#testerrific .tt_panel .tt_message button.close {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -319,26 +330,26 @@
   opacity: 0.5;
   z-index: 10;
 }
-#testerrific .tests_panel .tests_message button.close:hover, #testerrific .tests_panel .tests_message button.close:focus, #testerrific .tests_panel .tests_message button.close:active {
+#testerrific .tt_panel .tt_message button.close:hover, #testerrific .tt_panel .tt_message button.close:focus, #testerrific .tt_panel .tt_message button.close:active {
   opacity: 1;
 }
-#testerrific .tests_panel.visible .tests_message {
+#testerrific .tt_panel.visible .tt_message {
   right: 555px;
 }
-#testerrific .tests_panel .tests_summary {
+#testerrific .tt_panel .tt_summary {
   position: relative;
 }
-#testerrific .tests_panel .tests_summary .clear_results {
+#testerrific .tt_panel .tt_summary .clear_results {
   position: absolute;
   top: 1em;
   right: 1em;
 }
-#testerrific .tests_panel .tests_summary_table {
+#testerrific .tt_panel .tt_summary_table {
   display: grid;
   grid-template-columns: fit-content(10px) 1fr;
   grid-gap: 0 0.4em;
 }
-#testerrific .toggle_tests_panel {
+#testerrific .tt_toggle_tests_panel {
   position: fixed;
   top: 0;
   right: 0;
@@ -360,10 +371,10 @@
   transition: all 0.3s ease-in-out;
   cursor: pointer;
 }
-#testerrific .toggle_tests_panel.visible {
+#testerrific .tt_toggle_tests_panel.visible {
   right: 500px;
 }
-#testerrific .toggle_tests_panel:hover, #testerrific .toggle_tests_panel:focus, #testerrific .toggle_tests_panel:active {
+#testerrific .tt_toggle_tests_panel:hover, #testerrific .tt_toggle_tests_panel:focus, #testerrific .tt_toggle_tests_panel:active {
   background: #555;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
@@ -410,10 +421,10 @@
   display: none;
 }
 @media (max-width: 600px) {
-  #testerrific .tests_panel {
+  #testerrific .tt_panel {
     width: calc(100vw - 70px);
   }
-  #testerrific .toggle_tests_panel.visible {
+  #testerrific .tt_toggle_tests_panel.visible {
     right: calc(100vw - 70px);
   }
 }
