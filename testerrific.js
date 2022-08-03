@@ -1070,13 +1070,13 @@ var testerrific_ui = new ttb.init({
 					
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
-					<footer>
+					<div class="tt_footer">
 						<p>Testerrific v0.3.2</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
 						</div>
-					</footer>
+					</div>
 				</div>
 			</div>
 			

@@ -396,7 +396,7 @@
   -webkit-transform: rotate(-90deg);
           transform: rotate(-90deg);
 }
-#testerrific footer {
+#testerrific .tt_footer {
   -webkit-flex: 1;
           flex: 1;
   margin: 4em 0 0;
@@ -408,11 +408,11 @@
   -webkit-align-items: flex-end;
           align-items: flex-end;
 }
-#testerrific footer p {
+#testerrific .tt_footer p {
   margin: 0;
   color: rgba(17, 17, 17, 0.6);
 }
-#testerrific footer div {
+#testerrific .tt_footer div {
   display: -webkit-flex;
   display: flex;
   gap: 10px;
