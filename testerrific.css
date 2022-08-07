@@ -1,5 +1,5 @@
 #testerrific * {
-  font-family: "Lato", "Barlow", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #111;
 }
 #testerrific p {
@@ -42,7 +42,7 @@
   padding: 0.4em 0.8em;
   background: #ccc;
   color: #111;
-  font-family: "Lato", "Barlow", "Helvetica Neue", Helvetica, sans-serif;
+  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   border-radius: 3px;
   transition: background 0.2s ease-in-out;
@@ -361,7 +361,7 @@
           transform-origin: bottom right;
   background: #555;
   color: #fff;
-  font-family: "Lato", "Barlow", sans-serif;
+  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;

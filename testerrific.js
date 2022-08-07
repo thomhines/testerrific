@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.3.2
+*	@version 0.3.3
 */
 
 tt = {
@@ -879,18 +879,12 @@ var ttb = {
 	
 	// print a string if test string evaluates as truthy
 	// tests: object of key/value pairs. If value returns truthy, key will be output as a string. print_if() can handle multiple key/value pairs
-	// eg. { hidden: "group.collapse == 1" }
+	// eg. { hidden: group.collapse == 1, fn: test.fn != null }
 	print_if(tests) {
 		let str = ''
 		for(let key in tests) {
-			try {
-				if(ttb.seval(tests[key])) str += key + " "
-			}
-			catch(error) {
-				console.log('print_if error', str, check);
-			}
+			if(ttb.seval(tests[key])) str += key + " "
 		}
-	
 		return str.trim()
 	},
 	
@@ -901,7 +895,7 @@ var ttb = {
 			return eval(str)
 		}
 		catch(error) {
-			// console.log('eval error (group '+(tt.current_group + 1)+', test '+(tt.current_test + 1)+'): ', str);
+			console.log('eval() error (group '+(tt.current_group + 1)+', test '+(tt.current_test + 1)+'): ', str);
 		}
 	},
 
@@ -927,10 +921,8 @@ ttb.init.prototype.render = function () {
 	for(let x = 0; x < $el.length; x++) {
 		let cond = $el[x].getAttribute(':if');
 		
-		// Checking for specific values is faster than running seval()
+		// If ':if' attribute returns falsey, remove it (checking for specific values is faster than running seval())
 		if(cond == 'null' || cond == 'false' || cond == 'undefined' || cond == '0') $el[x].remove();
-		else if(cond == 'true') {}
-		else if(!ttb.seval($el[x].getAttribute(':if'))) $el[x].remove();
 		
 		$el[x].removeAttribute(':if');
 	}
@@ -967,12 +959,12 @@ var testerrific_ui = new ttb.init({
 			<div class="tt_panel ${ttb.print_if({ visible: tt.visible })}">
 				
 				<div class="tt_message ${ttb.print_if({ visible: tt.message.length })}">
-					<span>${ tt.message }</span>
-					<div class="pass_fail_buttons" :if="tt.is_manual_test">
+					<span>${tt.message}</span>
+					<div class="pass_fail_buttons" :if="${tt.is_manual_test}">
 						<button class="pass" onclick="tt.pass_test()">Pass</button>
 						<button class="fail" onclick="tt.fail_test()">Fail</button>
 					</div>
-					<button :if="tt.running && tt.paused" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="white"/></svg> Resume</button>
+					<button :if="${tt.running && tt.paused}" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="white"/></svg> Resume</button>
 					<button class="close" onclick="tt.alert(tt.message, 0)">close</button>
 				</div>
 				
@@ -981,12 +973,12 @@ var testerrific_ui = new ttb.init({
 					<div class="run_buttons_container">
 						<div class="title"><h2><span>TESTERRIFIC</span></h2></div>
 						
-						<div :if="!tt.running">
+						<div :if="${!tt.running}">
 							<button class="run_all_button" onclick="tt.start_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Run selected tests</button>
 						</div>
-						<div class="run_buttons" :if="tt.running">
-							<button :if="!tt.paused" onclick="tt.pause_tests()"><svg width="50" height="57" viewBox="0 0 50 57"><rect y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/><rect x="29.661" y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/></svg> Pause</button>	
-							<button :if="tt.paused" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Resume</button>
+						<div class="run_buttons" :if="${tt.running}">
+							<button :if="${!tt.paused}" onclick="tt.pause_tests()"><svg width="50" height="57" viewBox="0 0 50 57"><rect y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/><rect x="29.661" y="0.241699" width="20.339" height="55.7721" rx="5" fill="black"/></svg> Pause</button>	
+							<button :if="${tt.paused}" onclick="tt.resume_tests()"><svg width="57" height="64" viewBox="0 0 57 64"><path d="M53.4192 26.3701C57.4192 28.6795 57.4192 34.453 53.4192 36.7624L9.37388 62.1919C5.37388 64.5013 0.373887 61.6146 0.373887 56.9958L0.37389 6.13663C0.37389 1.51783 5.37389 -1.36892 9.37389 0.940483L53.4192 26.3701Z" fill="black"/></svg> Resume</button>
 							<button onclick="tt.skip_test()"><svg width="62" height="53" viewBox="0 0 62 53"><path fill-rule="evenodd" clip-rule="evenodd" d="M26.5319 36.1232L6.005 51.6C3.50226 53.4871 0.37384 51.1283 0.37384 47.3543V5.79715C0.37384 2.02322 3.50226 -0.335662 6.005 1.5513L26.5319 17.0281V5.79715C26.5319 2.02322 29.6603 -0.335662 32.163 1.5513L59.7215 22.3299C62.2242 24.2169 62.2242 28.9345 59.7215 30.8214L32.163 51.6C29.6603 53.4871 26.5319 51.1283 26.5319 47.3543V36.1232Z" fill="black"/></svg> Skip</button>
 							<button onclick="tt.finish_tests()"><svg width="54" height="56" viewBox="0 0 54 56" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="54" height="56" rx="10" fill="black"/></svg> Stop</button>
 						</div>
@@ -999,20 +991,20 @@ var testerrific_ui = new ttb.init({
 						<h3>Summary:</h3>
 						<div class="tt_summary_table">
 							<div><b class="run">${tt.totals('run')}</b></div><div> tests run</div>
-							<div :if="tt.totals('passed')"><b class="passed">${tt.totals('passed')}</b></div><div :if="tt.totals('passed')"> passed</div>
-							<div :if="tt.totals('failed')"><b class="failed">${tt.totals('failed')}</b></div><div :if="tt.totals('failed')"> failed</div>
-							<div :if="tt.totals('skipped')"><b class="skipped">${tt.totals('skipped')}</b></div><div :if="tt.totals('skipped')"> skipped</div>
-							<div :if="tt.totals('error')"><b class="error">${tt.totals('error')}</b></div><div :if="tt.totals('error')"> errors</div>
+							<div :if="${tt.totals('passed')}"><b class="passed">${tt.totals('passed')}</b></div><div :if="${tt.totals('passed')}"> passed</div>
+							<div :if="${tt.totals('failed')}"><b class="failed">${tt.totals('failed')}</b></div><div :if="${tt.totals('failed')}"> failed</div>
+							<div :if="${tt.totals('skipped')}"><b class="skipped">${tt.totals('skipped')}</b></div><div :if="${tt.totals('skipped')}"> skipped</div>
+							<div :if="${tt.totals('error')}"><b class="error">${tt.totals('error')}</b></div><div :if="${tt.totals('error')}"> errors</div>
 						</div>
 				
 						<br>
 				
-						<div :if="tt.run_time">Total time: <b>${ttb.ms_to_s(tt.run_time)}</b> sec</div>
-						<div :if="!tt.run_time && tt.paused">Paused...</div>
+						<div :if="${tt.run_time}">Total time: <b>${ttb.ms_to_s(tt.run_time)}</b> sec</div>
+						<div :if="${!tt.run_time && tt.paused}">Paused...</div>
 					</div>
 					
 					<div>
-						<div class="tt_table_controls" :if="tt.groups.length">
+						<div class="tt_table_controls" :if="${tt.groups.length}">
 							<a onclick="tt.enable_all_groups()">enable all</a>
 							<a onclick="tt.disable_all_groups()">disable all</a>
 							<div></div>
@@ -1028,26 +1020,26 @@ var testerrific_ui = new ttb.init({
 									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})" index="${group_index}">
 									<p onclick="tt.toggle_view_group(${group_index})">${ group.label }</p>
 									<span class="collapse_group" onclick="tt.toggle_view_group(${group_index})"></span>
-									<div class="group_test_summary" :if="${group_index} != tt.current_group && tt.totals('run', ${group_index})">
+									<div class="group_test_summary" :if="${group_index != tt.current_group && tt.totals('run', group_index)}">
 										<b class="passed">${ tt.totals('passed', group_index) }</b>
 										<b class="failed">${ tt.totals('failed', group_index) }</b>
-										<b class="skipped" :if="tt.totals('skipped', ${group_index})">${ tt.totals('skipped', group_index) }</b>
-										<b class="error" :if="tt.totals('error', ${group_index})">${ tt.totals('error', group_index) }</b>
+										<b class="skipped" :if="${tt.totals('skipped', group_index)}">${ tt.totals('skipped', group_index) }</b>
+										<b class="error" :if="${tt.totals('error', group_index)}">${ tt.totals('error', group_index) }</b>
 									</div>
-									<div class="running_indicator" :if="${group_index} == tt.current_group"></div>
+									<div class="running_indicator" :if="${group_index == tt.current_group}"></div>
 									<button onclick="tt.start_tests(${group_index})" :disabled="${tt.running == 1}">Run</button>
 								</div>
 								
 								${group.tests.map(function(test, test_index) {
 									return `
 									
-									<div class="tt_test ${ ttb.print_if({ fn: test.fn, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" test_id="${test.id}" key="${test_index}">
+									<div class="tt_test ${ ttb.print_if({ fn: test.fn != null, running: group_index == tt.current_group && test_index == tt.current_test, skipped: test.skip, pause: test.pause, hidden: group.collapse })}" test_index="${test_index}" test_id="${test.id}" key="${test_index}">
 										
 										<div :if="${typeof test.label == 'string'}">
 											<i :if="${ tt.display_test_index }">${ test_index }</i> 
 											<input type="checkbox" :checked="${!test.skip }" onchange="tt.toggle_skip_test(${group_index}, ${test_index})" test_index="${test_index}">
-											<p><b :if="${test.fn}">Run:</b> ${ test.label }</p>
-											<div class="running_indicator" :if="${group_index} == tt.current_group && ${test_index} == tt.current_test"></div>
+											<p><b :if="${test.fn != null}">Run:</b> ${ test.label }</p>
+											<div class="running_indicator" :if="${group_index == tt.current_group && test_index == tt.current_test}"></div>
 											<div :if="${test.result != undefined}" class="result_container">
 												<div class="tt_result ${test.result}">${test.result}</div>
 												<div class="tt_time" :if="${test.result != 'skipped' && test.time !== null}">${ test.time }ms</div>
@@ -1071,7 +1063,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<div class="tt_footer">
-						<p>Testerrific v0.3.2</p>
+						<p>Testerrific v0.3.3</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
