@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.3.3
+*	@version 0.3.4
 */
 
 tt = {
@@ -118,8 +118,7 @@ tt = {
 			label = ''
 		}
 		
-		// let test_obj = ttb.clone(tt.test_defaults)
-		// test_obj.test = check
+		if(options && typeof options.test != 'undefined') check = options.test
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {test: check})
 		
 		test_obj.id = ttb.id_count++	
@@ -216,7 +215,7 @@ tt = {
 			options = message
 			message = label
 		}		
-		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {label: label, test: 'false', max_time: 999999, message: message, is_manual_test: 1})
+		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {label: label, test: false, max_time: 999999, message: message, is_manual_test: 1})
 		tt.test(label, test_obj)
 	},
 
@@ -1063,7 +1062,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<div class="tt_footer">
-						<p>Testerrific v0.3.3</p>
+						<p>Testerrific v0.3.4</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
