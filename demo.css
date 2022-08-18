@@ -231,6 +231,18 @@ hr {
   border-radius: 5px;
 }
 
+.test_element {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 1em 1.5em;
+  font-size: 1.3em;
+  background: #fff;
+  border: 5px solid #ff5c75;
+  border-radius: 0.4em;
+  display: none;
+}
+
 footer {
   margin: 100px 0;
   color: #ff5c75;

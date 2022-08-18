@@ -217,7 +217,7 @@ tt.group("Another Test Group", {
 <!-- label:		(string) label of test group<br> -->
 	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
 	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
-	<span class="indent"> <b>wait_for_element</b>:</span> <span>(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible</span>
+	<span class="indent"> <b>wait_for_element</b>:</span> <span>(string) CSS selector string of matching element(s). Test will not run until element is 100% visible</span>
 	<span class="indent"> <b>max_time</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
 	<span class="indent"> <b>run_if</b>:</span> <span>(string that evals to truthy/false) Conditional that determines if test should be run</span>
 	<span class="indent"> <b>message</b>:</span> <span>(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention</span>
@@ -257,7 +257,7 @@ tt.test("Test as Promise example", () => {
 	return new Promise(function(resolve, reject) {
 		setTimeout(() => {
 			resolve(true);
-		}, 3000);
+		}, 500);
 	})
 });
 </code>
@@ -297,20 +297,21 @@ tt.skip_non_only_tests()
 </code>
 
 
-<!-- <div class="test_element">Test Element</div>
+<div class="test_element">Test Element</div>
 <h5>wait_for_element</h5>
-<p>Wait to run test until specified elements (string with CSS or jQuery selector) are 100% visible. The test will wait up until the number of milliseconds set in <b>tt.dom_check_timeout</b>.</p>		
+<p>Wait to run test until specified elements (string with CSS selector) are 100% visible. The test will wait up until the number of milliseconds set in <b>tt.wait_for_element_timeout</b>.</p>		
 <code class="run_on_load">
+tt.run('Fade in .test_element', () => { 
+	$('.test_element').fadeIn(3000) 
+});
+
 tt.test('wait_for_element example', '4 == 4', { 
 	wait_for_element: '.test_element',
-	before: () => {
-		$('.test_element').fadeIn(1500)	
-	},
 	after: () => {
 		$('.test_element').fadeOut()	
 	}
 });
-</code> -->
+</code>
 
 		
 <h5 id="auto_retry">max_time (auto-retry)</h5>

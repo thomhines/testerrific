@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.3.4
+*	@version 0.4.0
 */
 
 tt = {
@@ -18,13 +18,13 @@ tt = {
 	current_test: 0, // Used to keep track of which test is currently running
 	running: 0, // Boolean to indicate if any tests are running
 	paused: 0, // Boolean used to indicate if tests have been paused
-	run_start: 0, // Timestamp of when tests first started running
 	run_time: 0, // Total amount of time tests have been running
 	is_manual_test: 0, // A flag that can indicate if a test requires manual intervention. It can be used to select all tests that might slow down a test run. No longer necessary???
 	skip_manual_tests: 0, // If enabled, all tests marked as manual tests are skipped
 	message: '', 
 	max_time: 1000, // How much time to wait for a test to be true before declaring it false
-	wait_for_element_timeout: 2000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
+	test_interval: 100, // Amount of time (ms) to wait before between checking if test evaluates truthy
+	wait_for_element_timeout: 5000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
 	wait_for_element_interval: 100, // Amount of time (ms) to wait before checking for the element again
 	display_test_index: 0, // Whether or not to display test number in list of tests
 
@@ -57,9 +57,6 @@ tt = {
 	},
 	
 	groups: [], // Used to store all test groups and tests
-	
-	
-
 
 	// Create new test group. All following tests will be added to this group
 	// options:		object that can contain the following values:
@@ -170,6 +167,9 @@ tt = {
 		test_obj.id = ttb.id_count++
 
 		if(!test_obj.label && label) test_obj.label = label
+		
+		// If no groups exist yet, add one
+		if(tt.groups.length < 1) tt.group()
 
 		let current_group = tt.groups[tt.groups.length - 1]
 
@@ -207,7 +207,6 @@ tt = {
 	},
 
 
-	// No longer necessary???
 	// Set smart defaults and add flag to tests that require user intervention
 	manual_test: function(label = "", message = "", options = {}) {
 		// If no label is given, assume that arguments are (check, options, null)
@@ -218,7 +217,6 @@ tt = {
 		let test_obj = Object.assign(ttb.clone(tt.test_defaults), options, {label: label, test: false, max_time: 999999, message: message, is_manual_test: 1})
 		tt.test(label, test_obj)
 	},
-
 
 
 	// Disable all tests if there are any tests/groups that are marked as 'only'
@@ -268,8 +266,7 @@ tt = {
 	},
 
 
-
-	//
+	// Initiate a set of tests (either all enabled tests, or a specified group)
 	start_tests: function(group_index = -1) {
 		ttb.force_render = 1
 		tt.running_group = group_index
@@ -292,7 +289,7 @@ tt = {
 		}
 		tt.current_test = 0
 		tt.running = 1
-		tt.run_start = new Date()
+		ttb.start_tests_start = new Date()
 		tt.run_time = null
 		tt.paused = 0
 
@@ -307,7 +304,6 @@ tt = {
 		tt.run_next_test()
 
 	},
-
 
 
 	// Will pause tests after current test is complete/timed-out
@@ -326,7 +322,6 @@ tt = {
 	},
 
 
-
 	// Run through entire lifecycle for a given test (before_each(), before(), etc.). Each phase will wait for the previous phase to finish before moving on.
 	run_test: function(group_index, test_index) {
 
@@ -334,7 +329,7 @@ tt = {
 
 			tt.current_group = group_index
 			tt.current_test = test_index
-			if(!tt.run_start) tt.run_start = new Date()
+			if(!ttb.start_tests_start) ttb.start_tests_start = new Date()
 
 			let _group = tt.groups[tt.current_group]
 			// let _test = tt.groups[tt.current_group].tests[tt.current_test]
@@ -347,44 +342,8 @@ tt = {
 			else tt.is_manual_test = 0
 			
 			ttb.test_start = new Date()
-
-			beforeEach_result = _group.beforeEach()
-			Promise.resolve(beforeEach_result).then(function(result) {
-				before_result = _test.before()
-				Promise.resolve(before_result).then(function(result) {
-					if(_test.message) tt.alert(_test.message)
-					tt.run_test_loop(tt.current_group, tt.current_test).then(function() {
-						if(_test.message) tt.alert('')
-						after_result = _test.after()
-						Promise.resolve(after_result).then(function(result) {
-							afterEach_result = _group.afterEach()
-							Promise.resolve(afterEach_result).then(function(result) {
-								if(!tt.running) {
-									tt.current_group = -1
-									tt.current_test = -1
-								}
-								resolve()
-								_test.time = (new Date()) - ttb.test_start
-							})
-						})
-					})
-				})
-			})
-		})
-	},
-
-
-	// Run specific test until it returns a truthy/falsey value or times out
-	run_test_loop: function(group_index, test_index, delay = 0) {
-		return new Promise(function(resolve, reject) {
-
-			ttb.wait_for_element_interval_obj = setTimeout(function() {
-
-				let _group = tt.groups[tt.current_group]
-				let _test = tt.groups[tt.current_group].tests[tt.current_test]
-
-				if(tt.run_start) tt.run_time = (new Date()).getTime() - tt.run_start.getTime()
-
+			
+			function wait_for_element_fn() {								
 				// Check to see if wait_for_element element is visible
 				if(_test.wait_for_element) {
 					// Fail test if requested element doesn't appear in time
@@ -394,83 +353,135 @@ tt = {
 						resolve()
 						return
 					}
-					
+					// If element still hasn't shown up, hold off on rest of test for now
 					let $wfe = document.querySelector(_test.wait_for_element)
 					if(!$wfe || !$wfe.offsetWidth || window.getComputedStyle($wfe).getPropertyValue("opacity") * 1 < 1) {
-						tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
-							if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
-							resolve()
-						})
+						// Rerun this timeout 
+						setTimeout(function() {
+							wait_for_element_fn()
+						}, tt.wait_for_element_interval)
 						return
 					}
 				}
-
-
-				// Run 'run' function
-				if(_test.fn) {
-					result = _test.fn()
-					Promise.resolve(result).then(function(result) {
-						resolve()
-					});
-				}
-
-
-				// Run test
-				else {
-					let result
-
-					// Move to next test if test already has a result from elsewhere
-					if(_test.result) {
-						resolve()
-						return
-					}
-
-
-					try {
-						if(typeof _test.test == 'function') {
-
-							// Run function and see if it returns a promise or truthy value
-							let test_function_result = _test.test()
-
-							// If test returns a promise, wait for promise to resolve, save the result, and run_test_loop() again
-							if(test_function_result instanceof Promise) {
-								Promise.resolve(test_function_result).then(function(promise_result) {
-									if(promise_result) _test.result = 'passed'
-									else _test.result = 'failed'
+				
+				// No element to wait for or element was found, proceed with beforeEach(), before(), test, etc.
+				let beforeEach_result = _group.beforeEach()
+				Promise.resolve(beforeEach_result).then(function(result) {
+					let before_result = _test.before()
+					Promise.resolve(before_result).then(function(result) {
+						if(_test.message) tt.alert(_test.message)
+						tt.run_test_loop(tt.current_group, tt.current_test).then(function() {
+							if(_test.message) tt.alert('')
+							let after_result = _test.after()
+							Promise.resolve(after_result).then(function(result) {
+								let afterEach_result = _group.afterEach()
+								Promise.resolve(afterEach_result).then(function(result) {
+									if(!tt.running) {
+										tt.current_group = -1
+										tt.current_test = -1
+									}
 									resolve()
+									_test.time = (new Date()) - ttb.test_start
 								})
-								return
-							}
-
-								else result = test_function_result
-
-						}
-						else result = ttb.seval(_test.test)
-					} catch(error) {
-						result = false
-					}
-
-					if(!result && (_test.max_time !== null || tt.max_time)) {
-						let maxtime = _test.max_time
-						if(maxtime === null) maxtime = tt.max_time
-						if((new Date()) - ttb.test_start >= maxtime) {
-							_test.result = 'failed'
-							_test.error = 'timed out'
-							resolve()
-						}
-						else tt.run_test_loop(group_index, test_index, tt.wait_for_element_interval).then(function() {
-							if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
-							resolve()
+							})
 						})
-						return
-					}
-					if(result) _test.result = 'passed'
-					else _test.result = 'failed'
-					if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
+					})
+				})
+				
+			}
+			wait_for_element_fn()
+		})
+	},
+
+
+	// Run specific test until it returns a truthy/falsey value or times out
+	run_test_loop: function(group_index, test_index, is_initial_run = 1) {
+		return new Promise(function(resolve, reject) {
+
+			let _group = tt.groups[tt.current_group]
+			let _test = tt.groups[tt.current_group].tests[tt.current_test]
+
+			if(is_initial_run) ttb.run_test_loop_start = new Date()
+
+			if(ttb.start_tests_start) tt.run_time = (new Date()).getTime() - ttb.start_tests_start.getTime()
+
+			// Run 'run' function
+			if(_test.fn) {
+				result = _test.fn()
+				Promise.resolve(result).then(function(result) {
 					resolve()
+				});
+			}
+
+
+			// Run test
+			else {
+				let result
+
+				// Move to next test if test already has a result from elsewhere
+				if(_test.result) {
+					resolve()
+					return
 				}
 
-			}, delay);
+
+				try {
+					if(typeof _test.test == 'function') {
+
+						// Run function and see if it returns a promise or truthy value
+						let test_function_result = _test.test()
+
+						// If test returns a promise, wait for promise to resolve, save the result, and run_test_loop() again
+						if(test_function_result instanceof Promise) {
+							Promise.resolve(test_function_result).then(function(promise_result) {
+								if(_test.result) return
+								if(promise_result) _test.result = 'passed'
+								else _test.result = 'failed'
+								resolve()
+							})
+							// Fail test after max_time
+							let max_time = _test.max_time
+							if(!max_time) max_time = tt.max_time
+							setTimeout(function() {
+								if(_test.result) return
+								_test.result = 'failed'
+								resolve()
+							}, max_time)
+							return
+						}
+
+							else result = test_function_result
+
+					}
+					else result = ttb.seval(_test.test)
+				} catch(error) {
+					result = false
+				}
+
+				if(!result && (_test.max_time !== null || tt.max_time)) {
+					let maxtime = _test.max_time
+					if(maxtime === null) maxtime = tt.max_time
+					if((new Date()) - ttb.run_test_loop_start >= maxtime) {
+						_test.result = 'failed'
+						_test.error = 'timed out'
+						resolve()
+					}
+					else {
+						setTimeout(function() {
+							tt.run_test_loop(group_index, test_index, 0).then(function() {
+								if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
+								resolve()
+							})
+						}, tt.test_interval)
+					}
+					return
+				}
+				if(result) _test.result = 'passed'
+				else _test.result = 'failed'
+				if(!tt.running) tt.current_test = 0 // Clear this in cases where an individual test is being run
+				resolve()
+			}
+			
 		})
 	},
 
@@ -548,7 +559,7 @@ tt = {
 		ttb.force_render = 1
 		tt.current_group = -1
 		tt.current_test = 0
-		tt.run_start = 0
+		ttb.start_tests_start = 0
 		tt.running = 0
 
 		tt.alert('Tests Complete', 3000)
@@ -683,7 +694,9 @@ var ttb = {
 	// Internal variables
 	id_count: 1, // used to generate unique ID for each group and test
 	changed_elements: {ui: 0, groups:[], tests: []}, // used to track which groups and tests have changed to make rendering more efficient
-	test_start: null, // used to track run time for tests
+	start_tests_start: 0, // Timestamp of when all tests first started running
+	test_start: null, // used to track run time for individual test
+	run_test_loop_start: 0, // used to track run time of actual checking
 	wait_for_element_interval_obj: null, // used to store setInterval for wait_for_element timer
 
 	// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
@@ -894,7 +907,7 @@ var ttb = {
 			return eval(str)
 		}
 		catch(error) {
-			console.log('eval() error (group '+(tt.current_group + 1)+', test '+(tt.current_test + 1)+'): ', str);
+			console.log('Test eval() error (group '+(tt.current_group + 1)+', test '+(tt.current_test + 1)+'): ', str);
 		}
 	},
 
@@ -1062,7 +1075,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<div class="tt_footer">
-						<p>Testerrific v0.3.4</p>
+						<p>Testerrific v0.4.0</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
