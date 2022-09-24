@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.4.0
+*	@version 0.4.2
 */
 
 tt = {
@@ -24,8 +24,8 @@ tt = {
 	message: '', 
 	max_time: 1000, // How much time to wait for a test to be true before declaring it false
 	test_interval: 100, // Amount of time (ms) to wait before between checking if test evaluates truthy
-	wait_for_element_timeout: 5000, // Used with "wait_for_element" test option. The amount of time (ms) to wait for an element to become visible before executing test
-	wait_for_element_interval: 100, // Amount of time (ms) to wait before checking for the element again
+	wait_for_timeout: 5000, // Used with "wait_for" test option. The amount of time (ms) to wait for an element to become visible before executing test
+	wait_for_interval: 100, // Amount of time (ms) to wait before checking for the element again
 	display_test_index: 0, // Whether or not to display test number in list of tests
 
 	// Group default settings
@@ -97,7 +97,7 @@ tt = {
 	// options:		(object) that can contain the following optional values:
 	//		skip: 		(boolean) whether to skip this test or not
 	//		only: 		(boolean) whether to run only this test or not
-	// 		wait_for_element:	(string) CSS or jQuery selector string of matching element(s). Test will not run until element is 100% visible
+	// 		wait_for:	(string) boolean javascript condition that must return truthy before starting test
 	// 		max_time:	(integer) Amount of time to wait (in ms) for a truthy response. If blank, test will only test what value currently is when test is initiated
 	//		run_if:		(string that evals to truthy/false) Conditional that determines if test should be run
 	//		message: 	(string) Message shown in UI for the duration of the test, usually instructions for tests that need manual intervention
@@ -186,8 +186,6 @@ tt = {
 		if(test_obj.position) current_group.tests.splice(test_obj.position, 0, test_obj)
 		else current_group.tests.push(test_obj)
 	},
-
-
 
 
 	// Add a delay to the test chain
@@ -299,8 +297,6 @@ tt = {
 
 		}
 
-		clearTimeout(ttb.wait_for_element_interval_obj)
-
 		tt.run_next_test()
 
 	},
@@ -343,23 +339,24 @@ tt = {
 			
 			ttb.test_start = new Date()
 			
-			function wait_for_element_fn() {								
-				// Check to see if wait_for_element element is visible
-				if(_test.wait_for_element) {
-					// Fail test if requested element doesn't appear in time
-					if((new Date()) - ttb.test_start > tt.wait_for_element_timeout) {
-						_test.result = 'error'
-						_test.error = 'element not found'
-						resolve()
-						return
-					}
+			function wait_for_fn() {
+				
+				// If test has a wait_for condition, check for that first before initiating test steps
+				if(_test.wait_for) {	
 					// If element still hasn't shown up, hold off on rest of test for now
-					let $wfe = document.querySelector(_test.wait_for_element)
-					if(!$wfe || !$wfe.offsetWidth || window.getComputedStyle($wfe).getPropertyValue("opacity") * 1 < 1) {
+					if(ttb.seval(_test.wait_for) == false) {				
+						// Fail test if test doesn't pass before wait_for_timeout
+						if((new Date()) - ttb.test_start > tt.wait_for_timeout) {
+							_test.result = 'error'
+							_test.error = 'element not found'
+							resolve()
+							return
+						}
+						
 						// Rerun this timeout 
 						setTimeout(function() {
-							wait_for_element_fn()
-						}, tt.wait_for_element_interval)
+							wait_for_fn()
+						}, tt.wait_for_interval)
 						return
 					}
 				}
@@ -389,7 +386,7 @@ tt = {
 				})
 				
 			}
-			wait_for_element_fn()
+			wait_for_fn()
 		})
 	},
 
@@ -697,7 +694,6 @@ var ttb = {
 	start_tests_start: 0, // Timestamp of when all tests first started running
 	test_start: null, // used to track run time for individual test
 	run_test_loop_start: 0, // used to track run time of actual checking
-	wait_for_element_interval_obj: null, // used to store setInterval for wait_for_element timer
 
 	// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
 	init: function (options) {
@@ -1032,13 +1028,13 @@ var testerrific_ui = new ttb.init({
 									<input type="checkbox" :checked="${!group.skip}" onchange="tt.toggle_skip_group(${group_index})" index="${group_index}">
 									<p onclick="tt.toggle_view_group(${group_index})">${ group.label }</p>
 									<span class="collapse_group" onclick="tt.toggle_view_group(${group_index})"></span>
-									<div class="group_test_summary" :if="${group_index != tt.current_group && tt.totals('run', group_index)}">
+									<div class="running_indicator" :if="${group_index == tt.current_group}"></div>
+									<div class="group_test_summary" :if="${group_index == tt.current_group || tt.totals('run', group_index)}">
 										<b class="passed">${ tt.totals('passed', group_index) }</b>
 										<b class="failed">${ tt.totals('failed', group_index) }</b>
 										<b class="skipped" :if="${tt.totals('skipped', group_index)}">${ tt.totals('skipped', group_index) }</b>
 										<b class="error" :if="${tt.totals('error', group_index)}">${ tt.totals('error', group_index) }</b>
 									</div>
-									<div class="running_indicator" :if="${group_index == tt.current_group}"></div>
 									<button onclick="tt.start_tests(${group_index})" :disabled="${tt.running == 1}">Run</button>
 								</div>
 								
@@ -1075,7 +1071,7 @@ var testerrific_ui = new ttb.init({
 					<b>${tt.totals() + ' Total Tests'}</b>
 					
 					<div class="tt_footer">
-						<p>Testerrific v0.4.0</p>
+						<p>Testerrific v0.4.2</p>
 						<div>
 							<a href="https://projects.thomhines.com/testerrific/" target="_blank">Documentation</a>
 							<a href="https://github.com/thomhines/testerrific" target="_blank">Github</a>
