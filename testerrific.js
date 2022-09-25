@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 0.4.2
+*	@version 0.4.3
 */
 
 tt = {
@@ -694,6 +694,8 @@ var ttb = {
 	start_tests_start: 0, // Timestamp of when all tests first started running
 	test_start: null, // used to track run time for individual test
 	run_test_loop_start: 0, // used to track run time of actual checking
+	previus_tt_obj: [], // used to track which test is running to make rendering more efficient
+	
 
 	// Data binding with the help of: https://gomakethings.com/how-to-batch-ui-rendering-in-a-reactive-state-based-ui-component-with-vanilla-js/
 	init: function (options) {
@@ -852,6 +854,16 @@ var ttb = {
 			}
 		}
 	},
+	
+	
+	// Compare given obj to tt object to see if anything has changed (except for test duration) to make rendering more efficient
+	tt_obj_diff(obj) {
+		obj = JSON.stringify(obj)
+		obj = obj.replaceAll(/time":[\d]+/g, 'time":0')
+		let tt_clone = JSON.stringify(tt)
+		tt_clone = tt_clone.replaceAll(/time":[\d]+/g, 'time":0')
+		return obj != tt_clone
+	},
 
 
 	// Return element in array that matches property/values in criteria
@@ -919,7 +931,15 @@ var ttb = {
 
 
 ttb.init.prototype.render = function () {
-		
+	
+	// Only update timer if nothing else has changed
+	if(!ttb.tt_obj_diff(ttb.previus_tt_obj)) {
+		if(tt.run_time) document.querySelector('.run_time').innerHTML = ttb.ms_to_s(tt.run_time) + " sec";
+		return
+	}
+	ttb.previus_tt_obj = JSON.parse(JSON.stringify(tt))
+	
+	
 	let temp = document.createElement('div');
 	temp.innerHTML = this.template(this.data);
 	temp.id = 'testerrific'
@@ -1007,7 +1027,7 @@ var testerrific_ui = new ttb.init({
 				
 						<br>
 				
-						<div :if="${tt.run_time}">Total time: <b>${ttb.ms_to_s(tt.run_time)}</b> sec</div>
+						<div :if="${tt.run_time}">Total time: <b class="run_time">${ttb.ms_to_s(tt.run_time)}</b> sec</div>
 						<div :if="${!tt.run_time && tt.paused}">Paused...</div>
 					</div>
 					
