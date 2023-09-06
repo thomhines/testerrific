@@ -14,14 +14,14 @@
 	<meta name="theme-color" content="#efebe9">
 	
 	<link rel="preconnect" href="https://fonts.googleapis.com">
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>	
 	<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Bungee+Hairline&family=Bungee+Shade&display=swap" rel="stylesheet">
 
 	<link rel="Stylesheet" href="testerrific.min.css" type="text/css" media="all" />
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-	
-	<link rel="Stylesheet" href="demo.css" type="text/css" />	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />	
+	<link rel="Stylesheet" href="demo.min.css" type="text/css" />	
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" defer></script>
 </head>
 
 <body>
@@ -36,7 +36,7 @@
 <p>Testerrific tries to take the headache out of site testing by making things simple and concise.</p>
 
 <div class="header_links">
-	<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download</a>
+	<a class="button" href="https://github.com/thomhines/testerrific/archive/refs/heads/master.zip">Download v1.0</a>
 	<a class="button" href="https://github.com/thomhines/testerrific">GitHub</a>
 </div>
 
@@ -148,7 +148,7 @@
 tt.group('First Test Group');
 
 tt.test('1 + 1 == 2');
-tt.test("Is window tall enough?", 'window.innerHeight > 200');
+tt.test("Is browser window tall enough?", 'window.innerHeight > 200');
 tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 </code>
 
@@ -175,7 +175,7 @@ tt.test("Is it after 8am?", () => { return (new Date()).getHours() >= 8 });
 	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
 <!-- label:		(string) label of test group<br> -->
 	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
-	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>solo</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "solo"</span>
 	<span class="indent"> <b>collapse</b>:</span> <span>(boolean) whether tests are shown or not when page is loaded</span>
 	<span class="indent"> <b>beforeEach</b>:</span> <span>(function/promise) function that gets run before each test in group</span>
 	<span class="indent"> <b>afterEach</b>:</span> <span>(function/promise) function that gets run after each test in group</span>
@@ -221,9 +221,9 @@ tt.group("Another Test Group", {
 	<span><b>options</b>:</span> <span>(object) that can contain the following values:</span>
 <!-- label:		(string) label of test group<br> -->
 	<span class="indent"> <b>skip</b>:</span> <span>(boolean) whether to skip this test or not</span>
-	<span class="indent"> <b>only</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>solo</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "solo"</span>
 	<span class="indent"> <b>wait_for</b>:</span> <span>(string) boolean javascript condition that must return truthy before starting test</span>
-	<span class="indent"> <b>max_time</b>:</span> <span>(boolean) skip all other tests that are not also flagged as "only"</span>
+	<span class="indent"> <b>max_time</b>:</span> <span>(integer) the maximum amount of time a test should be allowed to run before being failed</span>
 	<span class="indent"> <b>run_if</b>:</span> <span>(string that evals to truthy/falsey) Conditional that determines if test should be run</span>
 	<span class="indent"> <b>message</b>:</span> <span>(string) message shown in UI for the duration of the test, usually instructions for tests that need manual intervention</span>
 	<span class="indent"> <b>group</b>:</span> <span>(string or integer) the title or the group index of the group the test should be added to</span>
@@ -289,11 +289,11 @@ tt.test("'skip' example", "4 == 4", {
 		
 		
 		
-<h5>only</h5>
-<p>Skip all other tests/groups. You can set multiple tests/groups as "only".</p>	
+<h5>solo</h5>
+<p>Skip all other tests/groups. You can set multiple tests/groups as "solo".</p>	
 <code class="run_on_load">
-tt.test("'only' example", "4 == 4", { 
-	only: true 
+tt.test("'solo' example", "4 == 4", { 
+	solo: true 
 });
 </code>
 <p>This effect will only happen when Testerrific is first loaded, or if you run <b>skip_non_only_tests()</b>.</p>
@@ -402,7 +402,7 @@ tt.test("'before()' example", 'a == 1', {
 
 <code class="run_on_load">
 <b>tt.run("change a to -3", () => { a = -3 });</b>
-tt.test("Is a still positive?", "a > 0");
+tt.test("Is 'a' still positive?", "a > 0");
 </code>
 	
 <h4 id="wait">wait(time)</h4>
@@ -568,7 +568,7 @@ tt.toggle_skip_group(0);
 <h4>toggle_skip_test(group_index, test_index)</h4>
 <p>Toggle whether a specific test within a specific test group are enabled (ie. not 'skipped') or not.</p>
 <code>
-tt.toggle_skip_test(1, 3);
+tt.toggle_skip_test(0, 2);
 </code>
 		
 <h4>tt.totals([type] = 'all', [group_index]) ... allows 'all', 'run', 'passed', 'failed', 'skipped', or 'error'</h4>
@@ -597,6 +597,11 @@ alert(`
 
 <h2 id="other_tips">Helpful Hints and Examples</h2>
 
+
+<h4>Adding a breakpoint (pause) between tests without editing code</h4>
+<p>You can add a "pause" between any tests without updating your tests or refreshing the page by clicking the faded pause button to the left of each test in the Testerrific panel.</p>
+
+
 <h4>Start with test groups collapsed</h4>
 <p>Each group and test is an element in an array (tt.groups). To start with all of the test groups closed, just loop through all of your groups and set their 'collapse' property to true like this:</p>
 <code>
@@ -604,30 +609,34 @@ tt.groups.forEach((group) => { group.collapse = true });
 </code>
 
 
-<h4>Skipping tests via code</h4>
-<p>To skip/unskip a test programmatically, simply set the `skip` property for that test to true/false in the <b>tt.groups</b> array. This code will re-enable Test #4 in Group 1:</p>
+<h4>Modifying tests via code</h4>
+<p>To change a test programmatically, simply change the info for that test in the <b>tt.groups</b> array. This code will set the first test in the first group to be skipped:</p>
 <code>
-tt.groups[1].tests[3].skip = false;
+tt.groups[0].tests[0].skip = true;
 </code>
 		
 		
-<h4>Run tests on keystroke</h4>
-<p>This one's already been run. Press <b>Cmd-G</b> or <b>Ctrl-G</b> to start running the tests!</p>
+<h4>Run/pause/resume tests on keystroke</h4>
+<p>Add this snippet to your code to make running tests even faster. You can try it out now by pressing <b>Cmd-G</b> or <b>Ctrl-G</b>.</p>
 <code class="run_on_load no_run_button">
-$(window).keydown(function(event) {
+document.onkeydown = function(event) {
 	if(event.metaKey = true && event.key == 'g') {
 		event.preventDefault();
 		event.stopPropagation();
-		tt.start_tests();
+		if(tt.paused) tt.resume_tests();
+		else if(tt.running) tt.pause_tests();
+		else tt.start_tests();
 	}
-});
+}
 </code>
 
-<h4>Duplicating a test group</h4>
-<p>There are times when you want to run a set of tests that are very similar to another set of tests. You can duplicate and modify a test group simply by copying and altering elements of the <b>tt.groups</b> array.</p>
+<h4>Duplicating a group or test</h4>
+<p>There are times when you may want to run a set of tests that are very similar to another set of tests without having to duplicate everything. You can copy and modify a test group simply by cloning it in the <b>tt.groups</b> array and altering the various properties</p>
+<p>There are however, some things to note. Testerrific stores all of its data in a Proxy, which works more as a data reference than a stand-alone object variable. In order to actually duplicate a group or a test into a new group/test, you have to perform a deep clone of all data within that group/test. The easiest way to do this is with something like Lodash's <a href="https://lodash.com/docs/4.17.15#cloneDeep">cloneDeep()</a> function.</p>
 <code>
-tt.groups.push(tt.groups[0]);
-tt.groups[tt.groups.length - 1].label = "This is a copy of the first test group";
+let cloned_group = _.cloneDeep(tt.groups[0]);
+cloned_group.label = "This is a copy of the first test group";
+tt.groups.push(cloned_group);
 </code>
 
 
@@ -649,6 +658,10 @@ $(document).ready(function() {
 		$('.clear_tests .note').fadeIn()
 		
 		$(window).scroll(function() {
+			$('.clear_tests .note').fadeOut()
+		})
+		
+		$('.clear_tests .note').click(function() {
 			$('.clear_tests .note').fadeOut()
 		})
 			
@@ -690,6 +703,7 @@ $(document).ready(function() {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/prism.min.js" integrity="sha512-RDQSW3KoqJMiX0L/UBgwBmH1EmRYp8LBOiLaA8rBHIy+7OGP/7Gxg8vbt8wG4ZYd29P0Fnoq6+LOytCqx3cyoQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.28.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha512-fTl/qcO1VgvKtOMApX2PdZzkziyr2stM65GYPLGuYMnuMm1z2JLJG6XVU7C/mR+E7xBUqCivykuhlzfqxXBXbg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 
 </div>
 

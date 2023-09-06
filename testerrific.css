@@ -1,6 +1,7 @@
 #testerrific * {
-  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lato, Myriad, "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #111;
+  box-sizing: border-box;
 }
 #testerrific p {
   margin: 0.2em 0;
@@ -42,7 +43,7 @@
   padding: 0.4em 0.8em;
   background: #ccc;
   color: #111;
-  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lato, Myriad, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-weight: bold;
   border-radius: 3px;
   transition: background 0.2s ease-in-out;
@@ -63,6 +64,9 @@
 #testerrific .tt_panel.visible {
   right: 0;
 }
+#testerrific .tt_panel.visible .run_buttons_container {
+  right: 0;
+}
 #testerrific .tt_panel .passed {
   color: #090;
 }
@@ -78,17 +82,42 @@
 }
 #testerrific .tt_panel .panel_inner_container {
   position: absolute;
-  top: 0;
+  top: 60px;
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 30px;
+  padding: 10px 30px 30px;
   overflow-y: auto;
   overflow-x: visible;
   display: -webkit-flex;
   display: flex;
   -webkit-flex-direction: column;
           flex-direction: column;
+}
+#testerrific .tt_panel .run_buttons_container {
+  position: fixed;
+  top: 0;
+  right: -500px;
+  width: 495px;
+  height: 60px;
+  padding: 0 20px;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: center;
+          align-items: center;
+  border-bottom: 1px solid #ccc;
+  transition: right 0.3s ease-in-out;
+}
+#testerrific .tt_panel .run_buttons_container, #testerrific .tt_panel .run_buttons_container div {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-justify-content: flex-end;
+          justify-content: flex-end;
+  -webkit-align-items: center;
+          align-items: center;
+  -webkit-flex-wrap: wrap;
+          flex-wrap: wrap;
+  grid-gap: 7px;
 }
 #testerrific .tt_panel .run_buttons_container .title {
   -webkit-flex: 1;
@@ -98,31 +127,16 @@
 }
 #testerrific .tt_panel .run_buttons_container .title h2 {
   display: inline-block;
-  margin: 0 0 2em;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  background: #111111;
-  border-left: 5px solid #ff5c75;
-  -webkit-transform: skewX(-14deg);
-          transform: skewX(-14deg);
-}
-#testerrific .tt_panel .run_buttons_container .title h2 span {
-  display: inline-block;
-  padding: 0.3em 0.9em 0.4em 1em;
-  -webkit-transform: skewX(14deg);
-          transform: skewX(14deg);
-  color: #fff;
-}
-#testerrific .tt_panel .run_buttons_container, #testerrific .tt_panel .run_buttons_container div {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-justify-content: flex-end;
-          justify-content: flex-end;
-  -webkit-align-items: flex-start;
-          align-items: flex-start;
-  -webkit-flex-wrap: wrap;
-          flex-wrap: wrap;
-  grid-gap: 7px;
+  margin: 0;
+  padding: 0.2em 0.4em 0.2em 0.6em;
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  -webkit-transform: skewX(-10deg);
+          transform: skewX(-10deg);
+  color: #ff5c75;
+  border: 2px solid #ff5c75;
+  border-radius: 5px;
 }
 #testerrific .tt_panel .run_buttons_container button {
   font-size: 14px;
@@ -132,13 +146,16 @@
 #testerrific .tt_panel .run_buttons_container .run_all_button {
   padding: 0.7em 1.5em;
 }
+#testerrific .tt_panel .run_buttons_container .attention {
+  background: #76ffce;
+}
 #testerrific .tt_panel .tt_table_controls {
   display: -webkit-flex;
   display: flex;
   -webkit-justify-content: flex-end;
           justify-content: flex-end;
   grid-gap: 1em;
-  margin: 1em 0 0.5em;
+  margin: 0 0 2em;
 }
 #testerrific .tt_panel .tt_table_controls div {
   -webkit-flex: 1;
@@ -158,6 +175,9 @@
 #testerrific .tt_panel .tt_group.collapse {
   margin-bottom: 1em;
 }
+#testerrific .tt_panel .tt_test {
+  position: relative;
+}
 #testerrific .tt_panel .tt_test i {
   display: inline-block;
   margin: 0 0 0 0.2em;
@@ -165,8 +185,19 @@
   font-size: 0.8em;
   color: rgba(0, 0, 0, 0.4);
 }
+#testerrific .tt_panel .tt_test .insert_pause {
+  position: absolute;
+  right: calc(100% + 4px);
+  top: calc(100% - 9px);
+  padding: 0.2em 0.2em 0.2em 0.5em;
+  opacity: 0.1;
+}
+#testerrific .tt_panel .tt_test .insert_pause:hover, #testerrific .tt_panel .tt_test .insert_pause:focus, #testerrific .tt_panel .tt_test .insert_pause:active {
+  opacity: 1;
+}
 #testerrific .tt_panel .group_title,
 #testerrific .tt_panel .tt_test > div {
+  position: relative;
   display: -webkit-flex;
   display: flex;
   -webkit-align-items: center;
@@ -265,9 +296,8 @@
 }
 #testerrific .tt_panel .tt_summary,
 #testerrific .tt_panel .tt_message {
-  margin: 1em 0 3em;
+  margin: 1em 0;
   padding: 1em;
-  border: 1px solid #aaa;
   border-radius: 3px;
 }
 #testerrific .tt_panel .tt_message {
@@ -338,6 +368,7 @@
 }
 #testerrific .tt_panel .tt_summary {
   position: relative;
+  background: #f5f5f5;
 }
 #testerrific .tt_panel .tt_summary .clear_results {
   position: absolute;
@@ -347,7 +378,10 @@
 #testerrific .tt_panel .tt_summary_table {
   display: grid;
   grid-template-columns: fit-content(10px) 1fr;
-  grid-gap: 0 0.4em;
+  grid-gap: 0 0.7em;
+}
+#testerrific .tt_panel .tt_summary_table div:nth-child(2n+1) {
+  text-align: right;
 }
 #testerrific .tt_toggle_tests_panel {
   position: fixed;
@@ -361,7 +395,7 @@
           transform-origin: bottom right;
   background: #555;
   color: #fff;
-  font-family: "Lato", "Barlow", Frutiger, Univers, "Myriad Pro", Myriad, Arimo, Tahoma, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Lato, Myriad, "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.1em;
@@ -419,6 +453,40 @@
 }
 #testerrific .hidden {
   display: none;
+}
+#testerrific [helptext]:before {
+  content: attr(helptext);
+  position: absolute;
+  left: calc(100% + 7px);
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+  padding: 0.4em 0.8em;
+  border-radius: 3px;
+  background: #333;
+  color: #fff;
+  white-space: nowrap;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+#testerrific [helptext]:after {
+  content: "";
+  position: absolute;
+  left: calc(100% - 2px);
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+  border: 5px solid rgba(0, 0, 0, 0);
+  border-right: 5px solid #333;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+#testerrific [helptext]:hover:before, #testerrific [helptext]:hover:after {
+  opacity: 1;
+  transition: opacity 0.3s 0.5s ease-in-out;
 }
 @media (max-width: 600px) {
   #testerrific .tt_panel {
