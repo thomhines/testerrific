@@ -5,7 +5,7 @@
 *	Licensed under MIT.
 *	@author Thom Hines
 *	https://github.com/thomhines/testerrific
-*	@version 1.0
+*	@version 1.1
 */
 
 tt = {
@@ -200,10 +200,11 @@ tt = {
 
 
 	// Wait until user has clicked "Resume"
-	pause: () => {
-		tt.run("Pause", () =>{
-			tt.alert("Tests paused.", 5000);
-		}, { pause: 1 })
+	pause: (label = "Pause", message = "Tests paused.", options = {}) => {
+		options.pause = 1
+		tt.run(label, () =>{
+			tt.alert(message, 5000);
+		}, options)
 	},
 
 
@@ -392,6 +393,7 @@ tt = {
 							Promise.resolve(after_result).then((result) => {
 								let afterEach_result = _group.afterEach()
 								Promise.resolve(afterEach_result).then((result) => {
+									tt.is_manual_test = 0
 									if(!tt.running) {
 										tt.current_group = -1
 										tt.current_test = -1
@@ -1007,7 +1009,7 @@ var testerrific_ui = new ttb.init({
 				
 				<div class="tt_message ${ttb.print_if({ visible: tt.message.length })}">
 					<span>${tt.message}</span>
-					<div class="pass_fail_buttons" :if="${tt.is_manual_test && tt.running}">
+					<div class="pass_fail_buttons" :if="${tt.is_manual_test}">
 						<button class="pass" onclick="tt.pass_test()">Pass</button>
 						<button class="fail" onclick="tt.fail_test()">Fail</button>
 					</div>
